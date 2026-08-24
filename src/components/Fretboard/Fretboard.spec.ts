@@ -6,7 +6,7 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
-import { CHORD_FORMULAS, SCALE_FORMULAS, chordPositions, mapToFretboard, spell } from '@/core/theory'
+import { CHORD_FORMULAS, SCALE_FORMULAS, chordPositions, mapToFretboard, scalePositions, spell } from '@/core/theory'
 import Fretboard, { type FretboardProps } from './Fretboard.vue'
 import en from '@/locales/en.json'
 
@@ -92,7 +92,7 @@ describe('Fretboard 把位框', () => {
     expect(inside).toBeGreaterThan(0)
   })
 
-  it('把位標籤：開放把位標「Open」，其餘標根音格號', () => {
+  it('把位標籤：開放把位標「Open」，其餘標錨定格號', () => {
     const wrapper = mountFretboard({ cells: cMaj7, rootPc: 0, positions })
     const labels = wrapper.findAll('svg > text.pointer-events-none').map((n) => n.text())
     expect(labels[0]).toBe('Open') // C 的最低把位錨在 5 弦第 3 格 → 含空弦
@@ -115,5 +115,40 @@ describe('Fretboard 把位框', () => {
     const wrapper = mountFretboard({ cells: cMaj7, rootPc: 0, positions })
     await wrapper.findAll('svg > rect')[0]!.trigger('click')
     expect(wrapper.emitted('update:focusedPositionId')?.[0]).toEqual([positions[0]!.id])
+  })
+})
+
+describe('Fretboard 音階把位（focus 模式）', () => {
+  const aMinorPenta = mapToFretboard(spell('A', SCALE_FORMULAS.minorPentatonic))
+  const positions = scalePositions('A', 'minorPentatonic')
+  const base = { cells: aMinorPenta, rootPc: 9, positions, positionMode: 'focus' } as const
+
+  it('沒選把位時不畫框、音點全亮（框是輔助，不是濾鏡）', () => {
+    const wrapper = mountFretboard({ ...base })
+    expect(wrapper.findAll('svg > rect')).toHaveLength(0)
+    expect(wrapper.findAll('svg > g[opacity="1"]')).toHaveLength(aMinorPenta.length)
+  })
+
+  it('選了把位只畫那一個框——音階把位彼此重疊，全畫會糊成一團', () => {
+    const focus = positions.find((p) => p.anchorDegree === '1')!
+    const wrapper = mountFretboard({ ...base, focusedPositionId: focus.id })
+    const rects = wrapper.findAll('svg > rect')
+    expect(rects).toHaveLength(1)
+    expect(rects[0]!.attributes('stroke')).toMatch(/var\(--color-ink-\d+\)/)
+    const inside = aMinorPenta.filter((c) => c.fret >= focus.fromFret && c.fret <= focus.toFret)
+    expect(wrapper.findAll('svg > g[opacity="1"]')).toHaveLength(inside.length)
+  })
+
+  it('標籤是錨定音的度數，不是格號（\'1\' 的框就是根音起的盒型）', () => {
+    const wrapper = mountFretboard({ ...base })
+    const labels = wrapper.findAll('button').slice(1).map((b) => b.text())
+    expect(labels).toEqual(['5', 'b7', '1', 'b3', '4'])
+    const focused = mountFretboard({ ...base, focusedPositionId: positions[2]!.id })
+    expect(focused.findAll('svg > text.pointer-events-none').map((n) => n.text())).toEqual(['1'])
+  })
+
+  it('選單仍列出全部把位（框只畫一個，但每個把位都選得到）', () => {
+    const wrapper = mountFretboard({ ...base })
+    expect(wrapper.findAll('button')).toHaveLength(positions.length + 1)
   })
 })

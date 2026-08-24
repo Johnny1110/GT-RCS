@@ -67,7 +67,9 @@
     "openPosition": "Open",
     "position": "Position",
     "allPositions": "All",
-    "positionAria": "Position: root on string {string} at fret {fret}, covering frets {from}–{to}"
+    "positionAria": "Position: root on string {string} at fret {fret}, covering frets {from}–{to}",
+    "scalePositionAria": "Position: starts on the {degree} degree, covering frets {from}–{to}",
+    "scalePositionHint": "Pick a position to isolate one shape: everything inside the frame is reachable without moving your hand."
   },
   "explorer": {
     "key": "Key",

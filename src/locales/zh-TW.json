@@ -67,7 +67,9 @@
     "openPosition": "空弦",
     "position": "把位",
     "allPositions": "全部",
-    "positionAria": "把位：根音在第 {string} 弦第 {fret} 格，涵蓋第 {from}–{to} 格"
+    "positionAria": "把位：根音在第 {string} 弦第 {fret} 格，涵蓋第 {from}–{to} 格",
+    "scalePositionAria": "把位：從 {degree} 度音起，涵蓋第 {from}–{to} 格",
+    "scalePositionHint": "選一個把位看單一指型：框住的範圍內手不用移動，就走得完整個音階。"
   },
   "explorer": {
     "key": "調",
