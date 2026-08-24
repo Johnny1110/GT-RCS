@@ -64,7 +64,10 @@
   "fretboard": {
     "aria": "吉他指板，顯示 {count} 個音",
     "jumpTo": "把位",
-    "openPosition": "空弦"
+    "openPosition": "空弦",
+    "position": "把位",
+    "allPositions": "全部",
+    "positionAria": "把位：根音在第 {string} 弦第 {fret} 格，涵蓋第 {from}–{to} 格"
   },
   "explorer": {
     "key": "調",

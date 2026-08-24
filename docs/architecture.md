@@ -62,6 +62,7 @@
 |---|---|---|
 | `core/theory/formulas.ts` | **Single Source of Truth**（公式表 const） | 和弦/音階資料只有公式；所有音位、音名、指板覆蓋皆推導，杜絕手工資料表的維護災難 |
 | `core/theory/spelling.ts` | 純函式核心 | 拼寫正確性可被窮舉測試鎖定 |
+| `core/theory/positions.ts` | 純函式推導（把位） | 全指板和弦音看不出指型；以低音弦根音錨定切出互不重疊的把位框。框怎麼畫是組件的事，框在哪裡是樂理，所以放 core |
 | `core/audio/clock.ts` | **依賴反轉**（IClock） | 排程邏輯不碰真時鐘 → ManualClock 讓「不飄拍」成為可測規格 |
 | `core/audio/scheduler.ts` | **Observer** + lookahead | 排程器單一職責：搬運視窗內 tick；不懂 BPM 與 pattern |
 | `core/audio/pattern.ts` | **編譯步驟**（pattern → 時刻表） | swing 讓細分不等距。把「一小節 → 每格的角色與偏移（單位＝拍）」先編譯成純資料，Transport 只吃時刻表 —— 之後新增 feel 不必動排程核心，且時刻可被單元測試逐格鎖定 |

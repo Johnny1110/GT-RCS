@@ -3,9 +3,9 @@
  * 五度圈經典進行跟練（PRD F3-3）：沿五度圈逆時針走完 12 調。
  * 五度圈 highlight、和弦時間軸、指板組成音三者都由同一個 transport 小節數驅動。
  */
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { mapToFretboard } from '@/core/theory'
+import { chordPositions, mapToFretboard } from '@/core/theory'
 import CircleOfFifths from '@/components/CircleOfFifths/CircleOfFifths.vue'
 import ChordTimeline, { type TimelineEntry } from '@/components/ChordTimeline/ChordTimeline.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
@@ -53,6 +53,17 @@ const nextChord = computed(() => nextChordAfter(cycle.value, activeBar.value))
 const cells = computed(() =>
   currentChord.value ? mapToFretboard(currentChord.value.tones) : [],
 )
+
+/**
+ * 把位框：全指板和弦音看不出指型，框出來才分得清把位（core 推導，畫面不算樂理）。
+ * 換和弦時取消聚焦——把位 id 綁在根音上，留著上一個和弦的選擇只會指到不存在的框。
+ */
+const positions = computed(() =>
+  currentChord.value ? chordPositions(currentChord.value.root.pc) : [],
+)
+const focusedPositionId = ref<string | null>(null)
+watch(() => currentChord.value?.root.pc, () => { focusedPositionId.value = null })
+
 
 const timeline = computed<TimelineEntry[]>(() => {
   const entries: TimelineEntry[] = []
@@ -132,7 +143,13 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
         <span class="uppercase tracking-[0.18em]">{{ t('chords.chordTones') }}</span>
         <span class="ml-2 text-sm text-ink-300">{{ currentChord?.symbol }}</span>
       </p>
-      <Fretboard :cells="cells" :root-pc="currentChord?.root.pc ?? 0" label-mode="degree" />
+      <Fretboard
+        v-model:focused-position-id="focusedPositionId"
+        :cells="cells"
+        :root-pc="currentChord?.root.pc ?? 0"
+        :positions="positions"
+        label-mode="degree"
+      />
     </section>
 
     <KnowledgeCard v-if="knowledgeId" :entry-id="knowledgeId" />
