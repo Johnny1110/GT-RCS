@@ -3,10 +3,10 @@
  * 音階跟練（PRD F2-2）：指板全覆蓋 + 節拍視覺 + 練習日誌。
  * 從音階總覽帶入的 ?root=&scale= 會覆寫本模組設定（承接 Explorer 的選擇）。
  */
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { SCALE_FORMULAS, SCALE_SIGNATURE_DEGREE, mapToFretboard, spell } from '@/core/theory'
+import { SCALE_FORMULAS, SCALE_SIGNATURE_DEGREE, mapToFretboard, scalePositions, spell } from '@/core/theory'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import BeatLamps from '@/components/ui/BeatLamps.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
@@ -49,6 +49,11 @@ const notes = computed(() => spell(settings.root, SCALE_FORMULAS[settings.scale]
 const cells = computed(() => mapToFretboard(notes.value))
 const rootPc = computed(() => notes.value[0]?.pc ?? 0)
 const signatureDegree = computed(() => SCALE_SIGNATURE_DEGREE[settings.scale])
+
+/** 指型輔助框（同音階總覽）：一次聚焦一個把位，換調或換音階時取消聚焦 */
+const positions = computed(() => scalePositions(settings.root, settings.scale))
+const focusedPositionId = ref<string | null>(null)
+watch(() => [settings.root, settings.scale], () => { focusedPositionId.value = null })
 
 const keyOptions = computed(() => KEYS.map((key) => ({ value: key, label: key })))
 const scaleOptions = computed(() =>
@@ -106,7 +111,17 @@ const totalMinutes = computed(() =>
       <p class="ml-auto max-w-sm text-xs leading-6 text-ink-500">{{ t('practice.hint') }}</p>
     </div>
 
-    <Fretboard :cells="cells" :root-pc="rootPc" label-mode="degree" />
+    <div class="flex flex-col gap-2">
+      <Fretboard
+        v-model:focused-position-id="focusedPositionId"
+        :cells="cells"
+        :root-pc="rootPc"
+        :positions="positions"
+        position-mode="focus"
+        label-mode="degree"
+      />
+      <p class="text-xs text-ink-500">{{ t('fretboard.scalePositionHint') }}</p>
+    </div>
 
     <p v-if="signatureDegree" class="font-mono text-xs text-ink-500">
       {{ t('explorer.signatureNote', { degree: signatureDegree }) }}

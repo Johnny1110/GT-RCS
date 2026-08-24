@@ -7,10 +7,14 @@
  * - cells 一律來自 core/theory mapToFretboard() 的輸出。
  * - 顏色一律來自 core/colors colorForInterval()（以 rootPc 為錨）。
  *
- * 把位框（positions）：全指板和弦音有 40 幾點，不分組就看不出哪幾個音湊成一個指型。
- * 框由 core/theory chordPositions() 算出（本組件不做樂理），畫在音點下層；
- * 框外的音點降低透明度——它們仍是和弦音，只是不屬於任何一個好按的指型。
- * 框是**灰階**的：色彩只屬於音高，結構一律灰階（design-system §1.1）。
+ * 把位框（positions）：全指板音點有 40～90 個，不分組就看不出哪幾個音湊成一個指型。
+ * 框由 core/theory 的 chordPositions() / scalePositions() 算出（本組件不做樂理），
+ * 畫在音點下層；框是**灰階**的：色彩只屬於音高，結構一律灰階（design-system §1.1）。
+ *
+ * 兩種模式，差別在把位系統本身重不重疊：
+ * - tile（和弦）：把位互不重疊 → 全部框一起畫，標籤是根音格號，框外音點淡出。
+ * - focus（音階）：把位天生重疊 → 一次只畫聚焦的那一個框，標籤是錨定音的度數；
+ *   沒選把位時完全不畫框，維持原本的全指板呈現。
  */
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -25,10 +29,12 @@ export interface FretboardProps {
   fretCount?: number
   stringCount?: number
   labelMode?: 'degree' | 'noteName'
-  /** 把位框；省略或空陣列 = 不畫框（音階線維持原本的全指板呈現） */
+  /** 把位框；省略或空陣列 = 不畫框 */
   positions?: readonly FretboardPosition[]
   /** 只看某一個把位：框外音點淡出。null = 全部把位都亮 */
   focusedPositionId?: string | null
+  /** 把位彼此重疊時用 'focus'（音階）；互不重疊時用 'tile'（和弦） */
+  positionMode?: 'tile' | 'focus'
 }
 
 const props = withDefaults(defineProps<FretboardProps>(), {
@@ -37,6 +43,7 @@ const props = withDefaults(defineProps<FretboardProps>(), {
   labelMode: 'degree',
   positions: () => [],
   focusedPositionId: null,
+  positionMode: 'tile',
 })
 
 const emit = defineEmits<{
@@ -61,25 +68,45 @@ const focused = computed(() =>
   props.positions.find((p) => p.id === props.focusedPositionId) ?? null,
 )
 
-const frames = computed(() =>
+/** 全部把位（選單用）。音階把位標度數——'1' 的框就是根音起的指型，比序號多說一件事 */
+const entries = computed(() =>
   props.positions.map((position) => ({
     position,
     key: position.id,
     rect: positionRect(layout.value, position.fromFret, position.toFret, props.stringCount),
     active: focused.value === null || focused.value.id === position.id,
-    label: position.fromFret === 0 ? t('fretboard.openPosition') : String(position.rootFret),
-    title: t('fretboard.positionAria', {
-      fret: position.rootFret,
-      string: position.rootString,
-      from: position.fromFret,
-      to: position.toFret,
-    }),
+    label: props.positionMode === 'focus'
+      ? position.anchorDegree
+      : position.fromFret === 0
+        ? t('fretboard.openPosition')
+        : String(position.anchorFret),
+    title: props.positionMode === 'focus'
+      ? t('fretboard.scalePositionAria', {
+          degree: position.anchorDegree,
+          from: position.fromFret,
+          to: position.toFret,
+        })
+      : t('fretboard.positionAria', {
+          fret: position.anchorFret,
+          string: position.anchorString,
+          from: position.fromFret,
+          to: position.toFret,
+        }),
   })),
+)
+
+/** 實際畫出來的框。focus 模式的把位互相重疊，全畫會糊成一團，因此只畫聚焦的那一個 */
+const frames = computed(() =>
+  props.positionMode === 'focus'
+    ? entries.value.filter((entry) => entry.key === focused.value?.id)
+    : entries.value,
 )
 
 function dotOpacity(fret: number): number {
   if (props.positions.length === 0) return 1
   if (focused.value) return isInPosition(focused.value, fret) ? 1 : UNFOCUSED_OPACITY
+  // focus 模式沒選把位＝維持原本的全指板呈現（框是輔助，不是濾鏡）
+  if (props.positionMode === 'focus') return 1
   return props.positions.some((p) => isInPosition(p, fret)) ? 1 : OUTSIDE_OPACITY
 }
 
@@ -182,7 +209,7 @@ function focusPosition(position: FretboardPosition): void {
               @click="$emit('update:focusedPositionId', null)">
         {{ t('fretboard.allPositions') }}
       </button>
-      <button v-for="frame in frames" :key="`btn-${frame.key}`" type="button"
+      <button v-for="frame in entries" :key="`btn-${frame.key}`" type="button"
               class="rounded border px-2 py-0.5 font-mono text-xs"
               :class="focusedPositionId === frame.key
                 ? 'border-ink-50 bg-ink-50 font-bold text-ink-950'

@@ -3,10 +3,10 @@
  * 音階總覽（PRD F2-1）：任選調與音階，22 格指板全覆蓋 + 特徵音標註 + 知識卡。
  * 「開始跟練」把當前選擇以 query 傳給 scales.practice——模組間不互讀設定。
  */
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
-  SCALE_FORMULAS, SCALE_SIGNATURE_DEGREE, mapToFretboard, spell, type DegreeLabel,
+  SCALE_FORMULAS, SCALE_SIGNATURE_DEGREE, mapToFretboard, scalePositions, spell, type DegreeLabel,
 } from '@/core/theory'
 import { colorForInterval } from '@/core/colors'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
@@ -35,6 +35,15 @@ const cells = computed(() => mapToFretboard(notes.value))
 const rootPc = computed(() => notes.value[0]?.pc ?? 0)
 const formula = computed(() => notes.value.map((n) => n.degree).join(' '))
 const signatureDegree = computed<DegreeLabel | undefined>(() => SCALE_SIGNATURE_DEGREE[settings.scale])
+
+/**
+ * 指型輔助框：全指板 90 幾個音點看不出把位。框由 core 推導（畫面不算樂理）。
+ * 音階把位彼此重疊，因此用 focus 模式一次只看一個；換調或換音階時取消聚焦
+ * ——把位 id 綁在錨定格上，留著上一個音階的選擇只會指到不存在的框。
+ */
+const positions = computed(() => scalePositions(settings.root, settings.scale))
+const focusedPositionId = ref<string | null>(null)
+watch(() => [settings.root, settings.scale], () => { focusedPositionId.value = null })
 
 const keyOptions = computed(() => KEYS.map((key) => ({ value: key, label: key })))
 const scaleOptions = computed(() =>
@@ -86,7 +95,17 @@ const noteDots = computed(() =>
       </div>
     </div>
 
-    <Fretboard :cells="cells" :root-pc="rootPc" :label-mode="settings.labelMode" />
+    <div class="flex flex-col gap-2">
+      <Fretboard
+        v-model:focused-position-id="focusedPositionId"
+        :cells="cells"
+        :root-pc="rootPc"
+        :label-mode="settings.labelMode"
+        :positions="positions"
+        position-mode="focus"
+      />
+      <p class="text-xs text-ink-500">{{ t('fretboard.scalePositionHint') }}</p>
+    </div>
 
     <section class="flex flex-col gap-3">
       <div class="flex flex-wrap items-start gap-3">
