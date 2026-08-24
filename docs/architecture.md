@@ -74,6 +74,8 @@
 | `composables/useTransportTick` | 訂閱 + 生命週期綁定 | 組件取得節拍視覺狀態的唯一入口，自動取消訂閱 |
 | `composables/usePracticeSession` | 生命週期綁定 | 練習計時與日誌寫入：play 起算、stop 或卸載結算，過短不記 |
 | `content/knowledge/` | 內容與程式分離 | 模組只引用 entry id；內容依語系 lazy 載入並快取，獨立分包 |
+| `theory/progressions/` | 白名單 parser + 展開器 | 級數記法 → 任意調的實際和弦；文法外一律報錯不猜，錯誤帶 tokenIndex |
+| `modules/chords/cycle.ts` | 純函式查表 | 12 調循環先算成小節表，跟練畫面只依當前小節查表，不在畫面裡算樂理 |
 | `composables/useModuleSettings` | 響應式持久化綁定 | 模組設定以模組 id 為 key 自動存取，杜絕直接碰 localStorage |
 | `composables/usePracticeTransport` | Template Method | 每個練習共通的 click 接線：載入設定 → 回寫調整 → 離開停止播放 |
 
@@ -131,6 +133,9 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 | 練習模組的 click 接線 | `src/composables/usePracticeTransport.ts` |
 | 拍號表與持久化驗證 | `src/core/audio/types.ts`（TIME_SIGNATURES / resolveTimeSignature） |
 | 指板幾何 | `src/components/Fretboard/geometry.ts` |
+| 五度圈幾何與調性位置 | `src/components/CircleOfFifths/geometry.ts` |
+| 進行記法文法 | `src/core/theory/progressions/parser.ts` 頂部註解 |
+| 進行 preset 與分級課表 | `src/modules/chords/presets.ts` |
 | 知識內容格式與行內標記 | `src/content/knowledge/types.ts` |
 | 音階線共用選項與驗證 | `src/modules/scales/shared.ts` |
 | 測試輔助（AudioContext stub、withSetup） | `src/test/` |
@@ -198,7 +203,7 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 
 ---
 
-## 9. 現況基線（Phase 2 完成）
+## 9. 現況基線（Phase 3 完成）
 
 **已實作並有測試（65 個測試）**：theory（音程／拼寫／公式／指板推導）、colors、
 scheduler + Transport（含 10 分鐘無漂移驗證）、TickBus、三音色 SynthClickVoice、
@@ -213,5 +218,9 @@ App shell（路由生成、i18n 雙語、深色主題）、兩個練習模組（
 KnowledgeCard／RichText、usePracticeSession（練習計時與日誌）、音階跟練模組、
 Scale Explorer 的特徵音標註與知識卡、模組間以 query 傳遞選擇。
 
-**契約已定、待實作（搜尋 `TODO(opus)`）**：進行 parser/realize（Phase 3）、
-RhythmPattern 驅動與 swing、播放中換拍號（Phase 4）、全域鍵盤快捷鍵與統計儀表板（Phase 5）。
+**Phase 3 追加（129 個測試）**：進行引擎（parser + realize，含 12 調快照）、
+五度圈組件（互動與跟練兩種模式）、和弦時間軸、12 調循環模型、
+兩個和弦練習模組（五度圈進行、固定調 5 級課表）、11 條雙語和弦知識內容。
+
+**契約已定、待實作（搜尋 `TODO(opus)`）**：RhythmPattern 驅動與 swing、
+播放中換拍號（Phase 4）、全域鍵盤快捷鍵與統計儀表板（Phase 5）。

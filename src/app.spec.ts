@@ -65,7 +65,10 @@ describe('App 掛載', () => {
     expect(wrapper.find('input.rcs-range').exists()).toBe(true)
   })
 
-  it.each(['/scales/explorer', '/scales/practice', '/rhythm/metronome'])('%s 可掛載且渲染內容', async (route) => {
+  it.each([
+    '/scales/explorer', '/scales/practice', '/rhythm/metronome',
+    '/chords/circle-progressions', '/chords/key-practice',
+  ])('%s 可掛載且渲染內容', async (route) => {
     const { pinia, i18n, router } = createTestApp()
     router.push(route)
     await router.isReady()
@@ -111,6 +114,42 @@ describe('App 掛載', () => {
       data: { moduleSettings: Record<string, { root?: string }> }
     }
     expect(parsed.data.moduleSettings['scales.practice']?.root ?? 'A').toBe('A')
+  })
+
+  it('五度圈進行：未播放時先顯示第一個和弦與預告', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/circle-progressions')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const chords = wrapper.findAll('ol li').map((li) => li.text())
+    expect(chords[0]).toContain('Dm7')
+    expect(chords[1]).toContain('G7')
+    // 指板同步顯示當前和弦組成音
+    expect(wrapper.findAll('svg > g > circle[r="11"]').length).toBeGreaterThan(20)
+  })
+
+  it('固定調練習：換級別時進行自動落到該級別的第一個', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/key-practice')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const level5 = wrapper.findAll('button').find((b) => b.text().includes('Fusion'))
+    expect(level5).toBeDefined()
+    await level5!.trigger('click')
+    await flushPromises()
+
+    // 第五級的第一個進行是「四級小和弦」：C 調應出現 Fm7
+    expect(wrapper.text()).toContain('Fm7')
+    const parsed = JSON.parse(localStorage.getItem('rcs.settings')!) as {
+      data: { moduleSettings: Record<string, { levelId: string; presetId: string }> }
+    }
+    expect(parsed.data.moduleSettings['chords.key-practice']).toMatchObject({
+      levelId: 'level5', presetId: 'l5-borrowed',
+    })
   })
 
   it('知識卡展開後載入對應語系內容', async () => {

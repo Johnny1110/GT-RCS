@@ -4,15 +4,25 @@
 import type { ChordQuality } from '../formulas'
 import type { DegreeLabel, Note, NoteName } from '../types'
 
+/** 和聲層級：三和弦或七和弦（決定無顯式品質時的推導結果） */
+export type HarmonyLevel = 'triad' | 'seventh'
+
+/**
+ * 和弦內音的度數要相對誰標記：
+ * - 'chordRoot'：相對該和弦根音（Fm → 1 b3 5），指板顏色以和弦為錨
+ * - 'key'：相對進行的主調（C 調的 Fm → 4 b6 1），看得出借用關係
+ */
+export type DegreeReference = 'chordRoot' | 'key'
+
 /** 解析後的一個進行 token（尚未帶入調） */
 export interface ProgressionToken {
   /** 原始輸入片段，如 'ii'、'V7'、'bVII'、'V/ii' */
   raw: string
-  /** 級數（含借用修飾），如 '2'、'5'、'b7' */
+  /** 級數（含借用修飾），如 '2'、'5'、'b7'；副屬則為其自身根音級數 */
   degree: DegreeLabel
   /** 顯式或推導出的和弦品質 */
   quality: ChordQuality
-  /** 副屬和弦目標級數（'V/ii' 的 'ii'），無則省略 */
+  /** 副屬和弦目標級數（'V/ii' 的 'ii' → '2'），無則省略 */
   secondaryOf?: DegreeLabel
 }
 
@@ -40,11 +50,15 @@ export interface ProgressionPreset {
   /** 每個和弦佔的小節數，長度需等於 token 數（0.5 = 半小節） */
   barsPerChord: readonly number[]
   defaultBpm: number
+  /** 本進行預設以三和弦或七和弦呈現 */
+  harmonyLevel: HarmonyLevel
   knowledgeIds?: readonly string[]
 }
 
 export interface RealizeOptions {
   key: NoteName
   /** 'triad' 推導三和弦品質、'seventh' 推導七和弦品質（顯式品質不受影響） */
-  harmonyLevel: 'triad' | 'seventh'
+  harmonyLevel: HarmonyLevel
+  /** 預設 'chordRoot' */
+  degreeReference?: DegreeReference
 }

@@ -4,6 +4,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import { SCALE_FORMULAS } from '@/core/theory'
+import { CIRCLE_PROGRESSIONS, PRACTICE_LEVELS } from '@/modules/chords/presets'
 import { parseInline, type KnowledgeBundle } from './types'
 import zhTW from './zh-TW.json'
 import en from './en.json'
@@ -22,6 +23,22 @@ describe('知識內容', () => {
     for (const scale of Object.keys(SCALE_FORMULAS)) {
       for (const [locale, bundle] of Object.entries(bundles)) {
         expect(bundle[`scale.${scale}`], `${locale} 缺少 scale.${scale}`).toBeDefined()
+      }
+    }
+  })
+
+  it('preset 引用的每個 knowledgeId 都真的存在（兩個語系都要有）', () => {
+    const referenced = [
+      ...CIRCLE_PROGRESSIONS.flatMap((p) => p.knowledgeIds ?? []),
+      ...PRACTICE_LEVELS.flatMap((level) => [
+        ...(level.knowledgeIds ?? []),
+        ...level.progressions.flatMap((p) => p.knowledgeIds ?? []),
+      ]),
+    ]
+    expect(referenced.length).toBeGreaterThan(0)
+    for (const id of referenced) {
+      for (const [locale, bundle] of Object.entries(bundles)) {
+        expect(bundle[id], `${locale} 缺少被引用的 ${id}`).toBeDefined()
       }
     }
   })

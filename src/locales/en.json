@@ -25,6 +25,16 @@
         "title": "Metronome",
         "description": "Three-voice click with adjustable BPM, time signature and subdivision"
       }
+    },
+    "chords": {
+      "circle": {
+        "title": "Circle Progressions",
+        "description": "Take a classic progression counterclockwise through all 12 keys"
+      },
+      "keyPractice": {
+        "title": "Key Practice",
+        "description": "Stay in one key, from beginner triads through fusion and neo-soul"
+      }
     }
   },
   "transport": {
@@ -82,5 +92,55 @@
   "practice": {
     "hint": "Run the scale up and down against the click. Put position shifts on a weak beat so the pulse never breaks.",
     "totalMinutes": "{minutes} min logged"
+  },
+  "chords": {
+    "progression": "Progression",
+    "barsPerKey": "Bars per key",
+    "startKey": "Start key",
+    "key": "Key",
+    "level": "Level",
+    "now": "Now",
+    "next": "Next",
+    "chordTones": "Chord tones (full neck)"
+  },
+  "progression": {
+    "2516": "2516",
+    "4536251": "4536251",
+    "1645": "1645",
+    "6415": "6415",
+    "canon": "Canon",
+    "blues12": "12-bar blues",
+    "1451": "1451",
+    "diatonicWalk": "Diatonic walk",
+    "3625": "3625",
+    "fast25": "Fast 2-5",
+    "bluesQuick": "Quick change",
+    "jazzBlues": "Jazz blues",
+    "borrowedIv": "Minor four",
+    "bVII": "bVII",
+    "secondaryChain": "Secondary chain",
+    "neoSoul": "Neo-soul"
+  },
+  "level": {
+    "1": {
+      "title": "1 · Triads",
+      "description": "Make the most stable chords automatic: I, IV, V, vi. The goal is changing chords without breaking the pulse."
+    },
+    "2": {
+      "title": "2 · Full diatonic",
+      "description": "Add ii, iii and vii°, and walk all seven chords of the key."
+    },
+    "3": {
+      "title": "3 · Sevenths",
+      "description": "Trade triads for sevenths and hear the difference between Imaj7 and V7."
+    },
+    "4": {
+      "title": "4 · Blues dominants",
+      "description": "Twelve-bar blues and all-dominant harmony. Get used to the sound of not resolving."
+    },
+    "5": {
+      "title": "5 · Fusion / Neo-soul",
+      "description": "Extensions, borrowed chords and secondary dominants — how out-of-key notes earn their place."
+    }
   }
 }

@@ -2,110 +2,478 @@
   "scale.ionian": {
     "title": "Ionian: the major scale itself",
     "blocks": [
-      { "type": "paragraph", "text": "The most stable scale. The seventh degree does the work — it sits a semitone below the root and wants to resolve upward, which is where major's brightness and sense of home come from." },
-      { "type": "paragraph", "text": "Watch the fourth. Over a major chord it is an **avoid note**: fine passing through, but land on it and the chord's colour goes muddy. If you want that sound, use Lydian's #4 instead." },
-      { "type": "list", "items": ["Safest over: Imaj7 and IVmaj7", "Genres: the backbone of pop, country and gospel"] }
+      {
+        "type": "paragraph",
+        "text": "The most stable scale. The seventh degree does the work — it sits a semitone below the root and wants to resolve upward, which is where major's brightness and sense of home come from."
+      },
+      {
+        "type": "paragraph",
+        "text": "Watch the fourth. Over a major chord it is an **avoid note**: fine passing through, but land on it and the chord's colour goes muddy. If you want that sound, use Lydian's #4 instead."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Safest over: Imaj7 and IVmaj7",
+          "Genres: the backbone of pop, country and gospel"
+        ]
+      }
     ]
   },
   "scale.dorian": {
     "title": "Dorian: the brightest minor",
     "blocks": [
-      { "type": "paragraph", "text": "The minor third makes it minor, but the sixth is **major** — one shade less melancholy than natural minor, and considerably more groove. This is the default minor of funk and soul." },
-      { "type": "paragraph", "text": "The **6** is the signature note. Lean on it and Dorian announces itself; avoid it and you have slid back into natural minor." },
-      { "type": "list", "items": ["Typical setting: a long vamp on one m7 chord (Dm7 repeating)", "Genres: funk, soul, Latin rock, modal jazz"] }
+      {
+        "type": "paragraph",
+        "text": "The minor third makes it minor, but the sixth is **major** — one shade less melancholy than natural minor, and considerably more groove. This is the default minor of funk and soul."
+      },
+      {
+        "type": "paragraph",
+        "text": "The **6** is the signature note. Lean on it and Dorian announces itself; avoid it and you have slid back into natural minor."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Typical setting: a long vamp on one m7 chord (Dm7 repeating)",
+          "Genres: funk, soul, Latin rock, modal jazz"
+        ]
+      }
     ]
   },
   "scale.phrygian": {
     "title": "Phrygian: a semitone out of the gate",
     "blocks": [
-      { "type": "paragraph", "text": "**b2** sits immediately above the root, so the scale opens with downward semitone pressure. Nearly all of its Spanish and Middle Eastern colour comes from that one note." },
-      { "type": "paragraph", "text": "The b2 is both signature and centre of gravity. Treating it as a passing note wastes it — put it on a strong beat and the character holds." },
-      { "type": "list", "items": ["Genres: flamenco, metal riffs, film cues reaching for 'the East'"] }
+      {
+        "type": "paragraph",
+        "text": "**b2** sits immediately above the root, so the scale opens with downward semitone pressure. Nearly all of its Spanish and Middle Eastern colour comes from that one note."
+      },
+      {
+        "type": "paragraph",
+        "text": "The b2 is both signature and centre of gravity. Treating it as a passing note wastes it — put it on a strong beat and the character holds."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Genres: flamenco, metal riffs, film cues reaching for 'the East'"
+        ]
+      }
     ]
   },
   "scale.lydian": {
     "title": "Lydian: major, floating upward",
     "blocks": [
-      { "type": "paragraph", "text": "Major with the fourth raised to **#4**. Without Ionian's avoid note, every tone is safe to sit on, and the scale reads as floating up rather than resolving down." },
-      { "type": "paragraph", "text": "On a chart it appears as **maj7#11**. For the clearest example, listen to any film cue scoring 'vast' or 'wondrous'." },
-      { "type": "list", "items": ["Genres: film scores, fusion, the bright passages of city pop"] }
+      {
+        "type": "paragraph",
+        "text": "Major with the fourth raised to **#4**. Without Ionian's avoid note, every tone is safe to sit on, and the scale reads as floating up rather than resolving down."
+      },
+      {
+        "type": "paragraph",
+        "text": "On a chart it appears as **maj7#11**. For the clearest example, listen to any film cue scoring 'vast' or 'wondrous'."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Genres: film scores, fusion, the bright passages of city pop"
+        ]
+      }
     ]
   },
   "scale.mixolydian": {
     "title": "Mixolydian: home of the dominant chord",
     "blocks": [
-      { "type": "paragraph", "text": "A major third with a **b7** — exactly the notes of a dominant seventh. Bright, but with no leading tone it is in no hurry to resolve, so it can stay put indefinitely." },
-      { "type": "paragraph", "text": "Any section parked on a 7 chord — the I7 of a blues, a funk E9 vamp — reaches for this first." },
-      { "type": "list", "items": ["Genres: blues rock, funk, Celtic music"] }
+      {
+        "type": "paragraph",
+        "text": "A major third with a **b7** — exactly the notes of a dominant seventh. Bright, but with no leading tone it is in no hurry to resolve, so it can stay put indefinitely."
+      },
+      {
+        "type": "paragraph",
+        "text": "Any section parked on a 7 chord — the I7 of a blues, a funk E9 vamp — reaches for this first."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Genres: blues rock, funk, Celtic music"
+        ]
+      }
     ]
   },
   "scale.aeolian": {
     "title": "Aeolian: natural minor",
     "blocks": [
-      { "type": "paragraph", "text": "Three flats — b3, b6, b7 — and the standard sound of melancholy. It is the sixth mode of its relative major: A minor uses exactly the notes of C major, and the only difference is which note you treat as home." },
-      { "type": "paragraph", "text": "One practical catch: the fifth degree of Aeolian is a **minor chord** (Em in A minor), which cannot push a strong resolution. For the force of E7 to Am you must raise the b7 to 7 — that is, borrow from harmonic minor." },
-      { "type": "list", "items": ["Genres: rock ballads, minor-key folk, game soundtracks"] }
+      {
+        "type": "paragraph",
+        "text": "Three flats — b3, b6, b7 — and the standard sound of melancholy. It is the sixth mode of its relative major: A minor uses exactly the notes of C major, and the only difference is which note you treat as home."
+      },
+      {
+        "type": "paragraph",
+        "text": "One practical catch: the fifth degree of Aeolian is a **minor chord** (Em in A minor), which cannot push a strong resolution. For the force of E7 to Am you must raise the b7 to 7 — that is, borrow from harmonic minor."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Genres: rock ballads, minor-key folk, game soundtracks"
+        ]
+      }
     ]
   },
   "scale.locrian": {
     "title": "Locrian: a root that will not stand",
     "blocks": [
-      { "type": "paragraph", "text": "**b5** turns the tonic chord into m7b5 — a chord that cannot settle. That is why the scale is almost never used as a key centre." },
-      { "type": "paragraph", "text": "Its real job is as a **chord scale**: the iim7b5 in a minor 2-5-1 (Bm7b5 in A minor) is Locrian. Rather than memorising it as a mode, tie it to the m7b5 chord." },
-      { "type": "list", "items": ["Where you meet it: the first chord of a minor ii-V-i"] }
+      {
+        "type": "paragraph",
+        "text": "**b5** turns the tonic chord into m7b5 — a chord that cannot settle. That is why the scale is almost never used as a key centre."
+      },
+      {
+        "type": "paragraph",
+        "text": "Its real job is as a **chord scale**: the iim7b5 in a minor 2-5-1 (Bm7b5 in A minor) is Locrian. Rather than memorising it as a mode, tie it to the m7b5 chord."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Where you meet it: the first chord of a minor ii-V-i"
+        ]
+      }
     ]
   },
   "scale.majorPentatonic": {
     "title": "Major pentatonic: major with the friction removed",
     "blocks": [
-      { "type": "paragraph", "text": "Take the major scale and drop **4** and **7**. Those two are precisely the notes most likely to clash — the 4 is an avoid note over I, and the 7 grinds a semitone against IV." },
-      { "type": "paragraph", "text": "With the explosives removed, you can play anything over a whole major progression and not be wrong — hence the safety net. The cost is that the character left with them: to get flavour back, you have to add notes back." },
-      { "type": "list", "items": ["How to use it: shape the melody with the pentatonic, then add 4 or 7 for tension"] }
+      {
+        "type": "paragraph",
+        "text": "Take the major scale and drop **4** and **7**. Those two are precisely the notes most likely to clash — the 4 is an avoid note over I, and the 7 grinds a semitone against IV."
+      },
+      {
+        "type": "paragraph",
+        "text": "With the explosives removed, you can play anything over a whole major progression and not be wrong — hence the safety net. The cost is that the character left with them: to get flavour back, you have to add notes back."
+      },
+      {
+        "type": "list",
+        "items": [
+          "How to use it: shape the melody with the pentatonic, then add 4 or 7 for tension"
+        ]
+      }
     ]
   },
   "scale.minorPentatonic": {
     "title": "Minor pentatonic: the mother tongue of rock",
     "blocks": [
-      { "type": "paragraph", "text": "Natural minor without **2** and **b6**. The starting point of nearly every rock solo, and the first shape most guitarists commit to memory." },
-      { "type": "paragraph", "text": "Worth internalising: it is the **same set of notes** as the major pentatonic of the relative major (A minor pentatonic = C major pentatonic). One shape, two sounds — which note you treat as home decides which one you hear." },
-      { "type": "list", "items": ["Next step: add b5 for the blues scale, add 6 for a Dorian flavour"] }
+      {
+        "type": "paragraph",
+        "text": "Natural minor without **2** and **b6**. The starting point of nearly every rock solo, and the first shape most guitarists commit to memory."
+      },
+      {
+        "type": "paragraph",
+        "text": "Worth internalising: it is the **same set of notes** as the major pentatonic of the relative major (A minor pentatonic = C major pentatonic). One shape, two sounds — which note you treat as home decides which one you hear."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Next step: add b5 for the blues scale, add 6 for a Dorian flavour"
+        ]
+      }
     ]
   },
   "scale.blues": {
     "title": "Blues scale: the one extra note",
     "blocks": [
-      { "type": "paragraph", "text": "Minor pentatonic plus **b5** — a single note's difference. That note is the blue note, and nearly all of the blues' tension rides on it." },
-      { "type": "paragraph", "text": "It is a **passing note, not a resting note**. Slide up from the 4 or down from the 5 and it sings; stop on it and the tension is severe — unless severe is what you came for." },
-      { "type": "list", "items": ["Drill it: 4 to b5 to 5 and back, connected with bends or slides"] }
+      {
+        "type": "paragraph",
+        "text": "Minor pentatonic plus **b5** — a single note's difference. That note is the blue note, and nearly all of the blues' tension rides on it."
+      },
+      {
+        "type": "paragraph",
+        "text": "It is a **passing note, not a resting note**. Slide up from the 4 or down from the 5 and it sings; stop on it and the tension is severe — unless severe is what you came for."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Drill it: 4 to b5 to 5 and back, connected with bends or slides"
+        ]
+      }
     ]
   },
   "scale.harmonicMinor": {
     "title": "Harmonic minor: all for the leading tone",
     "blocks": [
-      { "type": "paragraph", "text": "Natural minor with the b7 raised to **7**. The purpose is simple: give minor a leading tone, which turns the fifth degree into a true V7 (E7 in A minor) so the resolution home actually lands." },
-      { "type": "paragraph", "text": "The side effect became the signature — the gap from b6 to 7 is an **augmented second**, three semitones. That unusual leap is where the exotic colour comes from." },
-      { "type": "list", "items": ["Genres: classical minor, neo-classical metal, Eastern European and Middle Eastern styles", "Practical entry point: switch to harmonic minor only for the V7 bar, natural minor everywhere else"] }
+      {
+        "type": "paragraph",
+        "text": "Natural minor with the b7 raised to **7**. The purpose is simple: give minor a leading tone, which turns the fifth degree into a true V7 (E7 in A minor) so the resolution home actually lands."
+      },
+      {
+        "type": "paragraph",
+        "text": "The side effect became the signature — the gap from b6 to 7 is an **augmented second**, three semitones. That unusual leap is where the exotic colour comes from."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Genres: classical minor, neo-classical metal, Eastern European and Middle Eastern styles",
+          "Practical entry point: switch to harmonic minor only for the V7 bar, natural minor everywhere else"
+        ]
+      }
     ]
   },
   "scale.melodicMinor": {
     "title": "Melodic minor: the jazz minor",
     "blocks": [
-      { "type": "paragraph", "text": "A minor third, but major sixth and seventh — easiest understood as **the major scale with a flattened third**." },
-      { "type": "paragraph", "text": "Classical harmony uses it ascending only, reverting to natural minor on the way down. Jazz uses it in both directions, which is why it is also called **jazz minor**." },
-      { "type": "paragraph", "text": "Its value is as a parent scale: many modern scales are its modes, and the seventh of them is the **altered scale**, used over V7alt." },
-      { "type": "list", "items": ["Chord match: m(maj7), and the minor colour of fusion and neo-soul"] }
+      {
+        "type": "paragraph",
+        "text": "A minor third, but major sixth and seventh — easiest understood as **the major scale with a flattened third**."
+      },
+      {
+        "type": "paragraph",
+        "text": "Classical harmony uses it ascending only, reverting to natural minor on the way down. Jazz uses it in both directions, which is why it is also called **jazz minor**."
+      },
+      {
+        "type": "paragraph",
+        "text": "Its value is as a parent scale: many modern scales are its modes, and the seventh of them is the **altered scale**, used over V7alt."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Chord match: m(maj7), and the minor colour of fusion and neo-soul"
+        ]
+      }
     ]
   },
   "scale.practice-tips": {
     "title": "Practising scales: three stages",
     "blocks": [
-      { "type": "paragraph", "text": "The lit notes on the fretboard are a map. Practice turns the map into muscle. This order works better than memorising shapes first." },
-      { "type": "list", "items": [
-        "**Along one string first**: run the scale from lowest to highest on a single string. This stage teaches your ear the distances, not your fingers the shape.",
-        "**Then across the neck**: hold one position and run all six strings up and down. Now you are learning the shape.",
-        "**Finally, connect**: shift between two positions. Put the shift on a weak beat or across a bar line so the pulse never breaks."
-      ] },
-      { "type": "paragraph", "text": "Using the click: start at a tempo you can play **completely clean**, and add 5 only after three flawless passes. A tempo you stumble at is not your tempo." }
+      {
+        "type": "paragraph",
+        "text": "The lit notes on the fretboard are a map. Practice turns the map into muscle. This order works better than memorising shapes first."
+      },
+      {
+        "type": "list",
+        "items": [
+          "**Along one string first**: run the scale from lowest to highest on a single string. This stage teaches your ear the distances, not your fingers the shape.",
+          "**Then across the neck**: hold one position and run all six strings up and down. Now you are learning the shape.",
+          "**Finally, connect**: shift between two positions. Put the shift on a weak beat or across a bar line so the pulse never breaks."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Using the click: start at a tempo you can play **completely clean**, and add 5 only after three flawless passes. A tempo you stumble at is not your tempo."
+      }
+    ]
+  },
+  "progression.2516": {
+    "title": "2516: the all-purpose jazz turnaround",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "ii–V–I is the strongest resolution formula in tonal music: ii sets it up, V builds tension, I resolves. Adding vi keeps the phrase from truly stopping and sends it back to the top — hence **turnaround**."
+      },
+      {
+        "type": "paragraph",
+        "text": "Why so strong? The roots move in **descending fifths**: D to G to C to A. That is exactly the counterclockwise direction of the circle, and the harmonic gravity the ear knows best."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Listen: Autumn Leaves, Fly Me to the Moon — nearly any standard",
+          "Focus: move as few fingers as possible between chords; find the common tones"
+        ]
+      }
+    ]
+  },
+  "progression.4536251": {
+    "title": "4536251: the J-pop royal road",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "It opens on IV rather than I, so it hangs in mid-air from the first bar and only lands on I at the very end. That float-then-land shape is the signature of Japanese pop and city pop."
+      },
+      {
+        "type": "paragraph",
+        "text": "The **iii–vi** in the middle darkens a bright major key, then ii–V–I reels it all back in. The emotional arc is written into the chords; the melody only has to follow."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Also known as: the royal road progression",
+          "Focus: the seventh-chord version carries far more of the flavour than triads"
+        ]
+      }
+    ]
+  },
+  "progression.1645": {
+    "title": "1645: that fifties progression",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "I–vi–IV–V. So common in 1950s doo-wop that it is simply called the **doo-wop changes**. Stand by Me is the easiest example to hear."
+      },
+      {
+        "type": "paragraph",
+        "text": "It works for a plain reason: all four chords are the most stable members of the key, vi supplies a touch of shadow, and V guarantees you want to go around again every four bars."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Focus: the first loop a beginner should own — get changes automatic"
+        ]
+      }
+    ]
+  },
+  "progression.6415": {
+    "title": "6415: four chords, endless songs",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "vi–IV–I–V is 1645 started from a different point. Beginning on the minor makes it a shade sadder, then arriving at I lifts it again."
+      },
+      {
+        "type": "paragraph",
+        "text": "Two decades of pop leaned on it hard enough to earn the 'four chord song' joke. That is not laziness — the emotional arc is simply that useful."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Focus: same four chords, different voicings — see how much mood you can change"
+        ]
+      }
+    ]
+  },
+  "progression.canon": {
+    "title": "Canon progression: the bass is walking",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "I–V–vi–iii–IV–I–IV–V, from Pachelbel's Canon. The point is not the chords but the **stepwise descending bass**: C–B–A–G–F–C–F–G."
+      },
+      {
+        "type": "paragraph",
+        "text": "The bass walks smoothly and the chords above are dragged along behind it — a textbook case of harmony being decided by a line."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Focus: sing the root while you play and feel that descent"
+        ]
+      }
+    ]
+  },
+  "progression.blues12": {
+    "title": "12-bar blues: a whole song on three chords",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "I7, IV7 and V7 laid into a fixed 12-bar grid. What makes it unusual is that **all three are dominant sevenths** — in classical harmony that is 'wrong', because a dominant is supposed to resolve."
+      },
+      {
+        "type": "paragraph",
+        "text": "The blues simply refuses to resolve it and leaves it hanging. That unresolved quality is the sound of the blues itself."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Quick change: touch IV7 in bar 2 so the opening is less static",
+          "Focus: get the 12-bar length into your body before you worry about soloing"
+        ]
+      }
+    ]
+  },
+  "chord.borrowed-iv": {
+    "title": "Why can C major borrow Fm?",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Fm is not in C major — the fourth degree there is F major. Yet it sounds not merely acceptable but especially good. The reason is **modal interchange**: borrowing a chord from the parallel minor."
+      },
+      {
+        "type": "paragraph",
+        "text": "In C minor the fourth degree is exactly Fm (F–Ab–C). What the borrowing adds is the **Ab**, the b6 of C. That is the whole trick: a semitone below the major's A, it creates the descent **Ab to G**, landing straight on the fifth of C."
+      },
+      {
+        "type": "paragraph",
+        "text": "So the ache of Fm comes from that semitone, not from minor-ness. Voice the Ab on top and let it fall to G — the effect is unmistakable."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Typical use: I – iv – I, the minor four as a sigh before coming home",
+          "The same logic borrows bVII, bVI and bIII, all from the parallel minor",
+          "Listen: the Beatles, Radiohead, and nearly every city pop turnaround"
+        ]
+      }
+    ]
+  },
+  "chord.secondary-dominant": {
+    "title": "Secondary dominants: treating another note as home",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "V/ii reads as 'the five of the two'. In C major, ii is Dm, and the dominant of D is A7. So A7 to Dm is a miniature resolution, even though A7 does not belong to C major (it contains C#)."
+      },
+      {
+        "type": "paragraph",
+        "text": "The effect is to treat Dm as a temporary tonic, adding a push the diatonic chords cannot. Because each secondary dominant resolves down a fifth, chaining them produces a **descending-fifths run**: E7–A7–D7–G7–C."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Most used: V/ii (A7), V/V (D7), V/vi (E7)",
+          "How to spot one: an out-of-key major third (C# in C) usually means a secondary dominant"
+        ]
+      }
+    ]
+  },
+  "chord.bVII": {
+    "title": "bVII: the flat seven of rock",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "In C major, a Bb major triad. It is borrowed too — from C Mixolydian, or equally from the parallel minor. Without the leading tone B, the way home stops being a resolution and becomes a slide."
+      },
+      {
+        "type": "paragraph",
+        "text": "That is precisely what rock and funk want: force without formality. I–bVII–IV–I is the skeleton of countless riffs."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Listen: Sweet Home Alabama and most of seventies rock",
+          "It is the same fact as the Mixolydian scale, stated as a chord"
+        ]
+      }
+    ]
+  },
+  "chord.blues-dominants": {
+    "title": "Why all-dominant blues is not a mistake",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "In classical harmony a dominant seventh must resolve to the tonic. The blues makes I a dominant too, leaving the whole song suspended."
+      },
+      {
+        "type": "paragraph",
+        "text": "This is not misuse but a different system: the tension comes from the **blue notes** in the melody (b3, b5, b7) grinding against major-third chords. A dominant seventh happens to hold a major third and a minor seventh at once, so it became the default blues chord."
+      },
+      {
+        "type": "list",
+        "items": [
+          "In practice: solo with minor pentatonic or blues scale over dominant backing — the friction is the point"
+        ]
+      }
+    ]
+  },
+  "chord.neo-soul": {
+    "title": "The chord colour of neo-soul",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Swap triads for **maj9, m9 and m11** and the sound goes from clean to airy. The added 9th sits a major second from the root, and that small friction is where the laid-back quality comes from."
+      },
+      {
+        "type": "paragraph",
+        "text": "The other move is **parallel motion**: hold one voicing shape and slide the whole thing, whether or not the destination is strictly in key. Brief excursions outside let the harmony breathe."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Starting point: Imaj9 – vim9 – iim9 – V7, played slowly so the extensions are heard",
+          "Voicing tip: drop the fifth and keep root, third, seventh and ninth"
+        ]
+      }
     ]
   }
 }
