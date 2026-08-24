@@ -61,6 +61,18 @@ export function isTicksPerBeat(value: unknown): value is TicksPerBeat {
 }
 
 /**
+ * 細分的音符名稱（吉他手用語：4=四分、8=八分、8T=八分三連、16=十六分）。
+ *
+ * 音符值 = 拍值分母 × 細分數 —— 所以同樣是「一拍切兩格」，4/4 是八分、6/8 是十六分。
+ * 寫死一張 4/8/8T/16 的表在 6/8 底下會標錯，這是樂理資料不是 UI 字串，故放在 core。
+ */
+export function subdivisionLabel(unit: TimeSignature['unit'], ticksPerBeat: TicksPerBeat): string {
+  // 三連音是「把一拍切成 3」，記法沿用下一級音符：4/4 記 8T、6/8 記 16T
+  if (ticksPerBeat === 3) return `${unit * 2}T`
+  return String(unit * ticksPerBeat)
+}
+
+/**
  * 可選拍號表（音樂領域資料，非 UI 專屬）。
  * BPM 的「一拍」＝分母單位：6/8 的 BPM 指八分音符，符合 Transport 的排程語意。
  */

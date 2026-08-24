@@ -475,5 +475,194 @@
         ]
       }
     ]
+  },
+  "rhythm.subdivisionGrid": {
+    "title": "The grid: rhythm is really only one thing",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Every rhythm is a variation on the same idea: **cut the beat into slots, then decide which slots sound**. Quarters give one slot, eighths two, sixteenths four. Syncopation, dotted notes and swing are all built on that grid."
+      },
+      {
+        "type": "paragraph",
+        "text": "Practising rhythm is not memorising patterns, it is teaching the hand **where each slot lives**. Once the grid is internalised, you can play anything you can read."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Keep the strumming hand moving up and down at all times — silent slots still get an air stroke. If the hand stops, the grid breaks.",
+          "Accurate before fast: a rhythm you cannot play slowly will only fall apart faster."
+        ]
+      }
+    ]
+  },
+  "rhythm.offbeat": {
+    "title": "The offbeat: where guitarists separate",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Downbeats (1 2 3 4) are easy against a click. Offbeats (&) are hard, because **there is no click to lean on**. The offbeat drill removes the downbeat click entirely and sounds only the &, forcing you to hold the grid yourself."
+      },
+      {
+        "type": "paragraph",
+        "text": "You will speed up or drag at first — that is normal. Hold eight bars without drifting and your time has moved up a level."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Count '1 & 2 &' internally, but only play the &",
+          "Keep tapping the downbeat with your foot: the body needs a silent reference",
+          "If you cannot hold it, drop to 60 BPM. Slow and certain beats fast and guessed."
+        ]
+      }
+    ]
+  },
+  "rhythm.sixteenthPositions": {
+    "title": "1 e & a: the four sixteenth-note slots",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Four slots per beat, counted **1 e & a**. Each has a character: the downbeat is the anchor, the **&** is the half-beat (the eighth-note offbeat), and **e** and **a** exist only once you subdivide into sixteenths."
+      },
+      {
+        "type": "paragraph",
+        "text": "Most 'my sixteenths are sloppy' problems are not about hand speed — they are about not distinguishing e from a. So drill them apart: a whole passage on the e, then a whole passage on the a."
+      },
+      {
+        "type": "list",
+        "items": [
+          "The e sits just after the downbeat and sounds like a rush",
+          "The a sits just before the next downbeat and sounds like a push — most of funk's forward drive comes from here",
+          "The hand keeps its sixteenth-note motion throughout; all that changes is which slot touches the strings"
+        ]
+      }
+    ]
+  },
+  "rhythm.syncopation": {
+    "title": "Syncopation: accents leave the whole-number slots",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "**Syncopation** means putting the accent where one does not belong. The dotted eighth and the tresillo are the ancestors of them all; learn those two and you can take apart nine tenths of popular music."
+      },
+      {
+        "type": "paragraph",
+        "text": "A **dotted eighth** lasts one and a half eighths. Played in a row, the accent lands every 3 slots against a 4-slot beat, creating a 3-against-4 tension that only resolves back onto the downbeat after three bars."
+      },
+      {
+        "type": "paragraph",
+        "text": "The **tresillo (3-3-2)** is the skeleton of Latin and modern pop: sixteen slots grouped 3+3+2. It sounds like reggaeton, like Despacito, like half of K-pop."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Count slots, not vibes: 3-3-2 means slots 1, 4 and 7",
+          "Ties across the bar line are where the pulse usually breaks — leave the click on and let it count for you"
+        ]
+      }
+    ]
+  },
+  "rhythm.ghostNote": {
+    "title": "Ghost notes: barely audible, badly missed",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "A **ghost note** is what you get when the fretting hand relaxes its pressure and the strumming hand strikes anyway — a muted 'chk' with almost no pitch and very little volume. It is what holds the sixteenth-note grid together."
+      },
+      {
+        "type": "paragraph",
+        "text": "Strip every ghost note out of a funk part and the accents become isolated dots: dry, stiff, no groove. Ghosts are not decoration, they are **the floor the rhythm stands on**."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Rest the fretting hand lightly on the strings, without pressing to the fret; the strumming motion is unchanged",
+          "The demo click here models ghosts with a low frequency plus a lowpass filter, so they read as dull rather than merely quiet",
+          "Try strumming nothing but ghosts first, until the hand stops stalling"
+        ]
+      }
+    ]
+  },
+  "rhythm.funkGrid": {
+    "title": "Why funk locks to the sixteenth grid",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "In funk the strumming hand is a metronome: **the sixteenth-note motion never stops**. What changes is which slot touches the strings, which is an air stroke, and which is a ghost. The moment the hand stops to wait for the next accent, the time falls apart."
+      },
+      {
+        "type": "paragraph",
+        "text": "James Brown's '**on the one**' is about putting the accent back on beat one. Rock puts its weight on 2 and 4; funk puts the biggest hit back on 1, so the whole band aligns there and the remaining fifteen slots have something to push against."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Drill the motion and the ghosts first, then place the accents into the grid",
+          "If it is not clean, lower the BPM — do not switch to eighths, that is a different genre"
+        ]
+      }
+    ]
+  },
+  "rhythm.backbeat": {
+    "title": "The backbeat: that hit on 2 and 4",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "The **backbeat** puts the accent on beats 2 and 4. It is the shared skeleton of rock, soul and R&B — the snare lands there, and so does the audience's clapping."
+      },
+      {
+        "type": "paragraph",
+        "text": "What makes soul and R&B subtle is **give and take**: a backbeat placed a hair late feels relaxed (laid back), a hair early feels urgent. That is feel, not error — but you have to be able to hit it dead-on before you have earned the right to push it around."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Nail 2 and 4 against the click first, then try landing about 10 ms late and hear the difference",
+          "How hard you hit the offbeats decides how sticky the groove feels"
+        ]
+      }
+    ]
+  },
+  "rhythm.shuffleVsSwing": {
+    "title": "Shuffle versus swing",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Both delay the second half of the beat; they differ in **degree and context**. Straight puts the offbeat at 50% (dead centre); a full shuffle puts it at **2/3** — the third slot of a triplet, conventionally called 66% (exactly 66.7%)."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Shuffle** usually means the explicit, bouncing triplet feel of the blues, close to the maximum. **Swing** is the jazz term and its degree floats: slow tunes sit near a full shuffle, fast tunes drift back towards straight."
+      },
+      {
+        "type": "list",
+        "items": [
+          "50% straight, around 58% for a light swing (where a lot of pop actually sits), 66.7% for a full shuffle",
+          "Push one pattern from 50 to 67 and hear it turn into a different genre",
+          "Triplet subdivision already sits where a full shuffle lands, so triplets take no swing"
+        ]
+      }
+    ]
+  },
+  "rhythm.sixEight": {
+    "title": "How 6/8 differs from 3/4",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Both hold six eighth notes per bar; the difference is **grouping**. 3/4 is three big beats of two (1-2 3-4 5-6, three groups of two); 6/8 is two big beats of three (1-2-3 4-5-6, two groups of three)."
+      },
+      {
+        "type": "paragraph",
+        "text": "So 6/8 accents **1 and 4** and walks with a rocking two; 3/4 accents 1, 3 and 5 and turns into a waltz. Same six notes, completely different direction."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Slow blues and gospel mostly live in 6/8 or 12/8 (four big beats of three)",
+          "Here a 'beat' is the time signature's lower number, so a 6/8 BPM counts eighth notes",
+          "Start on the two-big-beat feel to get the body moving, then switch to the six-small-beat feel to count slots"
+        ]
+      }
+    ]
   }
 }

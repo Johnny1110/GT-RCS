@@ -4,11 +4,15 @@
 import { registerModule } from './registry'
 import { chordsCircleManifest } from './chords/circle/manifest'
 import { chordsKeyPracticeManifest } from './chords/key/manifest'
+import { rhythmGrooveManifest } from './rhythm/groove/manifest'
 import { rhythmMetronomeManifest } from './rhythm/metronome/manifest'
+import { rhythmSubdivisionManifest } from './rhythm/subdivision/manifest'
 import { scalesExplorerManifest } from './scales/explorer/manifest'
 import { scalesPracticeManifest } from './scales/practice/manifest'
 
 registerModule(rhythmMetronomeManifest)
+registerModule(rhythmSubdivisionManifest)
+registerModule(rhythmGrooveManifest)
 registerModule(chordsCircleManifest)
 registerModule(chordsKeyPracticeManifest)
 registerModule(scalesExplorerManifest)

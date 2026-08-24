@@ -65,10 +65,8 @@ describe('App 掛載', () => {
     expect(wrapper.find('input.rcs-range').exists()).toBe(true)
   })
 
-  it.each([
-    '/scales/explorer', '/scales/practice', '/rhythm/metronome',
-    '/chords/circle-progressions', '/chords/key-practice',
-  ])('%s 可掛載且渲染內容', async (route) => {
+  // 路由清單取自 registry：新增模組自動納入煙霧測試，不會有人忘了補一行
+  it.each(listModules().map((m) => m.route))('%s 可掛載且渲染內容', async (route) => {
     const { pinia, i18n, router } = createTestApp()
     router.push(route)
     await router.isReady()
@@ -76,6 +74,27 @@ describe('App 掛載', () => {
     await flushPromises()
     expect(wrapper.text().length).toBeGreaterThan(40)
     expect(wrapper.text()).not.toContain('undefined')
+  })
+
+  it('切分專項渲染節奏譜格子，且停止時沒有游標', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/rhythm/subdivision')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const cells = wrapper.findAll('[role=group] button[data-cursor]')
+    expect(cells.length).toBeGreaterThan(0)
+    expect(wrapper.find('[data-cursor="true"]').exists()).toBe(false)
+  })
+
+  it('律動風格顯示建議和弦，且和弦符號由公式表組出', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/rhythm/groove')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+    expect(wrapper.text()).toContain('E9')
   })
 
   it('音階總覽顯示指板音點與組成音列', async () => {

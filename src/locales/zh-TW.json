@@ -24,6 +24,14 @@
       "metronome": {
         "title": "節拍器",
         "description": "可設定 BPM、拍號與細分的三音色節拍器"
+      },
+      "subdivision": {
+        "title": "切分專項",
+        "description": "從四分正拍練到十六分切分，示範 click 帶著走"
+      },
+      "groove": {
+        "title": "律動風格",
+        "description": "FUNK、SOUL、Shuffle、6/8 的經典節奏型跟練"
       }
     },
     "chords": {
@@ -49,7 +57,9 @@
       "accent": "重音",
       "normal": "一般",
       "ghost": "鬼音"
-    }
+    },
+    "meter": "拍號 · 細分",
+    "fromPattern": "由節奏譜決定"
   },
   "fretboard": {
     "aria": "吉他指板，顯示 {count} 個音",
@@ -68,7 +78,7 @@
   "metronome": {
     "bar": "小節",
     "beatOf": "拍",
-    "hint": "拍號與細分需先停止播放才能切換。重音落在每小節第一拍，細分拍以鬼音提示。"
+    "hint": "拍號與細分播放中也能切換，會在下一個小節線生效。重音落在每小節第一拍，細分拍以鬼音提示。"
   },
   "scale": {
     "ionian": "Ionian",
@@ -142,5 +152,124 @@
       "title": "五級 Fusion / Neo-soul",
       "description": "延伸音、借用和弦與副屬。調外的音怎麼用得有道理。"
     }
+  },
+  "rhythm": {
+    "sheetAria": "節奏譜，共 {bars} 小節、每小節 {cells} 格",
+    "cellAria": "第 {bar} 小節第 {cell} 格：{role}",
+    "role": {
+      "accent": "重音",
+      "normal": "一般",
+      "ghost": "鬼音",
+      "rest": "休止"
+    },
+    "count": {
+      "numeric": {
+        "beat": "1",
+        "e": "e",
+        "and": "&",
+        "a": "a",
+        "trip": "trip",
+        "let": "let"
+      },
+      "mnemonic": {
+        "beat": "答",
+        "e": "的",
+        "and": "嗒",
+        "a": "的",
+        "trip": "嗒",
+        "let": "嗒"
+      }
+    },
+    "counting": "計數",
+    "countStyle": {
+      "numeric": "1 e & a",
+      "mnemonic": "答嗒"
+    },
+    "stage": "課表",
+    "pattern": "節奏型",
+    "style": "風格",
+    "swing": "Swing",
+    "swingPreset": {
+      "straight": "直拍",
+      "light": "微搖擺",
+      "shuffle": "全 shuffle"
+    },
+    "demoSilence": "示範／靜默",
+    "demoOff": "持續示範",
+    "demoOption": "示範 {demo} + 靜默 {silent}",
+    "statusDemo": "示範中",
+    "statusSilent": "靜默中——自己撐住",
+    "edit": "編輯格子",
+    "editHint": "點格子循環切換：休止 → 一般 → 重音 → 鬼音。改完的內容從下一個小節開始響。",
+    "reset": "回復預設",
+    "customized": "已自訂",
+    "chordHint": "建議和弦",
+    "legend": "圖例",
+    "subdivisionHint": "先聽兩輪示範再跟刷。右手一律保持上下擺動，鬼音也要刷到弦，只是不出聲。",
+    "grooveHint": "節奏是主角，和弦只給一個 vamp。先把重音位置刷準，再談音色。"
+  },
+  "rhythmStage": {
+    "quarter": {
+      "title": "一級 四分正拍",
+      "description": "先讓右手與 click 完全重疊。拍子沒有分岔，只有「準」跟「不準」。"
+    },
+    "eighth": {
+      "title": "二級 八分正反拍",
+      "description": "加入反拍。反拍專練刻意拿掉正拍 click——沒有依靠時才知道自己的拍穩不穩。"
+    },
+    "sixteenth": {
+      "title": "三級 十六分",
+      "description": "一拍切成四格：1 e & a。分別練 e 位與 a 位，手才知道每一格在哪。"
+    },
+    "syncopation": {
+      "title": "四級 附點與跨拍切分",
+      "description": "重音不再落在格線的整數位置。附點八分與 tresillo 是所有切分的原型。"
+    }
+  },
+  "rhythmStyle": {
+    "funk": {
+      "title": "FUNK",
+      "description": "16 分格線 + 大量鬼音，重音回到「一」。右手不能停。"
+    },
+    "soul": {
+      "title": "SOUL / R&B",
+      "description": "八分為主，重音落在 2、4 的 backbeat，鬆緊全靠反拍。"
+    },
+    "shuffle": {
+      "title": "Shuffle / Blues",
+      "description": "三連音 feel。swing 從 50% 直拍推到 67% 全 shuffle，聽出中間的所有灰階。"
+    },
+    "sixEight": {
+      "title": "6/8",
+      "description": "慢板 6/8 與 12/8：兩大拍 feel 與六小拍 feel 是兩種完全不同的走路方式。"
+    }
+  },
+  "pattern": {
+    "quarterDown": "四分下刷",
+    "quarterHalf": "兩拍一次",
+    "eighthAll": "全八分",
+    "eighthOff": "反拍專練",
+    "eighthBackbeat": "2、4 重音",
+    "sixteenthAll": "全十六分",
+    "sixteenthE": "e 位",
+    "sixteenthA": "a 位",
+    "sixteenthMix": "混合切分",
+    "dottedEighth": "附點八分",
+    "tresillo": "Tresillo 3-3-2",
+    "tiedAcross": "跨拍連結",
+    "funkOne": "On the one",
+    "funkChuck": "16 分切音",
+    "funkSixteenth": "16 分推進",
+    "funkClav": "Clav 型",
+    "soulBackbeat": "Backbeat",
+    "soulPush": "反拍推",
+    "soulTight": "鬆緊對比",
+    "shuffleBasic": "基本 shuffle",
+    "shuffleTexas": "Texas shuffle",
+    "shuffleStops": "Stop-time",
+    "sixEightTwo": "兩大拍 feel",
+    "sixEightSix": "六小拍 feel",
+    "sixEightGospel": "Gospel 6/8",
+    "twelveEightBlues": "12/8 慢藍調"
   }
 }
