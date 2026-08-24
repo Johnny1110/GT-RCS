@@ -1,4 +1,5 @@
 export * from './types'
+export * from './pattern'
 export * from './clock'
 export * from './scheduler'
 export * from './transport'

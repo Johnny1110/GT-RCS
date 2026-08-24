@@ -5,6 +5,7 @@
 import { describe, it, expect } from 'vitest'
 import { SCALE_FORMULAS } from '@/core/theory'
 import { CIRCLE_PROGRESSIONS, PRACTICE_LEVELS } from '@/modules/chords/presets'
+import { GROOVE_STYLES, SUBDIVISION_STAGES } from '@/modules/rhythm/presets'
 import { parseInline, type KnowledgeBundle } from './types'
 import zhTW from './zh-TW.json'
 import en from './en.json'
@@ -34,12 +35,20 @@ describe('知識內容', () => {
         ...(level.knowledgeIds ?? []),
         ...level.progressions.flatMap((p) => p.knowledgeIds ?? []),
       ]),
+      ...SUBDIVISION_STAGES.flatMap((stage) => stage.knowledgeIds ?? []),
+      ...GROOVE_STYLES.flatMap((style) => style.knowledgeIds ?? []),
     ]
     expect(referenced.length).toBeGreaterThan(0)
     for (const id of referenced) {
       for (const [locale, bundle] of Object.entries(bundles)) {
         expect(bundle[id], `${locale} 缺少被引用的 ${id}`).toBeDefined()
       }
+    }
+  })
+
+  it('每個節奏課表與風格都掛著知識條目（節奏線的教學價值一半在文字）', () => {
+    for (const group of [...SUBDIVISION_STAGES, ...GROOVE_STYLES]) {
+      expect(group.knowledgeIds?.length, `${group.id} 沒有知識條目`).toBeGreaterThan(0)
     }
   })
 

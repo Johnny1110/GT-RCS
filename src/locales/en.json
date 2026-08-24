@@ -24,6 +24,14 @@
       "metronome": {
         "title": "Metronome",
         "description": "Three-voice click with adjustable BPM, time signature and subdivision"
+      },
+      "subdivision": {
+        "title": "Subdivision Drills",
+        "description": "From quarter notes to sixteenth syncopation, led by the demo click"
+      },
+      "groove": {
+        "title": "Groove Styles",
+        "description": "Play along with classic FUNK, SOUL, shuffle and 6/8 patterns"
       }
     },
     "chords": {
@@ -49,12 +57,17 @@
       "accent": "Accent",
       "normal": "Normal",
       "ghost": "Ghost"
-    }
+    },
+    "meter": "Meter · Subdivision",
+    "fromPattern": "set by the sheet"
   },
   "fretboard": {
     "aria": "Guitar fretboard showing {count} notes",
     "jumpTo": "Position",
-    "openPosition": "Open"
+    "openPosition": "Open",
+    "position": "Position",
+    "allPositions": "All",
+    "positionAria": "Position: root on string {string} at fret {fret}, covering frets {from}–{to}"
   },
   "explorer": {
     "key": "Key",
@@ -68,7 +81,7 @@
   "metronome": {
     "bar": "Bar",
     "beatOf": "Beat",
-    "hint": "Stop playback to change time signature or subdivision. Beat one is accented; subdivisions use the ghost voice."
+    "hint": "Time signature and subdivision can be changed while playing; they take effect at the next bar line. Beat one is accented; subdivisions use the ghost voice."
   },
   "scale": {
     "ionian": "Ionian",
@@ -142,5 +155,124 @@
       "title": "5 · Fusion / Neo-soul",
       "description": "Extensions, borrowed chords and secondary dominants — how out-of-key notes earn their place."
     }
+  },
+  "rhythm": {
+    "sheetAria": "Rhythm sheet, {bars} bars of {cells} cells",
+    "cellAria": "Bar {bar}, cell {cell}: {role}",
+    "role": {
+      "accent": "Accent",
+      "normal": "Normal",
+      "ghost": "Ghost",
+      "rest": "Rest"
+    },
+    "count": {
+      "numeric": {
+        "beat": "1",
+        "e": "e",
+        "and": "&",
+        "a": "a",
+        "trip": "trip",
+        "let": "let"
+      },
+      "mnemonic": {
+        "beat": "da",
+        "e": "di",
+        "and": "ta",
+        "a": "di",
+        "trip": "ta",
+        "let": "ta"
+      }
+    },
+    "counting": "Counting",
+    "countStyle": {
+      "numeric": "1 e & a",
+      "mnemonic": "da-ta"
+    },
+    "stage": "Stage",
+    "pattern": "Pattern",
+    "style": "Style",
+    "swing": "Swing",
+    "swingPreset": {
+      "straight": "Straight",
+      "light": "Light",
+      "shuffle": "Full shuffle"
+    },
+    "demoSilence": "Demo / Silence",
+    "demoOff": "Demo throughout",
+    "demoOption": "{demo} demo + {silent} silent",
+    "statusDemo": "Demo",
+    "statusSilent": "Silent — hold the pulse yourself",
+    "edit": "Edit cells",
+    "editHint": "Click a cell to cycle: rest → normal → accent → ghost. Edits sound from the next bar.",
+    "reset": "Reset",
+    "customized": "Customised",
+    "chordHint": "Suggested chord",
+    "legend": "Legend",
+    "subdivisionHint": "Listen to two rounds before you strum along. Keep the hand moving up and down throughout — ghost cells still brush the strings, they just do not ring.",
+    "grooveHint": "Rhythm is the point; the chord is only a vamp. Get the accents in the right slots before you worry about tone."
+  },
+  "rhythmStage": {
+    "quarter": {
+      "title": "Stage 1 — Quarter notes",
+      "description": "Land exactly on the click. There is no nuance here, only in time or out of time."
+    },
+    "eighth": {
+      "title": "Stage 2 — Eighths and offbeats",
+      "description": "Add the offbeat. The offbeat drill removes the downbeat click on purpose — with nothing to lean on you find out how steady you really are."
+    },
+    "sixteenth": {
+      "title": "Stage 3 — Sixteenths",
+      "description": "Four slots per beat: 1 e & a. Drill the e and the a separately so the hand learns where each slot lives."
+    },
+    "syncopation": {
+      "title": "Stage 4 — Dotted notes and ties",
+      "description": "Accents stop landing on whole-number positions. The dotted eighth and the tresillo are the ancestors of every syncopation you will meet."
+    }
+  },
+  "rhythmStyle": {
+    "funk": {
+      "title": "FUNK",
+      "description": "A sixteenth-note grid packed with ghost notes, and the accent back on the one. The hand never stops."
+    },
+    "soul": {
+      "title": "SOUL / R&B",
+      "description": "Eighth-note based, accents on the 2 and 4 backbeat; all the give and take lives in the offbeats."
+    },
+    "shuffle": {
+      "title": "Shuffle / Blues",
+      "description": "Triplet feel. Push swing from 50% straight to 67% full shuffle and hear every shade in between."
+    },
+    "sixEight": {
+      "title": "6/8",
+      "description": "Slow 6/8 and 12/8: the two-big-beat feel and the six-small-beat feel are two different ways of walking."
+    }
+  },
+  "pattern": {
+    "quarterDown": "Quarter downs",
+    "quarterHalf": "Every other beat",
+    "eighthAll": "Straight eighths",
+    "eighthOff": "Offbeats only",
+    "eighthBackbeat": "Backbeat 2 & 4",
+    "sixteenthAll": "Straight sixteenths",
+    "sixteenthE": "The e slot",
+    "sixteenthA": "The a slot",
+    "sixteenthMix": "Mixed syncopation",
+    "dottedEighth": "Dotted eighths",
+    "tresillo": "Tresillo 3-3-2",
+    "tiedAcross": "Tied across the bar",
+    "funkOne": "On the one",
+    "funkChuck": "Sixteenth chuck",
+    "funkSixteenth": "Sixteenth push",
+    "funkClav": "Clave shape",
+    "soulBackbeat": "Backbeat",
+    "soulPush": "Offbeat push",
+    "soulTight": "Tight and loose",
+    "shuffleBasic": "Basic shuffle",
+    "shuffleTexas": "Texas shuffle",
+    "shuffleStops": "Stop-time",
+    "sixEightTwo": "Two-big-beat feel",
+    "sixEightSix": "Six-small-beat feel",
+    "sixEightGospel": "Gospel 6/8",
+    "twelveEightBlues": "12/8 slow blues"
   }
 }

@@ -62,8 +62,10 @@
 |---|---|---|
 | `core/theory/formulas.ts` | **Single Source of Truth**（公式表 const） | 和弦/音階資料只有公式；所有音位、音名、指板覆蓋皆推導，杜絕手工資料表的維護災難 |
 | `core/theory/spelling.ts` | 純函式核心 | 拼寫正確性可被窮舉測試鎖定 |
+| `core/theory/positions.ts` | 純函式推導（把位） | 全指板和弦音看不出指型；以低音弦根音錨定切出互不重疊的把位框。框怎麼畫是組件的事，框在哪裡是樂理，所以放 core |
 | `core/audio/clock.ts` | **依賴反轉**（IClock） | 排程邏輯不碰真時鐘 → ManualClock 讓「不飄拍」成為可測規格 |
 | `core/audio/scheduler.ts` | **Observer** + lookahead | 排程器單一職責：搬運視窗內 tick；不懂 BPM 與 pattern |
+| `core/audio/pattern.ts` | **編譯步驟**（pattern → 時刻表） | swing 讓細分不等距。把「一小節 → 每格的角色與偏移（單位＝拍）」先編譯成純資料，Transport 只吃時刻表 —— 之後新增 feel 不必動排程核心，且時刻可被單元測試逐格鎖定 |
 | `core/audio/transport.ts` | **Facade** + TickSource | 播放控制的唯一入口；tick 生成邏輯（BPM/拍號/pattern/swing）全部集中於此 |
 | `core/audio/voices.ts` | **Strategy**（ClickVoice） | 換音色不動排程；NullClickVoice 供測試 |
 | `core/audio/tickBus.ts` | Producer/Consumer queue | 聲音視覺同步的唯一橋樑：UI 只消費「已到時」的 tick |
@@ -76,6 +78,7 @@
 | `content/knowledge/` | 內容與程式分離 | 模組只引用 entry id；內容依語系 lazy 載入並快取，獨立分包 |
 | `theory/progressions/` | 白名單 parser + 展開器 | 級數記法 → 任意調的實際和弦；文法外一律報錯不猜，錯誤帶 tokenIndex |
 | `modules/chords/cycle.ts` | 純函式查表 | 12 調循環先算成小節表，跟練畫面只依當前小節查表，不在畫面裡算樂理 |
+| `modules/rhythm/presets.ts` | 速記法 DSL（`parseCells`） | `X`／`o`／`g`／`.` 一格一字元，preset 在原始碼裡就看得出節奏形狀；未知字元丟例外，打錯字在測試就爆而不是悄悄變成休止 |
 | `composables/useModuleSettings` | 響應式持久化綁定 | 模組設定以模組 id 為 key 自動存取，杜絕直接碰 localStorage |
 | `composables/usePracticeTransport` | Template Method | 每個練習共通的 click 接線：載入設定 → 回寫調整 → 離開停止播放 |
 
@@ -203,7 +206,7 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 
 ---
 
-## 9. 現況基線（Phase 3 完成）
+## 9. 現況基線（Phase 4 完成）
 
 **已實作並有測試（65 個測試）**：theory（音程／拼寫／公式／指板推導）、colors、
 scheduler + Transport（含 10 分鐘無漂移驗證）、TickBus、三音色 SynthClickVoice、
@@ -222,5 +225,13 @@ Scale Explorer 的特徵音標註與知識卡、模組間以 query 傳遞選擇�
 五度圈組件（互動與跟練兩種模式）、和弦時間軸、12 調循環模型、
 兩個和弦練習模組（五度圈進行、固定調 5 級課表）、11 條雙語和弦知識內容。
 
-**契約已定、待實作（搜尋 `TODO(opus)`）**：RhythmPattern 驅動與 swing、
-播放中換拍號（Phase 4）、全域鍵盤快捷鍵與統計儀表板（Phase 5）。
+**Phase 4 追加（188 個測試）**：pattern 編譯層（swing 非等距排程、示範／靜默、速記法）、
+pattern 驅動的 Transport（播放中換 pattern／拍號一律對齊小節線）、RhythmSheet 節奏譜
+（雙計數法、游標跟捲、編輯模式）、兩個節奏練習模組（切分課表、律動風格）、
+26 個 pattern preset 與 9 條雙語節奏知識內容。
+
+節奏線已於瀏覽器實測驗收：游標與 click 同步、示範→靜默切換正確、編輯改格即時反映並持久化、
+6/8 拍號與細分標籤正確（`6/8 · 8`）、375px 手機無頁面橫捲且游標自動跟捲、無 console 錯誤。
+
+**契約已定、待實作（搜尋 `TODO(opus)`）**：全域鍵盤快捷鍵與統計儀表板（Phase 5）、
+GCP 部署與 AdSense（Phase 6）。
