@@ -2,110 +2,478 @@
   "scale.ionian": {
     "title": "Ionian：大調本身",
     "blocks": [
-      { "type": "paragraph", "text": "最穩定的音階。關鍵在第七音——它距離主音只有半音，天生就想往上解決，大調的明亮與「回家感」都是它給的。" },
-      { "type": "paragraph", "text": "注意第四音（4）。它對大三和弦是 **avoid note**：經過沒問題，但停在上面會把和弦的明亮色彩糊掉。想要那個音的味道，改用 Lydian 的 #4。" },
-      { "type": "list", "items": ["最安全的場合：Imaj7、IVmaj7 上的旋律", "曲風：流行、鄉村、福音的骨幹"] }
+      {
+        "type": "paragraph",
+        "text": "最穩定的音階。關鍵在第七音——它距離主音只有半音，天生就想往上解決，大調的明亮與「回家感」都是它給的。"
+      },
+      {
+        "type": "paragraph",
+        "text": "注意第四音（4）。它對大三和弦是 **avoid note**：經過沒問題，但停在上面會把和弦的明亮色彩糊掉。想要那個音的味道，改用 Lydian 的 #4。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "最安全的場合：Imaj7、IVmaj7 上的旋律",
+          "曲風：流行、鄉村、福音的骨幹"
+        ]
+      }
     ]
   },
   "scale.dorian": {
     "title": "Dorian：最明亮的小調",
     "blocks": [
-      { "type": "paragraph", "text": "小三度給了它小調感，但第六音是**大六度**——比自然小調少一分憂鬱，多一分律動。這是 Funk 與 Soul 的預設小調。" },
-      { "type": "paragraph", "text": "特徵音就是那個 **6**。刻意強調它，Dorian 味才出得來；避開它，聽起來就退回自然小調了。" },
-      { "type": "list", "items": ["典型場景：一個 m7 和弦的長 vamp（Dm7 反覆）", "曲風：Funk、Soul、Latin rock、modal jazz"] }
+      {
+        "type": "paragraph",
+        "text": "小三度給了它小調感，但第六音是**大六度**——比自然小調少一分憂鬱，多一分律動。這是 Funk 與 Soul 的預設小調。"
+      },
+      {
+        "type": "paragraph",
+        "text": "特徵音就是那個 **6**。刻意強調它，Dorian 味才出得來；避開它，聽起來就退回自然小調了。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "典型場景：一個 m7 和弦的長 vamp（Dm7 反覆）",
+          "曲風：Funk、Soul、Latin rock、modal jazz"
+        ]
+      }
     ]
   },
   "scale.phrygian": {
     "title": "Phrygian：一開口就是半音",
     "blocks": [
-      { "type": "paragraph", "text": "主音上方緊接著 **b2**，音階一開口就有半音下壓的張力。西班牙與中東的色彩幾乎都來自這個音。" },
-      { "type": "paragraph", "text": "b2 是特徵音也是重心：把它當經過音會浪費它，讓它落在強拍上，異國感才立得住。" },
-      { "type": "list", "items": ["曲風：Flamenco、金屬 riff、電影中的「東方」暗示"] }
+      {
+        "type": "paragraph",
+        "text": "主音上方緊接著 **b2**，音階一開口就有半音下壓的張力。西班牙與中東的色彩幾乎都來自這個音。"
+      },
+      {
+        "type": "paragraph",
+        "text": "b2 是特徵音也是重心：把它當經過音會浪費它，讓它落在強拍上，異國感才立得住。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "曲風：Flamenco、金屬 riff、電影中的「東方」暗示"
+        ]
+      }
     ]
   },
   "scale.lydian": {
     "title": "Lydian：往上飄的大調",
     "blocks": [
-      { "type": "paragraph", "text": "大調把第四音升半音變成 **#4**。少了 Ionian 的 avoid note 問題，整個音階可以自由停留，聽感是往上飄而不是往下解決。" },
-      { "type": "paragraph", "text": "和弦上寫作 **maj7#11**。想聽最直接的例子，找電影配樂裡表現「開闊」「奇幻」的段落。" },
-      { "type": "list", "items": ["曲風：電影配樂、fusion、city pop 的明亮段落"] }
+      {
+        "type": "paragraph",
+        "text": "大調把第四音升半音變成 **#4**。少了 Ionian 的 avoid note 問題，整個音階可以自由停留，聽感是往上飄而不是往下解決。"
+      },
+      {
+        "type": "paragraph",
+        "text": "和弦上寫作 **maj7#11**。想聽最直接的例子，找電影配樂裡表現「開闊」「奇幻」的段落。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "曲風：電影配樂、fusion、city pop 的明亮段落"
+        ]
+      }
     ]
   },
   "scale.mixolydian": {
     "title": "Mixolydian：屬和弦的家",
     "blocks": [
-      { "type": "paragraph", "text": "大三度配 **b7**——這正是屬七和弦的組成。明亮，但因為沒有導音，它不急著解決，可以一直停在原地。" },
-      { "type": "paragraph", "text": "任何停在 7 和弦上不動的段落（藍調的 I7、Funk 的 E9 vamp），第一順位就是它。" },
-      { "type": "list", "items": ["曲風：藍調搖滾、Funk、凱爾特音樂"] }
+      {
+        "type": "paragraph",
+        "text": "大三度配 **b7**——這正是屬七和弦的組成。明亮，但因為沒有導音，它不急著解決，可以一直停在原地。"
+      },
+      {
+        "type": "paragraph",
+        "text": "任何停在 7 和弦上不動的段落（藍調的 I7、Funk 的 E9 vamp），第一順位就是它。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "曲風：藍調搖滾、Funk、凱爾特音樂"
+        ]
+      }
     ]
   },
   "scale.aeolian": {
     "title": "Aeolian：自然小調",
     "blocks": [
-      { "type": "paragraph", "text": "b3、b6、b7 三個降音，最標準的憂鬱。它是關係大調的第六調式——A 小調用的音和 C 大調完全一樣，差別只在你把哪個音當家。" },
-      { "type": "paragraph", "text": "有個實務問題：Aeolian 的第五級是**小三和弦**（Am 調裡的 Em），推不動強力的解決。想要 E7 → Am 那種力道，就得把 b7 升成 7，也就是借和聲小調。" },
-      { "type": "list", "items": ["曲風：搖滾抒情、民謠小調、電玩配樂"] }
+      {
+        "type": "paragraph",
+        "text": "b3、b6、b7 三個降音，最標準的憂鬱。它是關係大調的第六調式——A 小調用的音和 C 大調完全一樣，差別只在你把哪個音當家。"
+      },
+      {
+        "type": "paragraph",
+        "text": "有個實務問題：Aeolian 的第五級是**小三和弦**（Am 調裡的 Em），推不動強力的解決。想要 E7 → Am 那種力道，就得把 b7 升成 7，也就是借和聲小調。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "曲風：搖滾抒情、民謠小調、電玩配樂"
+        ]
+      }
     ]
   },
   "scale.locrian": {
     "title": "Locrian：站不住的主音",
     "blocks": [
-      { "type": "paragraph", "text": "**b5** 讓主和弦變成 m7b5——一個無法安定的和弦。所以它幾乎不被當作調中心用。" },
-      { "type": "paragraph", "text": "它真正的用途是**和弦音階**：小調 2-5-1 裡的那個 iim7b5（Am 調的 Bm7b5），用的就是 Locrian。與其把它當調式背，不如把它綁在 m7b5 和弦上記。" },
-      { "type": "list", "items": ["實務場景：小調 ii-V-i 的第一個和弦"] }
+      {
+        "type": "paragraph",
+        "text": "**b5** 讓主和弦變成 m7b5——一個無法安定的和弦。所以它幾乎不被當作調中心用。"
+      },
+      {
+        "type": "paragraph",
+        "text": "它真正的用途是**和弦音階**：小調 2-5-1 裡的那個 iim7b5（Am 調的 Bm7b5），用的就是 Locrian。與其把它當調式背，不如把它綁在 m7b5 和弦上記。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "實務場景：小調 ii-V-i 的第一個和弦"
+        ]
+      }
     ]
   },
   "scale.majorPentatonic": {
     "title": "大調五聲：拿掉摩擦的大調",
     "blocks": [
-      { "type": "paragraph", "text": "大調拿掉 **4** 和 **7** 就是它。而這兩個音，正好是大調裡最容易和和弦打架的音——4 對 I 是 avoid note，7 對 IV 是半音摩擦。" },
-      { "type": "paragraph", "text": "把火藥拆掉了，所以在整個大調進行上怎麼彈都不會錯——這就是「即興安全網」的由來。代價是性格也一起拿掉了：想要味道，得回頭把音加回去。" },
-      { "type": "list", "items": ["用法：先用五聲確定旋律線，再加回 4 或 7 製造張力"] }
+      {
+        "type": "paragraph",
+        "text": "大調拿掉 **4** 和 **7** 就是它。而這兩個音，正好是大調裡最容易和和弦打架的音——4 對 I 是 avoid note，7 對 IV 是半音摩擦。"
+      },
+      {
+        "type": "paragraph",
+        "text": "把火藥拆掉了，所以在整個大調進行上怎麼彈都不會錯——這就是「即興安全網」的由來。代價是性格也一起拿掉了：想要味道，得回頭把音加回去。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "用法：先用五聲確定旋律線，再加回 4 或 7 製造張力"
+        ]
+      }
     ]
   },
   "scale.minorPentatonic": {
     "title": "小調五聲：搖滾的母語",
     "blocks": [
-      { "type": "paragraph", "text": "自然小調拿掉 **2** 和 **b6**。幾乎所有搖滾 solo 的起點，指型也是吉他手最先背熟的一組。" },
-      { "type": "paragraph", "text": "重要的認知：它和關係大調的大調五聲是**同一組音**（A 小調五聲＝C 大調五聲）。同樣的指型，你把哪個音當主音，聽起來就是哪個調——這是一個指型換兩種味道的關鍵。" },
-      { "type": "list", "items": ["下一步：加上 b5 變藍調音階，加上 6 變 Dorian 味"] }
+      {
+        "type": "paragraph",
+        "text": "自然小調拿掉 **2** 和 **b6**。幾乎所有搖滾 solo 的起點，指型也是吉他手最先背熟的一組。"
+      },
+      {
+        "type": "paragraph",
+        "text": "重要的認知：它和關係大調的大調五聲是**同一組音**（A 小調五聲＝C 大調五聲）。同樣的指型，你把哪個音當主音，聽起來就是哪個調——這是一個指型換兩種味道的關鍵。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "下一步：加上 b5 變藍調音階，加上 6 變 Dorian 味"
+        ]
+      }
     ]
   },
   "scale.blues": {
     "title": "藍調音階：多的那一個音",
     "blocks": [
-      { "type": "paragraph", "text": "小調五聲加上 **b5**，就這一個音的差別。這個音叫藍調音（blue note），藍調的張力幾乎全靠它。" },
-      { "type": "paragraph", "text": "它是**經過音，不是停留音**。從 4 滑上去、或從 5 滑下來，味道最正；直接停在 b5 上會非常緊張——除非那正是你要的效果。" },
-      { "type": "list", "items": ["練法：4 → b5 → 5 的三音來回，用推弦或滑音連接"] }
+      {
+        "type": "paragraph",
+        "text": "小調五聲加上 **b5**，就這一個音的差別。這個音叫藍調音（blue note），藍調的張力幾乎全靠它。"
+      },
+      {
+        "type": "paragraph",
+        "text": "它是**經過音，不是停留音**。從 4 滑上去、或從 5 滑下來，味道最正；直接停在 b5 上會非常緊張——除非那正是你要的效果。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "練法：4 → b5 → 5 的三音來回，用推弦或滑音連接"
+        ]
+      }
     ]
   },
   "scale.harmonicMinor": {
     "title": "和聲小調：為了那個導音",
     "blocks": [
-      { "type": "paragraph", "text": "自然小調把 b7 升成 **7**。目的很單純：讓小調也有導音，於是第五級變成真正的 V7（A 小調的 E7），解決回主音才有力道。" },
-      { "type": "paragraph", "text": "副作用變成了它的招牌——b6 到 7 之間隔了**增二度**（三個半音）。這個不尋常的大跳，就是它異國感的來源。" },
-      { "type": "list", "items": ["曲風：古典小調、Neo-classical metal、東歐與中東風", "實用切入點：只在 V7 和弦那一小節換成和聲小調，其餘維持自然小調"] }
+      {
+        "type": "paragraph",
+        "text": "自然小調把 b7 升成 **7**。目的很單純：讓小調也有導音，於是第五級變成真正的 V7（A 小調的 E7），解決回主音才有力道。"
+      },
+      {
+        "type": "paragraph",
+        "text": "副作用變成了它的招牌——b6 到 7 之間隔了**增二度**（三個半音）。這個不尋常的大跳，就是它異國感的來源。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "曲風：古典小調、Neo-classical metal、東歐與中東風",
+          "實用切入點：只在 V7 和弦那一小節換成和聲小調，其餘維持自然小調"
+        ]
+      }
     ]
   },
   "scale.melodicMinor": {
     "title": "旋律小調：爵士小調",
     "blocks": [
-      { "type": "paragraph", "text": "小三度，但六、七都是大音程——可以直接理解成「**大調把三音降半音**」。" },
-      { "type": "paragraph", "text": "古典和聲裡它只在上行時使用，下行改回自然小調；爵士則上下行都用，因此又叫 **jazz minor**。" },
-      { "type": "paragraph", "text": "它的價值在於它是母體：許多現代音階都是它的調式，其中第七調式就是 **altered scale**，專門用在 V7alt 上。" },
-      { "type": "list", "items": ["和弦對應：m(maj7)、fusion 與 neo-soul 的小調色彩"] }
+      {
+        "type": "paragraph",
+        "text": "小三度，但六、七都是大音程——可以直接理解成「**大調把三音降半音**」。"
+      },
+      {
+        "type": "paragraph",
+        "text": "古典和聲裡它只在上行時使用，下行改回自然小調；爵士則上下行都用，因此又叫 **jazz minor**。"
+      },
+      {
+        "type": "paragraph",
+        "text": "它的價值在於它是母體：許多現代音階都是它的調式，其中第七調式就是 **altered scale**，專門用在 V7alt 上。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "和弦對應：m(maj7)、fusion 與 neo-soul 的小調色彩"
+        ]
+      }
     ]
   },
   "scale.practice-tips": {
     "title": "音階跟練：三個階段",
     "blocks": [
-      { "type": "paragraph", "text": "指板上亮起的音是「地圖」，跟練要做的是把地圖變成手感。照這個順序走，比一開始就背指型有效。" },
-      { "type": "list", "items": [
-        "**先橫向**：在單一弦上把音階從最低走到最高。這一步是用耳朵記住音階的距離感，不是記指型。",
-        "**再直向**：固定一個把位，六條弦上下行。這一步才是練指型。",
-        "**最後連接**：在兩個把位之間換把。把換把點放在弱拍或跨小節，才不會斷拍。"
-      ] },
-      { "type": "paragraph", "text": "節拍器用法：從你能**完全不出錯**的 BPM 開始，連續三遍乾淨再加 5。彈得斷斷續續的速度不是你的速度。" }
+      {
+        "type": "paragraph",
+        "text": "指板上亮起的音是「地圖」，跟練要做的是把地圖變成手感。照這個順序走，比一開始就背指型有效。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "**先橫向**：在單一弦上把音階從最低走到最高。這一步是用耳朵記住音階的距離感，不是記指型。",
+          "**再直向**：固定一個把位，六條弦上下行。這一步才是練指型。",
+          "**最後連接**：在兩個把位之間換把。把換把點放在弱拍或跨小節，才不會斷拍。"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "節拍器用法：從你能**完全不出錯**的 BPM 開始，連續三遍乾淨再加 5。彈得斷斷續續的速度不是你的速度。"
+      }
+    ]
+  },
+  "progression.2516": {
+    "title": "2516：爵士的萬用回轉",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "ii–V–I 是調性音樂裡最強的解決公式：ii 鋪路、V 製造張力、I 解決。後面接 vi 讓句子不會真的停住，而是繞回開頭——所以它叫 **turnaround**（回轉）。"
+      },
+      {
+        "type": "paragraph",
+        "text": "為什麼強？因為根音走的是**五度下行**：D→G→C→A。這正是五度圈逆時針的方向，也是人耳最習慣的和聲重力。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "聽這些：Autumn Leaves、Fly Me to the Moon，幾乎所有爵士標準曲",
+          "練習重點：換和弦時只動最少的手指，找共同音"
+        ]
+      }
+    ]
+  },
+  "progression.4536251": {
+    "title": "4536251：J-pop 的王道進行",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "從 IV 開始而不是 I——一開口就懸在半空，直到最後才落回 I。這種「先飄再落」的形狀，是日系流行與 city pop 的招牌。"
+      },
+      {
+        "type": "paragraph",
+        "text": "中段的 **iii–vi** 讓明亮的大調突然轉暗，接著 ii–V–I 一路收回來。情緒的起伏全寫在和弦裡，旋律只要跟著走就有戲。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "別名：王道進行、丸之內進行的近親",
+          "練習重點：七和弦版本比三和弦更有那個味道"
+        ]
+      }
+    ]
+  },
+  "progression.1645": {
+    "title": "1645：50 年代的那個進行",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "I–vi–IV–V。1950 年代 doo-wop 幾乎人手一首，所以也叫 **doo-wop changes**。Stand by Me 是最好認的例子。"
+      },
+      {
+        "type": "paragraph",
+        "text": "它好聽的原因很直接：四個和弦全是調內最穩的成員，vi 提供一點點陰影，V 保證每四小節就想再繞一次。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "練習重點：這是新手第一個該練熟的循環，把換和弦練到不用想"
+        ]
+      }
+    ]
+  },
+  "progression.6415": {
+    "title": "6415：四個和弦打天下",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "vi–IV–I–V，其實就是 1645 換個起點。從小調開始，所以聽起來比 1645 憂鬱一點，但走到 I 又亮起來。"
+      },
+      {
+        "type": "paragraph",
+        "text": "近二十年流行樂用到被戲稱「四和弦歌」——同一組和弦可以套上數百首歌。這不是偷懶，是因為它的情緒弧線太好用。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "練習重點：同樣四個和弦，試著只換 voicing 就做出不同情緒"
+        ]
+      }
+    ]
+  },
+  "progression.canon": {
+    "title": "卡農進行：低音線在走路",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "I–V–vi–iii–IV–I–IV–V。來自帕海貝爾《卡農》，重點不在和弦本身，而在**根音一路級進下行**：C–B–A–G–F–C–F–G。"
+      },
+      {
+        "type": "paragraph",
+        "text": "低音線平順地走，上方的和弦就自然被牽著走。這是「和聲被旋律線決定」的經典示範。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "練習重點：邊彈邊唱根音，感受那條下行線"
+        ]
+      }
+    ]
+  },
+  "progression.blues12": {
+    "title": "12 小節藍調：整首歌只有三個和弦",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "I7–IV7–V7 分配在固定的 12 小節格子裡。特別之處是**三個和弦全是屬七**——在古典和聲裡這是「錯的」，因為屬七該解決卻沒解決。"
+      },
+      {
+        "type": "paragraph",
+        "text": "藍調不解決它，就一直掛著。這份未解決感就是藍調的聲音本身。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "quick change：第 2 小節先去一次 IV7，讓開頭不那麼呆板",
+          "練習重點：先把 12 小節的長度記進身體，再談 solo"
+        ]
+      }
+    ]
+  },
+  "chord.borrowed-iv": {
+    "title": "為什麼 C 大調可以接 Fm？",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Fm 不在 C 大調裡——C 大調的四級是 F 大三和弦。但它聽起來不但不錯，還特別好聽。原因是**調式互換**（modal interchange）：向同主音的小調借和弦。"
+      },
+      {
+        "type": "paragraph",
+        "text": "C 小調裡的四級正是 Fm（F–Ab–C）。借過來時，多出來的音是 **Ab**，也就是 C 調的 b6。關鍵就在這個音：它比大調的 A 低半音，形成 **Ab → G** 的半音下行，直接落到 C 大調的五音上。"
+      },
+      {
+        "type": "paragraph",
+        "text": "所以 Fm 的哀愁不是來自「小和弦」，而是來自那個半音。彈的時候把 Ab 放在最高聲部，讓它下行到 G，效果最明顯。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "典型用法：I – iv – I，四級小和弦當作回家前的一聲嘆息",
+          "同一個道理還能借 bVII、bVI、bIII，全都來自同主音小調",
+          "聽這些：Beatles、Radiohead、幾乎所有 city pop 的轉折處"
+        ]
+      }
+    ]
+  },
+  "chord.secondary-dominant": {
+    "title": "副屬和弦：臨時把別的音當成家",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "V/ii 讀作「五級的五級」。在 C 大調裡，ii 是 Dm；D 的屬和弦是 A7。於是 A7 → Dm 就是一次迷你的解決，即使 A7 根本不在 C 大調裡（它有 C#）。"
+      },
+      {
+        "type": "paragraph",
+        "text": "效果是：短暫地把 Dm 當成臨時的主音，讓進行多一層推力。因為每個副屬都往下方五度解決，一串接起來就成了**五度下行連鎖**：E7–A7–D7–G7–C。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "最常用：V/ii（A7）、V/V（D7）、V/vi（E7）",
+          "辨認方法：出現了調外的大三度（C# 對 C 調），八成是副屬"
+        ]
+      }
+    ]
+  },
+  "chord.bVII": {
+    "title": "bVII：搖滾的那個降七級",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "C 大調用 Bb 大三和弦。它同樣是借來的——來自 C Mixolydian（或同主音小調）。少了導音 B，回家的路就不是「解決」而是「滑回去」。"
+      },
+      {
+        "type": "paragraph",
+        "text": "這正是搖滾與 funk 想要的：有力量但不古典。I–bVII–IV–I 是無數 riff 的骨架。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "聽這些：Sweet Home Alabama、大量 70 年代搖滾",
+          "與 Mixolydian 音階是同一件事的兩種說法"
+        ]
+      }
+    ]
+  },
+  "chord.blues-dominants": {
+    "title": "藍調為什麼全用屬七也不算錯",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "古典和聲裡屬七必須解決到主和弦。藍調把 I 也變成屬七，等於整首歌都掛在未解決的狀態。"
+      },
+      {
+        "type": "paragraph",
+        "text": "這不是誤用，而是另一套系統：藍調的張力來自**旋律的藍調音**（b3、b5、b7）與大三和弦的摩擦。屬七和弦剛好同時裝得下大三度與小七度，於是它成了藍調的預設和弦。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "實作提醒：solo 用小調五聲／藍調音階，伴奏用屬七，兩者的摩擦就是味道"
+        ]
+      }
+    ]
+  },
+  "chord.neo-soul": {
+    "title": "Neo-soul 的和弦色彩",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "把三和弦換成 **maj9 / m9 / m11**，聲音立刻從「乾淨」變成「有空氣」。多出來的 9 音與根音差大二度，這一點點摩擦就是那種慵懶感的來源。"
+      },
+      {
+        "type": "paragraph",
+        "text": "另一個手法是**平行移動**：保持同一個指型整組上下移動，不管移到的位置是否完全在調內。短暫的調外反而讓和聲有呼吸。"
+      },
+      {
+        "type": "list",
+        "items": [
+          "起手式：Imaj9 – vim9 – iim9 – V7，慢速彈，讓延伸音有時間被聽見",
+          "voicing 建議：省略五音，留根音、三音、七音、九音"
+        ]
+      }
     ]
   }
 }

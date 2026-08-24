@@ -59,3 +59,14 @@ export const SCALE_SIGNATURE_DEGREE: Partial<Record<ScaleType, DegreeLabel>> = {
   harmonicMinor: '7',
   melodicMinor: '6',
 }
+
+/**
+ * 和弦符號後綴（root.name + suffix）。
+ * dim 用 'dim' 而非 '°'：小尺寸下度數符號容易誤讀，'dim' 無歧義。
+ */
+export const QUALITY_SUFFIX: Readonly<Record<ChordQuality, string>> = {
+  maj: '', m: 'm', dim: 'dim', aug: 'aug', sus2: 'sus2', sus4: 'sus4',
+  '6': '6', m6: 'm6', maj7: 'maj7', m7: 'm7', '7': '7', m7b5: 'm7b5',
+  dim7: 'dim7', mMaj7: 'mMaj7', add9: 'add9', '9': '9', m9: 'm9',
+  maj9: 'maj9', '13': '13',
+}

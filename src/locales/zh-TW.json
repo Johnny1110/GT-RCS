@@ -25,6 +25,16 @@
         "title": "節拍器",
         "description": "可設定 BPM、拍號與細分的三音色節拍器"
       }
+    },
+    "chords": {
+      "circle": {
+        "title": "五度圈進行",
+        "description": "經典和弦進行沿五度圈逆時針走完 12 個調"
+      },
+      "keyPractice": {
+        "title": "固定調練習",
+        "description": "留在同一個調，從入門三和弦練到 fusion 與 neo-soul"
+      }
     }
   },
   "transport": {
@@ -82,5 +92,55 @@
   "practice": {
     "hint": "跟著 click 練上下行與換把。換把點放在弱拍，才不會斷拍。",
     "totalMinutes": "累計練習 {minutes} 分鐘"
+  },
+  "chords": {
+    "progression": "進行",
+    "barsPerKey": "每調小節",
+    "startKey": "起始調",
+    "key": "調",
+    "level": "級別",
+    "now": "當前",
+    "next": "下一個",
+    "chordTones": "組成音（全指板）"
+  },
+  "progression": {
+    "2516": "2516",
+    "4536251": "4536251",
+    "1645": "1645",
+    "6415": "6415",
+    "canon": "卡農",
+    "blues12": "12 小節藍調",
+    "1451": "1451",
+    "diatonicWalk": "級數走完",
+    "3625": "3625",
+    "fast25": "快速 2-5",
+    "bluesQuick": "Quick change",
+    "jazzBlues": "爵士藍調",
+    "borrowedIv": "四級小和弦",
+    "bVII": "bVII",
+    "secondaryChain": "副屬連鎖",
+    "neoSoul": "Neo-soul"
+  },
+  "level": {
+    "1": {
+      "title": "一級 三和弦",
+      "description": "先把調內最穩的和弦練到不用想：I、IV、V、vi。目標是換和弦不斷拍。"
+    },
+    "2": {
+      "title": "二級 全 diatonic",
+      "description": "加入 ii、iii 與 vii°，把七個調內和弦全部走過一遍。"
+    },
+    "3": {
+      "title": "三級 七和弦",
+      "description": "三和弦換成七和弦，聽出 Imaj7 與 V7 的功能差異。"
+    },
+    "4": {
+      "title": "四級 藍調屬七",
+      "description": "12 小節藍調與全屬七。習慣「不解決」的聲音。"
+    },
+    "5": {
+      "title": "五級 Fusion / Neo-soul",
+      "description": "延伸音、借用和弦與副屬。調外的音怎麼用得有道理。"
+    }
   }
 }
