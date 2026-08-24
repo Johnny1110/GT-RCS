@@ -1,0 +1,86 @@
+{
+  "app": {
+    "title": "RCS — Rhythm & Chord & Scales",
+    "tagline": "吉他的三件事：節奏、和弦、音階。每一項練習都跟著同一顆節拍器走。",
+    "comingSoon": "即將推出"
+  },
+  "category": {
+    "rhythm": "節奏 Rhythm",
+    "chords": "和弦 Chord",
+    "scales": "音階 Scales"
+  },
+  "modules": {
+    "scales": {
+      "explorer": {
+        "title": "音階總覽",
+        "description": "任選調與音階，在 22 格指板上以 12 色系統呈現"
+      },
+      "practice": {
+        "title": "音階跟練",
+        "description": "掛上節拍器跟練音階，自動記錄練習時間"
+      }
+    },
+    "rhythm": {
+      "metronome": {
+        "title": "節拍器",
+        "description": "可設定 BPM、拍號與細分的三音色節拍器"
+      }
+    }
+  },
+  "transport": {
+    "play": "開始播放",
+    "stop": "停止",
+    "bpm": "BPM",
+    "timeSignature": "拍號",
+    "subdivision": "細分",
+    "beat": "拍",
+    "volumeOf": "{voice}音量",
+    "voice": {
+      "accent": "重音",
+      "normal": "一般",
+      "ghost": "鬼音"
+    }
+  },
+  "fretboard": {
+    "aria": "吉他指板，顯示 {count} 個音",
+    "jumpTo": "把位",
+    "openPosition": "空弦"
+  },
+  "explorer": {
+    "key": "調",
+    "scale": "音階",
+    "labelMode": "標記",
+    "labelDegree": "度數",
+    "labelNoteName": "音名",
+    "startPractice": "開始跟練",
+    "signatureNote": "特徵音：{degree}——強調它，這個音階的性格才立得住"
+  },
+  "metronome": {
+    "bar": "小節",
+    "beatOf": "拍",
+    "hint": "拍號與細分需先停止播放才能切換。重音落在每小節第一拍，細分拍以鬼音提示。"
+  },
+  "scale": {
+    "ionian": "Ionian",
+    "dorian": "Dorian",
+    "phrygian": "Phrygian",
+    "lydian": "Lydian",
+    "mixolydian": "Mixolydian",
+    "aeolian": "Aeolian",
+    "locrian": "Locrian",
+    "majorPentatonic": "大調五聲",
+    "minorPentatonic": "小調五聲",
+    "blues": "藍調",
+    "harmonicMinor": "和聲小調",
+    "melodicMinor": "旋律小調"
+  },
+  "knowledge": {
+    "label": "知識卡",
+    "loading": "載入中…",
+    "missing": "這個項目還沒有知識內容。"
+  },
+  "practice": {
+    "hint": "跟著 click 練上下行與換把。換把點放在弱拍，才不會斷拍。",
+    "totalMinutes": "累計練習 {minutes} 分鐘"
+  }
+}

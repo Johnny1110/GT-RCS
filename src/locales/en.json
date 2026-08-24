@@ -1,0 +1,86 @@
+{
+  "app": {
+    "title": "RCS — Rhythm & Chord & Scales",
+    "tagline": "Three things make a guitarist: rhythm, chord, scale. Every drill runs on the same click.",
+    "comingSoon": "Coming soon"
+  },
+  "category": {
+    "rhythm": "Rhythm",
+    "chords": "Chord",
+    "scales": "Scales"
+  },
+  "modules": {
+    "scales": {
+      "explorer": {
+        "title": "Scale Explorer",
+        "description": "Any key, any scale — full fretboard coverage with the 12-color system"
+      },
+      "practice": {
+        "title": "Scale Practice",
+        "description": "Run scales against the click; practice time is logged automatically"
+      }
+    },
+    "rhythm": {
+      "metronome": {
+        "title": "Metronome",
+        "description": "Three-voice click with adjustable BPM, time signature and subdivision"
+      }
+    }
+  },
+  "transport": {
+    "play": "Play",
+    "stop": "Stop",
+    "bpm": "BPM",
+    "timeSignature": "Time",
+    "subdivision": "Subdiv",
+    "beat": "Beat",
+    "volumeOf": "{voice} volume",
+    "voice": {
+      "accent": "Accent",
+      "normal": "Normal",
+      "ghost": "Ghost"
+    }
+  },
+  "fretboard": {
+    "aria": "Guitar fretboard showing {count} notes",
+    "jumpTo": "Position",
+    "openPosition": "Open"
+  },
+  "explorer": {
+    "key": "Key",
+    "scale": "Scale",
+    "labelMode": "Labels",
+    "labelDegree": "Degree",
+    "labelNoteName": "Note",
+    "startPractice": "Start practice",
+    "signatureNote": "Signature note: {degree} — lean on it and the scale shows its character"
+  },
+  "metronome": {
+    "bar": "Bar",
+    "beatOf": "Beat",
+    "hint": "Stop playback to change time signature or subdivision. Beat one is accented; subdivisions use the ghost voice."
+  },
+  "scale": {
+    "ionian": "Ionian",
+    "dorian": "Dorian",
+    "phrygian": "Phrygian",
+    "lydian": "Lydian",
+    "mixolydian": "Mixolydian",
+    "aeolian": "Aeolian",
+    "locrian": "Locrian",
+    "majorPentatonic": "Major Pentatonic",
+    "minorPentatonic": "Minor Pentatonic",
+    "blues": "Blues",
+    "harmonicMinor": "Harmonic Minor",
+    "melodicMinor": "Melodic Minor"
+  },
+  "knowledge": {
+    "label": "Notes",
+    "loading": "Loading…",
+    "missing": "No notes for this item yet."
+  },
+  "practice": {
+    "hint": "Run the scale up and down against the click. Put position shifts on a weak beat so the pulse never breaks.",
+    "totalMinutes": "{minutes} min logged"
+  }
+}
