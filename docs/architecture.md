@@ -1,0 +1,217 @@
+# RCS 架構規範（Architecture Spec）
+
+> **文件地位：規範性（normative）。** 本文件與程式碼中的契約註解構成 RCS 的架構法律。
+> 後續實作（任何模型、任何人）不得違反本文件的依賴規則與反模式清單；
+> 若認為規則有誤，先修改本文件（說明理由）再改程式，不允許「先違規再說」。
+
+---
+
+## 0. 開工前閱讀順序（交接協議）
+
+1. `CLAUDE.md` — 指令與硬規則摘要
+2. 本文件全文
+3. `docs/overview.md` — 產品全貌與已確認決策
+4. 對應 Phase 的 `docs/PRD/phase-0x.md` — 你要做的功能規格
+5. 相關層的 `src/**` 契約註解 — 每個檔案頂部的註解是該檔案的規格
+
+**找工作項的方式**：全域搜尋 `TODO(opus)`。每個標記都指回 PRD 條目編號，
+並在其所在檔案附有契約說明。完成一個 TODO 的 DoD 見 §7。
+
+---
+
+## 1. 分層架構與依賴規則
+
+```
+┌────────────────────────────────────────────────┐
+│ modules/   練習模組（路由頁面、練習流程編排）        │
+├────────────────────────────────────────────────┤
+│ views/ + components/   共用 UI（純顯示 / 容器）    │
+├────────────────────────────────────────────────┤
+│ composables/   Vue 生命週期接線（store ↔ 組件）   │
+├────────────────────────────────────────────────┤
+│ stores/   Pinia（應用狀態、core 的 UI façade）    │
+├────────────────────────────────────────────────┤
+│ persistence/   VersionedStore（localStorage）    │
+├────────────────────────────────────────────────┤
+│ core/   純 TS：theory / audio / colors           │
+└────────────────────────────────────────────────┘
+```
+
+依賴方向：**上層可以 import 下層，下層永遠不知道上層存在。**
+
+| 層 | 允許 import | 絕對禁止 |
+|---|---|---|
+| `core/**` | 只能 import core 內部 | Vue、Pinia、DOM、localStorage、`Date.now()`（時間一律經 `IClock`） |
+| `persistence/` | 無依賴（自帶 MemoryStorage fallback） | Vue、core |
+| `stores/` | core、persistence、Vue reactivity | components、modules |
+| `composables/` | core、stores、Vue | components、modules |
+| `components/**` | core（型別與純函式）、Vue | **stores（純顯示組件）**、modules、直接 new core/audio 類別 |
+| `views/`、`modules/**` | 全部下層 | **其他模組**（模組間橫向 import 一律禁止） |
+
+例外註記：
+- `components/` 中的 **container 組件**（目前僅 `TransportBar`）允許使用 stores，
+  檔案頂部契約註解必須聲明自己是 container。預設所有組件都是 presentational。
+- `core/audio` 內 `WebAudioClock`、`SynthClickVoice` 是唯二允許碰 Web Audio API 的
+  adapter；audio 層其餘檔案必須維持純邏輯（ManualClock 可測）。
+
+---
+
+## 2. 設計模式地圖（哪裡用什麼、為什麼）
+
+| 位置 | 模式 | 目的 |
+|---|---|---|
+| `core/theory/formulas.ts` | **Single Source of Truth**（公式表 const） | 和弦/音階資料只有公式；所有音位、音名、指板覆蓋皆推導，杜絕手工資料表的維護災難 |
+| `core/theory/spelling.ts` | 純函式核心 | 拼寫正確性可被窮舉測試鎖定 |
+| `core/audio/clock.ts` | **依賴反轉**（IClock） | 排程邏輯不碰真時鐘 → ManualClock 讓「不飄拍」成為可測規格 |
+| `core/audio/scheduler.ts` | **Observer** + lookahead | 排程器單一職責：搬運視窗內 tick；不懂 BPM 與 pattern |
+| `core/audio/transport.ts` | **Facade** + TickSource | 播放控制的唯一入口；tick 生成邏輯（BPM/拍號/pattern/swing）全部集中於此 |
+| `core/audio/voices.ts` | **Strategy**（ClickVoice） | 換音色不動排程；NullClickVoice 供測試 |
+| `core/audio/tickBus.ts` | Producer/Consumer queue | 聲音視覺同步的唯一橋樑：UI 只消費「已到時」的 tick |
+| `core/colors/` | Token 表（interval 為 key） | 12 色全站唯一 mapping；#9 與 b3 同色是刻意設計（同聽感） |
+| `modules/registry.ts` | **Registry**（plugin 式模組） | 新增練習 = 新資料夾 + manifest + 一行註冊；路由與首頁自動生成 |
+| `persistence/storage.ts` | **Adapter** + 版本化 migration | stores 不碰 localStorage；schema 演進必附 migration，保護練習紀錄 |
+| `stores/transport.ts` | Singleton façade + 單一 rAF 消費者 | 全站一顆時鐘一個 AudioContext；lazy 建立（iOS 手勢解鎖）。TickBus 是單一消費者佇列，rAF 迴圈只能有一個 —— 由 store 持有並廣播 |
+| `composables/useTransportTick` | 訂閱 + 生命週期綁定 | 組件取得節拍視覺狀態的唯一入口，自動取消訂閱 |
+| `composables/usePracticeSession` | 生命週期綁定 | 練習計時與日誌寫入：play 起算、stop 或卸載結算，過短不記 |
+| `content/knowledge/` | 內容與程式分離 | 模組只引用 entry id；內容依語系 lazy 載入並快取，獨立分包 |
+| `composables/useModuleSettings` | 響應式持久化綁定 | 模組設定以模組 id 為 key 自動存取，杜絕直接碰 localStorage |
+| `composables/usePracticeTransport` | Template Method | 每個練習共通的 click 接線：載入設定 → 回寫調整 → 離開停止播放 |
+
+**新需求選模式的原則**：先找上表已有的模式套用；要引入新模式時，在本表加一列說明理由。
+
+---
+
+## 3. 兩條核心資料流（背下來）
+
+### 樂理 → 畫面（顯示管線）
+
+```
+公式表 formulas.ts ──▶ spell(root, formula) ──▶ Note[]（正確拼寫 + 度數）
+                                                  │
+                       colorForInterval(rootPc) ◀─┤──▶ mapToFretboard() ──▶ FretCell[]
+                                                  ▼
+                                     UI 組件（純渲染，零樂理計算）
+```
+
+任何畫面上的音，都必須能沿這條管線回溯到公式表。UI 內出現 hardcode 音名 = 架構違規。
+
+### Tick → 聲音與視覺（時間管線）
+
+```
+Transport.next()（生成 tick，audioTime 在未來 ~100ms）
+   │  LookaheadScheduler（timer 週期搬運視窗內 tick）
+   ├──▶ ClickVoice.trigger(role, audioTime)   ← 聲音：以 audioTime 精準排程
+   └──▶ TickBus.push(e)
+           │  transport store 的**唯一** rAF 迴圈：drainUpTo(audioContext.currentTime)
+           ├──▶ position（reactive）           ← 拍燈、小節計數
+           └──▶ subscribers                    ← useTransportTick(handler)
+```
+
+聲音與視覺吃**同一個 tick 流**，同步是結構保證，不是調出來的。
+**TickBus 是單一消費者佇列**：drain 過的 tick 就消失了，兩個組件各自 drain 會互搶事件。
+因此 rAF 迴圈只存在於 transport store，組件一律經 `useTransportTick()` 讀取，
+禁止任何 `setInterval` / `setTimeout` / 自建 rAF 驅動的節拍視覺。
+
+---
+
+## 4. 關鍵契約索引
+
+| 契約 | 位置 |
+|---|---|
+| 度數 / 音名 / Note / FretCell 型別 | `src/core/theory/types.ts` |
+| 和弦、音階公式表 | `src/core/theory/formulas.ts` |
+| 進行記法文法（白名單）與 realize 規則 | `src/core/theory/progressions/parser.ts` 頂部註解 |
+| TickEvent / RhythmPattern / CellRole | `src/core/audio/types.ts` |
+| TickSource / Scheduler 行為 | `src/core/audio/scheduler.ts` |
+| ClickVoice Strategy | `src/core/audio/voices.ts` |
+| 12 色 mapping | `src/core/colors/degreeColors.ts`（CSS token 副本：`src/assets/main.css`，兩處需同步） |
+| UI 設計系統（灰階 token、元件視覺規格） | `docs/design-system.md`（規範性）＋ `src/assets/main.css` ink token |
+| 練習模組 manifest | `src/modules/types.ts` |
+| 節拍視覺訂閱（回傳形態即契約） | `src/composables/useTransportTick.ts` |
+| 練習模組的 click 接線 | `src/composables/usePracticeTransport.ts` |
+| 拍號表與持久化驗證 | `src/core/audio/types.ts`（TIME_SIGNATURES / resolveTimeSignature） |
+| 指板幾何 | `src/components/Fretboard/geometry.ts` |
+| 知識內容格式與行內標記 | `src/content/knowledge/types.ts` |
+| 音階線共用選項與驗證 | `src/modules/scales/shared.ts` |
+| 測試輔助（AudioContext stub、withSetup） | `src/test/` |
+| 持久化 envelope 與 migration | `src/persistence/storage.ts` |
+
+---
+
+## 5. 程式慣例
+
+- **命名**：模組 id `<category>.<kebab-name>`；路由 `/<category>/<kebab-name>`；
+  i18n key `modules.<category>.<camelName>.title|description`；持久化 key `rcs.<storeName>`。
+- **i18n**：使用者可見字串一律走 `$t()` / `t()`，兩個 locale 檔同步增修。樂理符號
+  （C、Am7、b3）不翻譯。知識內容放 `src/content/{locale}/<entry-id>.md`。
+- **測試**：與被測檔同層，`*.spec.ts`。core 層新功能必附測試；行為變更先改測試。
+- **`test.todo` 是規格**：實作前先讀對應 spec 檔的 todo 清單；實作後把 todo 轉為
+  真測試。不允許為通過測試而改規格（規格疑義回報 PRD）。
+- **TODO 標記**：未實作處以 `TODO(opus) Phase X / Fx-y：說明` 標註，完成後移除。
+- **註解語言**：架構契約與規格用繁中；一般程式註解從簡，符合周邊風格。
+
+---
+
+## 6. 測試策略
+
+1. **theory**：行為鎖定測試（拼寫邊界、公式內容）。改動導致既有測試變紅 = 回歸，
+   不是「更新測試」的理由。12 調全展開需有快照或窮舉。
+2. **audio**：一律 ManualClock + `intervalMs: 0` 手動 `tick()`；驗證間距、角色、
+   計數、BPM 變更語意。禁止在測試中依賴真實時間（`vi.useFakeTimers` 也不需要）。
+3. **swing / pattern（Phase 4）**：以「pattern → 期望 audioTime 序列」的表格測試鎖定
+  （66% swing 反拍 = 三連音第 3 格，PRD F4 驗收）。
+4. **組件**：@vue/test-utils + happy-dom（於 Phase 1 導入，用來驗證組件確實掛得起來）。
+   測 props 契約與渲染數量，不寫脆弱的 DOM 快照；視覺細節靠瀏覽器人工／截圖驗收。
+   組件測試檔首行加 `// @vitest-environment happy-dom`（預設環境為 node）。
+5. **端到端**：需要真實 AudioContext 與 rAF 的行為（播放、拍燈、計數）以瀏覽器驗收，
+   單元測試只鎖住其契約形態（例：useTransportTick 回傳的 playing 必須是 ref）。
+6. **進行引擎（Phase 3）**：12 調 × 全部 preset 的 symbol 序列快照。
+
+---
+
+## 7. 每個工作項的 Definition of Done
+
+- [ ] 對應 `TODO(opus)` 標記已移除；契約註解仍與實作一致（不一致就更新註解）
+- [ ] `npm run test` 綠燈；該項對應的 `test.todo` 已轉為真測試
+- [ ] `npm run typecheck` 零錯誤（strict、不使用 `any` / `as unknown as` 硬轉）
+- [ ] 依賴規則（§1 表格）零違規；未引入表外設計模式（或已更新 §2 表格）
+- [ ] 使用者可見字串已進兩個 locale 檔
+- [ ] `npm run build` 成功；首屏 bundle 未顯著成長（練習模組必須 lazy load）
+
+---
+
+## 8. 反模式清單（一票否決）
+
+1. ❌ UI / 模組內 hardcode 音名、和弦組成、音階內容（一律走公式表 + spell）
+2. ❌ `setInterval` / `setTimeout` / rAF 直接驅動聲音；`Date.now()` 參與任何節拍計算
+3. ❌ 組件內做樂理計算；presentational 組件 import store
+4. ❌ 練習模組互相 import、模組直接 new AudioContext / Transport
+5. ❌ 直接讀寫 localStorage（一律 VersionedStore）；改 schema 不寫 migration
+6. ❌ 散落 hex 色碼表示音程顏色（一律 colorForInterval / CSS token）
+7. ❌ 為通過測試修改行為鎖定測試或規格
+8. ❌ 在 core/** import Vue 或 DOM API
+9. ❌ 新增第三方依賴未經評估記錄（在 PR/commit 說明中交代理由與 bundle 影響）
+10. ❌ **從 store 或 composable 回傳「已解包的響應式純值」**。`const { playing } = useX()`
+    若 playing 是布林值而非 ref，呼叫端拿到的是當下快照，畫面永遠不會更新
+    （Phase 1 實作時真的發生過：拍燈與小節計數全部不動，但按鈕狀態正常，極難察覺）。
+    跨邊界回傳一律用 ref / computed / reactive 物件。
+
+---
+
+## 9. 現況基線（Phase 2 完成）
+
+**已實作並有測試（65 個測試）**：theory（音程／拼寫／公式／指板推導）、colors、
+scheduler + Transport（含 10 分鐘無漂移驗證）、TickBus、三音色 SynthClickVoice、
+VersionedStore（含 migration）、模組 registry、composables（tick／模組設定／練習接線）、
+Fretboard SVG（22 格全覆蓋）、TransportBar（BPM／拍號／細分／拍燈／三音色混音）、
+App shell（路由生成、i18n 雙語、深色主題）、兩個練習模組（音階總覽、節拍器）。
+
+播放行為（AudioContext、rAF、拍燈同步）已於瀏覽器實測驗收：240 BPM 4/4 下
+小節計數每秒前進一格、拍燈與 tick 同步、停止歸零、無 console 錯誤。
+
+**Phase 2 追加（89 個測試）**：知識內容系統（結構化區塊、雙語各 13 條、獨立分包）、
+KnowledgeCard／RichText、usePracticeSession（練習計時與日誌）、音階跟練模組、
+Scale Explorer 的特徵音標註與知識卡、模組間以 query 傳遞選擇。
+
+**契約已定、待實作（搜尋 `TODO(opus)`）**：進行 parser/realize（Phase 3）、
+RhythmPattern 驅動與 swing、播放中換拍號（Phase 4）、全域鍵盤快捷鍵與統計儀表板（Phase 5）。

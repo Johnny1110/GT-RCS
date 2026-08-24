@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/*
+ * Design token — 規範文件：docs/design-system.md
+ * 12 音程色的 TS 定義在 src/core/colors/degreeColors.ts（兩處需同步）。
+ */
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, monospace;
+
+  /* ink 灰階（深色單一主題；淺色列於 backlog） */
+  --color-ink-950: #101013;
+  --color-ink-900: #17171B;
+  --color-ink-850: #1C1C21;
+  --color-ink-800: #222228;
+  --color-ink-700: #2E2E36;
+  --color-ink-600: #44444E;
+  --color-ink-500: #6E6E78;
+  --color-ink-400: #8B8B96;
+  --color-ink-300: #ADADB8;
+  --color-ink-100: #DDDDE3;
+  --color-ink-50: #F4F4F6;
+
+  /* 12 音程色 */
+  --color-degree-1: #FFFFFF;
+  --color-degree-b2: #E5484D;
+  --color-degree-2: #66BB6A;
+  --color-degree-b3: #5B8DEF;
+  --color-degree-3: #FF9F43;
+  --color-degree-4: #26C6B9;
+  --color-degree-s4: #9C6ADE;
+  --color-degree-5: #9BA1A6;
+  --color-degree-b6: #B5589F;
+  --color-degree-6: #F48FB1;
+  --color-degree-b7: #C08B5C;
+  --color-degree-7: #FFD54F;
+}
+
+html {
+  color-scheme: dark;
+  background-color: var(--color-ink-950);
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+}
+
+/* 焦點環全站一致（design-system.md §5） */
+:focus-visible {
+  outline: 2px solid var(--color-ink-50);
+  outline-offset: 2px;
+}
+
+/* 灰階滑桿：不引入 accent 色 */
+.rcs-range {
+  accent-color: var(--color-ink-50);
+  height: 1rem;
+  cursor: pointer;
+}
+
+.rcs-range:disabled {
+  accent-color: var(--color-ink-600);
+  cursor: not-allowed;
+}
