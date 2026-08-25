@@ -8,9 +8,11 @@ import { useI18n } from 'vue-i18n'
 import { chordPositions, mapToFretboard } from '@/core/theory'
 import CircleOfFifths from '@/components/CircleOfFifths/CircleOfFifths.vue'
 import ChordTimeline, { type TimelineEntry } from '@/components/ChordTimeline/ChordTimeline.vue'
+import ChordDemoControl from '@/components/ui/ChordDemoControl.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
+import { useChordDemo } from '@/composables/useChordDemo'
 import { useModuleSettings } from '@/composables/useModuleSettings'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
@@ -87,6 +89,9 @@ const presetOptions = computed(() =>
 const barsOptions = BARS_PER_KEY_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))
 const keyOptions = DESCENDING_FIFTHS.map((key) => ({ value: key, label: key }))
 
+/** 示範音：直接由 cycle 查小節，不經過視覺 position——發聲要提前排程 */
+useChordDemo((bar) => cycleBarAt(cycle.value, bar)?.chords[0])
+
 const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
 </script>
 
@@ -115,6 +120,7 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
         <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.startKey') }}</span>
         <SegmentedControl v-model="settings.startKey" :options="keyOptions" :aria-label="t('chords.startKey')" wrap />
       </div>
+      <ChordDemoControl />
     </div>
 
     <div class="grid gap-6 lg:grid-cols-[320px_1fr]">

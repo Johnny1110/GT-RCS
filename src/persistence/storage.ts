@@ -39,7 +39,7 @@ interface Envelope {
   data: unknown
 }
 
-function defaultStorage(): KVStorage {
+export function defaultStorage(): KVStorage {
   return typeof localStorage !== 'undefined' ? localStorage : new MemoryStorage()
 }
 

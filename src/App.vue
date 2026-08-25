@@ -7,7 +7,7 @@ import { useSettingsStore } from '@/stores/settings'
 
 const settings = useSettingsStore()
 const route = useRoute()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 watch(
   () => settings.state.locale,
@@ -27,6 +27,13 @@ function toggleLocale(): void {
   <div class="flex min-h-screen flex-col bg-ink-950 text-ink-100">
     <header class="flex items-center gap-6 border-b border-ink-800 px-6 py-3">
       <RouterLink to="/" class="font-mono text-base font-bold tracking-[0.06em] text-ink-50">RCS</RouterLink>
+      <RouterLink
+        to="/stats"
+        class="rounded px-2 py-1 font-mono text-xs text-ink-500 hover:bg-ink-800 hover:text-ink-100"
+        active-class="text-ink-100"
+      >
+        {{ t('stats.title') }}
+      </RouterLink>
       <button
         type="button"
         class="ml-auto rounded px-2 py-1 font-mono text-xs text-ink-500 hover:bg-ink-800 hover:text-ink-100"

@@ -16,6 +16,8 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', name: 'home', component: () => import('@/views/HomeView.vue') },
+    // 統計不是練習模組（沒有 click、不寫日誌），所以不進註冊表，走獨立路由
+    { path: '/stats', name: 'stats', component: () => import('@/views/StatsView.vue') },
     ...moduleRoutes,
   ],
 })

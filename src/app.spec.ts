@@ -204,7 +204,7 @@ describe('App 掛載', () => {
     const raw = localStorage.getItem('rcs.settings')
     expect(raw).toBeTruthy()
     const parsed = JSON.parse(raw!) as { version: number; data: { moduleSettings: Record<string, { root: string }> } }
-    expect(parsed.version).toBe(2)
+    expect(parsed.version).toBe(3)
     expect(parsed.data.moduleSettings['scales.explorer']?.root).toBe('G')
   })
 })

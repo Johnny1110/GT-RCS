@@ -8,9 +8,11 @@ import { useI18n } from 'vue-i18n'
 import { chordPositions, mapToFretboard, realizeProgression } from '@/core/theory'
 import CircleOfFifths from '@/components/CircleOfFifths/CircleOfFifths.vue'
 import ChordTimeline, { type TimelineEntry } from '@/components/ChordTimeline/ChordTimeline.vue'
+import ChordDemoControl from '@/components/ui/ChordDemoControl.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
+import { useChordDemo } from '@/composables/useChordDemo'
 import { useModuleSettings } from '@/composables/useModuleSettings'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
@@ -69,6 +71,11 @@ const focusedPositionId = ref<string | null>(null)
 watch(() => currentChord.value?.root.pc, () => { focusedPositionId.value = null })
 
 
+/** 示範音：直接由 bars 查小節，不經過視覺 position——發聲要提前排程 */
+useChordDemo((bar) =>
+  bars.value.length === 0 ? undefined : bars.value[(bar - 1) % bars.value.length]?.chords[0],
+)
+
 const timeline = computed<TimelineEntry[]>(() => {
   if (bars.value.length === 0) return []
   const entries: TimelineEntry[] = []
@@ -116,6 +123,7 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0] ?? level.value
         <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.progression') }}</span>
         <SegmentedControl v-model="settings.presetId" :options="progressionOptions" :aria-label="t('chords.progression')" wrap />
       </div>
+      <ChordDemoControl />
     </div>
 
     <p class="max-w-[65ch] text-sm text-ink-400">{{ t(level.descriptionKey) }}</p>

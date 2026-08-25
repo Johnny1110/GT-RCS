@@ -8,14 +8,18 @@
  * - **TickBus 是單一消費者佇列**：唯一的 rAF 迴圈由本 store 持有，
  *   drain 後更新 position 並廣播給訂閱者。組件不得自行 drain，
  *   一律經 useTransportTick()（多個組件各自 drain 會互相搶走事件）。
+ * - **兩種訂閱，別搞混**：
+ *   `subscribeTick` 是**視覺**用的，在 tick 的 audioTime 實際到達時才觸發（永不超前聲音）；
+ *   `subscribeSchedule` 是**發聲**用的，在排程時觸發（提前約 100ms），事件帶著未來的
+ *   audioTime。要發出聲音的東西一律用後者——在視覺時刻才排程等於已經遲到半幀。
  */
 import { defineStore } from 'pinia'
 import { computed, reactive, readonly, ref, shallowRef, watch } from 'vue'
 import {
-  LookaheadScheduler, SOUNDING_ROLES, SWING_STRAIGHT, SynthClickVoice, TickBus, Transport, WebAudioClock,
-  clampSwing, isTicksPerBeat,
-  type CellRole, type ClickVoice, type DemoSilenceMode, type RhythmPattern, type SoundingRole,
-  type TickEvent, type TicksPerBeat, type TimeSignature,
+  LookaheadScheduler, SOUNDING_ROLES, SWING_STRAIGHT, SynthChordVoice, SynthClickVoice, TickBus,
+  Transport, WebAudioClock, clampSwing, isTicksPerBeat,
+  type CellRole, type ChordDemoMode, type ChordVoice, type ClickVoice, type DemoSilenceMode,
+  type RhythmPattern, type SoundingRole, type TickEvent, type TicksPerBeat, type TimeSignature,
 } from '@/core/audio'
 import { useSettingsStore } from './settings'
 
@@ -32,10 +36,12 @@ export const useTransportStore = defineStore('transport', () => {
   let transport: Transport | null = null
   let audioCtx: AudioContext | null = null
   let voice: ClickVoice | null = null
+  let chordVoice: ChordVoice | null = null
   let rafId = 0
 
   const tickBus = new TickBus()
   const subscribers = new Set<(e: TickEvent) => void>()
+  const scheduleSubscribers = new Set<(e: TickEvent) => void>()
 
   const playing = ref(false)
   const bpm = ref(90)
@@ -50,16 +56,25 @@ export const useTransportStore = defineStore('transport', () => {
   /** 掛著節奏 pattern 時，拍號與細分由 pattern 決定，UI 不再讓使用者直接改 */
   const patternDriven = computed(() => pattern.value !== null)
 
+  /** 一個小節有多少秒（示範音的延音長度）。6/8 的 BPM 指八分音符，所以直接乘拍數就對 */
+  const barSeconds = computed(() => (timeSig.value.beats * 60) / bpm.value)
+
   function applyVoiceSettings(): void {
-    if (!voice) return
-    for (const role of SOUNDING_ROLES) {
-      voice.setVolume(role, settings.state.voiceVolumes[role])
-      voice.setMuted(role, settings.state.voiceMuted[role])
+    if (voice) {
+      for (const role of SOUNDING_ROLES) {
+        voice.setVolume(role, settings.state.voiceVolumes[role])
+        voice.setMuted(role, settings.state.voiceMuted[role])
+      }
     }
+    chordVoice?.setMode(settings.state.chordDemo)
+    chordVoice?.setVolume(settings.state.chordVolume)
   }
 
   watch(
-    () => [settings.state.voiceVolumes, settings.state.voiceMuted],
+    () => [
+      settings.state.voiceVolumes, settings.state.voiceMuted,
+      settings.state.chordDemo, settings.state.chordVolume,
+    ],
     applyVoiceSettings,
     { deep: true },
   )
@@ -71,9 +86,14 @@ export const useTransportStore = defineStore('transport', () => {
     const created = new Transport(clock, new LookaheadScheduler(clock))
     transport = created
     voice = new SynthClickVoice(audioCtx)
+    chordVoice = new SynthChordVoice(audioCtx)
     applyVoiceSettings()
     created.addTickListener((e: TickEvent) => {
       if (e.role !== 'rest') voice?.trigger(e.role, e.audioTime)
+    })
+    // 排程時刻的訂閱者（發聲用）：事件的 audioTime 在未來，來得及排程
+    created.addTickListener((e: TickEvent) => {
+      for (const fn of scheduleSubscribers) fn(e)
     })
     created.addTickListener(tickBus.push)
     // Transport 是第一次 play 才建立的（iOS 自動播放限制），因此要把
@@ -123,6 +143,7 @@ export const useTransportStore = defineStore('transport', () => {
 
   function stop(): void {
     transport?.stop()
+    chordVoice?.stopAll()
     tickBus.clear()
     stopVisualLoop()
     playing.value = false
@@ -185,6 +206,19 @@ export const useTransportStore = defineStore('transport', () => {
     transport?.setDemoSilence(demoSilence.value)
   }
 
+  /** 發出一個和弦（示範音）。midis 由 core/theory 的 voiceChord() 決定，本層不算樂理 */
+  function playChord(midis: readonly number[], audioTime: number, durationSec: number): void {
+    chordVoice?.play(midis, audioTime, durationSec)
+  }
+
+  function setChordDemo(mode: ChordDemoMode): void {
+    settings.state.chordDemo = mode
+  }
+
+  function setChordVolume(volume: number): void {
+    settings.state.chordVolume = Math.min(1, Math.max(0, volume))
+  }
+
   function setVoiceVolume(role: SoundingRole, volume: number): void {
     settings.state.voiceVolumes[role] = Math.min(1, Math.max(0, volume))
   }
@@ -193,10 +227,19 @@ export const useTransportStore = defineStore('transport', () => {
     settings.state.voiceMuted[role] = !settings.state.voiceMuted[role]
   }
 
-  /** 訂閱已到時的 tick；回傳取消訂閱函式。組件請用 useTransportTick() 自動管理生命週期。 */
+  /** 訂閱已到時的 tick（視覺用）；回傳取消訂閱函式。組件請用 useTransportTick()。 */
   function subscribeTick(fn: (e: TickEvent) => void): () => void {
     subscribers.add(fn)
     return () => subscribers.delete(fn)
+  }
+
+  /**
+   * 訂閱排程時刻的 tick（發聲用）：事件的 audioTime 還在未來，來得及排程。
+   * 要發出聲音的東西一律用這個；用 subscribeTick 會晚半幀。
+   */
+  function subscribeSchedule(fn: (e: TickEvent) => void): () => void {
+    scheduleSubscribers.add(fn)
+    return () => scheduleSubscribers.delete(fn)
   }
 
   return {
@@ -206,6 +249,9 @@ export const useTransportStore = defineStore('transport', () => {
     ticksPerBeat: readonly(ticksPerBeat),
     swing: readonly(swing),
     patternDriven,
+    barSeconds,
+    chordDemo: computed(() => settings.state.chordDemo),
+    chordVolume: computed(() => settings.state.chordVolume),
     position: readonly(position),
     voiceVolumes: settings.state.voiceVolumes,
     voiceMuted: settings.state.voiceMuted,
@@ -213,6 +259,7 @@ export const useTransportStore = defineStore('transport', () => {
     setBpm, setTimeSignature, setTicksPerBeat,
     setPattern, setSwing, setDemoSilence,
     setVoiceVolume, toggleVoiceMute,
-    subscribeTick,
+    playChord, setChordDemo, setChordVolume,
+    subscribeTick, subscribeSchedule,
   }
 })
