@@ -191,7 +191,9 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div v-if="swingApplies" class="flex flex-col gap-1.5">
         <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.swing') }}</span>
-        <div class="flex items-center gap-3">
+        <!-- flex-wrap 是必要的：英文的 swing preset 標籤（Full shuffle）比中文寬，
+             375px 手機上不換行就會把整頁撐出橫捲 -->
+        <div class="flex flex-wrap items-center gap-3">
           <span class="w-10 font-mono text-sm font-bold tabular-nums text-ink-50">{{ Math.round(transport.swing) }}%</span>
           <input
             class="rcs-range w-32"

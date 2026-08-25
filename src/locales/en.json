@@ -369,5 +369,55 @@
     "sixEightSix": "Six-small-beat feel",
     "sixEightGospel": "Gospel 6/8",
     "twelveEightBlues": "12/8 slow blues"
+  },
+  "ads": {
+    "label": "Advertisement"
+  },
+  "home": {
+    "intro": {
+      "what": "RCS is an online practice room for guitarists: metronome, fretboard, circle of fifths, and theory notes on one screen. Open a browser tab and play — nothing to install, nothing to sign up for, and your practice records stay on your own device.",
+      "why": "Metronomes give you a pulse. Theory sites give you diagrams. Nobody fills the gap between them — the one where you understand the idea but your hands still don't know where to go. RCS lets you hear the beat, see where the notes are, and read why those are the notes, all at once.",
+      "privacy": "No ads while you practise. No ad container exists on any screen that plays a click — that is a product promise, not a setting."
+    },
+    "highlight": {
+      "rhythm": "Metronome, subdivision drills, and groove sheets to play along with, including swing and accent design",
+      "chords": "Numeral progressions, the 12-key cycle, circle-of-fifths navigation, and any progression you write yourself",
+      "scales": "Full-fretboard note names and degrees, five position frames, and scale practice that follows the click"
+    }
+  },
+  "knowledgeIndex": {
+    "title": "Theory",
+    "cta": "Open the theory library",
+    "description": "Notes on scales, chords, progressions, and rhythm — written for someone with a guitar in hand: when to use it, why that note, and what it sounds like.",
+    "count": "{count} entries",
+    "related": "Related entries",
+    "group": {
+      "scale": "Scales",
+      "chord": "Chords",
+      "progression": "Progressions",
+      "rhythm": "Rhythm",
+      "other": "Other"
+    }
+  },
+  "legal": {
+    "updated": "Last updated: {date}",
+    "cookieSettings": "Cookie settings",
+    "footerNote": "Practice records stay in your browser",
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "RCS has no backend server and your practice records live only in your browser. This policy covers what the ads and analytics use."
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "description": "RCS sets no cookies of its own. This page lists the third-party advertising, analytics, and consent cookies and how to control them."
+    },
+    "about": {
+      "title": "About",
+      "description": "RCS is a free online practice room for guitarists: rhythm, chords, and scales on one screen."
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "That URL may be a typo, or the page has moved. Head back to the home page or the theory library."
   }
 }

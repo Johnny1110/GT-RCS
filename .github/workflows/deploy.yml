@@ -1,0 +1,83 @@
+# 部署（PRD Phase 6 / F6-2）。
+#
+# 憑證：Workload Identity Federation，**不放長期金鑰**（F6-2.3）。
+# 只有這一份 workflow 需要 id-token 權限；CI 那份完全不碰憑證，所以 fork PR 也跑得動。
+#
+# 設定值全部走 repository variables（不是 secrets）：AdSense client、GA ID、網域
+# 本來就會出現在網頁原始碼裡，當成機密管理只會製造「以為它是機密」的錯覺。
+# 需要的 variables：
+#   FIREBASE_PROJECT_ID, GCP_WIF_PROVIDER, GCP_DEPLOY_SA, SITE_ORIGIN
+#   ADSENSE_CLIENT, ADSENSE_SLOTS, GA_MEASUREMENT_ID
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # fork 來的 PR 拿不到 OIDC 憑證，直接略過而不是紅一個燈
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test
+
+      # production 才注入廣告與分析；預覽頻道建出來的站是零廣告、robots Disallow 的
+      # （見 core/seo/sitemap.ts 的 buildRobots 與 config/ads.ts 的 ADS_ENABLED）
+      - name: Build
+        env:
+          VITE_SITE_ORIGIN: ${{ vars.SITE_ORIGIN }}
+          VITE_DEPLOY_ENV: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+          VITE_ADSENSE_CLIENT: ${{ github.event_name == 'push' && vars.ADSENSE_CLIENT || '' }}
+          VITE_ADSENSE_SLOTS: ${{ github.event_name == 'push' && vars.ADSENSE_SLOTS || '' }}
+          VITE_GA_ID: ${{ github.event_name == 'push' && vars.GA_MEASUREMENT_ID || '' }}
+        run: npx vite build
+
+      - name: Check first-load bundle budget
+        run: node scripts/check-bundle-size.mjs
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      - name: Deploy preview channel
+        if: github.event_name == 'pull_request'
+        run: |
+          npx --yes firebase-tools@13 hosting:channel:deploy "pr-${{ github.event.number }}" \
+            --project "${{ vars.FIREBASE_PROJECT_ID }}" \
+            --expires 7d \
+            --non-interactive | tee channel.log
+          echo "### Firebase preview" >> "$GITHUB_STEP_SUMMARY"
+          grep -Eo 'https://[^ ]*web\.app[^ ]*' channel.log | tail -1 >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deploy production
+        if: github.event_name == 'push'
+        run: |
+          npx --yes firebase-tools@13 deploy --only hosting \
+            --project "${{ vars.FIREBASE_PROJECT_ID }}" \
+            --non-interactive \
+            --message "${{ github.sha }}"

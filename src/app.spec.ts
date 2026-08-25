@@ -7,8 +7,13 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
-import { createRouter, createMemoryHistory } from 'vue-router'
+import { createMemoryHistory } from 'vue-router'
 import App from './App.vue'
+import { createAppRouter } from './router'
+import { LEGAL_DOCS, KNOWLEDGE_BASE_PATH, legalPath } from './config/routes'
+import { useSettingsStore } from './stores/settings'
+import knowledgeZh from './content/knowledge/zh-TW.json'
+import legalEn from './content/legal/en.json'
 import { listModules } from './modules/registry'
 import './modules'
 import zhTW from './locales/zh-TW.json'
@@ -26,24 +31,25 @@ function createTestApp() {
     messages: { 'zh-TW': zhTW, en },
     missing: (_locale, key) => { missingKeys.push(key) },
   })
-  const router = createRouter({
-    history: createMemoryHistory(),
-    routes: [
-      { path: '/', name: 'home', component: () => import('./views/HomeView.vue') },
-      { path: '/stats', name: 'stats', component: () => import('./views/StatsView.vue') },
-      ...listModules().map((m) => ({
-        path: m.route,
-        name: m.id,
-        component: m.loadComponent,
-        meta: { moduleId: m.id, category: m.category },
-      })),
-    ],
-  })
+  // 用**正式的**路由表，不自己抄一份：抄的那份漏掉新路由時，測試會全綠地騙人
+  const router = createAppRouter(createMemoryHistory())
   return { pinia, i18n, router, missingKeys }
 }
 
-/** 所有實際會被使用者打開的路由：模組由 registry 生成，加上首頁與統計 */
-const ALL_ROUTES = ['/', '/stats', ...listModules().map((m) => m.route)]
+/** 所有實際會被使用者打開的路由：模組由 registry 生成，加上首頁、統計與內容頁 */
+const ALL_ROUTES = [
+  '/',
+  '/stats',
+  KNOWLEDGE_BASE_PATH,
+  '/knowledge/scale-ionian',
+  ...LEGAL_DOCS.map(legalPath),
+  ...listModules().map((m) => m.route),
+  // 英文版路由是獨立的路由記錄，會走到不同的 meta 分支，值得各抽一條驗
+  '/en',
+  '/en/knowledge',
+  '/en/knowledge/scale-ionian',
+  '/en/about',
+]
 
 describe('App 掛載', () => {
   beforeEach(() => localStorage.clear())
@@ -263,6 +269,94 @@ describe('App 掛載', () => {
   })
 })
 
+describe('內容頁與語系網址（Phase 6）', () => {
+  beforeEach(() => localStorage.clear())
+
+  it('知識索引列出全部條目，且每一條都連得到自己的頁面', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push(KNOWLEDGE_BASE_PATH)
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const hrefs = wrapper.findAll('a').map((a) => a.attributes('href') ?? '')
+    const entryLinks = hrefs.filter((h) => h.startsWith('/knowledge/'))
+    expect(entryLinks.length).toBe(Object.keys(knowledgeZh).length)
+    expect(new Set(entryLinks).size).toBe(entryLinks.length)
+  })
+
+  it('知識條目頁渲染標題與內文', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/knowledge/scale-ionian')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    expect(wrapper.text()).toContain(knowledgeZh['scale.ionian'].title)
+    expect(wrapper.find('h1').text()).toBe(knowledgeZh['scale.ionian'].title)
+  })
+
+  it('網址不存在的條目顯示「找不到」，不是空白頁', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/knowledge/scale-nope')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+    expect(wrapper.text()).toContain(i18n.global.t('knowledge.missing'))
+  })
+
+  it('catch-all 顯示 404 頁而不是一片空白', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/no-such-page')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+    expect(wrapper.text()).toContain(i18n.global.t('notFound.title'))
+  })
+
+  it('/en 前綴的路由用英文渲染，頁尾連結也帶前綴', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/en/about')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    expect(wrapper.text()).toContain(legalEn['about'].title)
+    const hrefs = wrapper.findAll('footer a').map((a) => a.attributes('href') ?? '')
+    expect(hrefs.every((h) => h.startsWith('/en/'))).toBe(true)
+  })
+
+  /**
+   * 語系與網址同步：使用者的語言是英文、網址卻沒有前綴時，導到有前綴的那一個。
+   *
+   * 相關的 race（掛載時初始導航尚未 commit，route 還是 START_LOCATION，
+   * 導頁會蓋掉使用者真正要去的網址）在 main.ts 以 `await router.isReady()` 根除，
+   * App.vue 的 matched 長度檢查是第二道防線。這裡的 memory history 掛載時序
+   * 與瀏覽器不同，重現不了那個 race——它是在瀏覽器上抓到也在瀏覽器上驗證的。
+   */
+  it('語言是英文時開 /stats，會導到 /en/stats', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    useSettingsStore(pinia).state.locale = 'en'
+    router.push('/stats')
+    await router.isReady()
+    mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    expect(router.currentRoute.value.path).toBe('/en/stats')
+  })
+
+  it('中文使用者開 /en/stats 會切成英文並留在原網址', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/en/stats')
+    await router.isReady()
+    mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    expect(router.currentRoute.value.path).toBe('/en/stats')
+    expect(useSettingsStore(pinia).state.locale).toBe('en')
+  })
+})
+
 describe('全域錯誤邊界', () => {
   beforeEach(() => localStorage.clear())
 
@@ -271,19 +365,12 @@ describe('全域錯誤邊界', () => {
     const pinia = createPinia()
     setActivePinia(pinia)
     const i18n = createI18n({ legacy: false, locale: 'zh-TW', fallbackLocale: 'en', messages: { 'zh-TW': zhTW, en } })
-    const router = createRouter({
-      history: createMemoryHistory(),
-      routes: [
-        { path: '/', name: 'home', component: () => import('./views/HomeView.vue') },
-        { path: '/stats', name: 'stats', component: () => import('./views/StatsView.vue') },
-        // 首頁會替每個模組畫 RouterLink，路由缺了會噴 warning——照樣註冊進來
-        ...listModules().map((m) => ({ path: m.route, name: m.id, component: m.loadComponent })),
-        {
-          path: '/boom',
-          name: 'boom',
-          component: { setup: () => { throw new Error('模組爆了') } },
-        },
-      ],
+    // 同樣用正式路由表：首頁與頁尾會替每條路由畫 RouterLink，缺一條就噴 warning
+    const router = createAppRouter(createMemoryHistory())
+    router.addRoute({
+      path: '/boom',
+      name: 'boom',
+      component: { setup: () => { throw new Error('模組爆了') } },
     })
     return { pinia, i18n, router }
   }

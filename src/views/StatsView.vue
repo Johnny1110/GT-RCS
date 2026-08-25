@@ -14,6 +14,7 @@ import {
   bpmSeries, currentStreak, dailyTotals, moduleShares, secondsInLastDays, totalSeconds,
   type StatEntry,
 } from '@/core/stats'
+import AdSlot from '@/components/ads/AdSlot.vue'
 import LineChart from '@/components/charts/LineChart.vue'
 import StackedBarChart, { type BarRow, type ChartSeries } from '@/components/charts/StackedBarChart.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
@@ -335,5 +336,7 @@ async function onFilePicked(event: Event): Promise<void> {
         {{ t(`stats.importError.${backup.error.value}`) }}
       </p>
     </section>
+
+    <AdSlot placement="stats" />
   </div>
 </template>

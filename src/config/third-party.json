@@ -1,0 +1,62 @@
+{
+  "$comment": "第三方網域白名單 — 唯一真相（PRD Phase 6 §5 風險：CSP 與 script 清單衝突）。src/thirdParty/** 注入 script 時用它，scripts/gen-firebase-json.mjs 生成 CSP 標頭時也用它；deploy/firebase.spec.ts 鎖定兩邊一致。加網域只改這裡。",
+  "adsense": {
+    "why": "AdSense 廣告投放與素材",
+    "script": [
+      "https://pagead2.googlesyndication.com",
+      "https://tpc.googlesyndication.com",
+      "https://adservice.google.com",
+      "https://googleads.g.doubleclick.net"
+    ],
+    "connect": [
+      "https://pagead2.googlesyndication.com",
+      "https://googleads.g.doubleclick.net",
+      "https://ep1.adtrafficquality.google",
+      "https://ep2.adtrafficquality.google"
+    ],
+    "frame": [
+      "https://googleads.g.doubleclick.net",
+      "https://tpc.googlesyndication.com",
+      "https://www.google.com",
+      "https://ep2.adtrafficquality.google"
+    ],
+    "img": [
+      "https://pagead2.googlesyndication.com",
+      "https://tpc.googlesyndication.com",
+      "https://googleads.g.doubleclick.net",
+      "https://www.google.com",
+      "https://ep1.adtrafficquality.google"
+    ]
+  },
+  "cmp": {
+    "why": "Google 認證 CMP（Privacy & messaging / Funding Choices）— EEA 同意徵求",
+    "script": [
+      "https://fundingchoicesmessages.google.com"
+    ],
+    "connect": [
+      "https://fundingchoicesmessages.google.com"
+    ],
+    "frame": [
+      "https://fundingchoicesmessages.google.com"
+    ],
+    "img": [
+      "https://fundingchoicesmessages.google.com"
+    ]
+  },
+  "analytics": {
+    "why": "GA4（受 CMP 同意管控）",
+    "script": [
+      "https://www.googletagmanager.com"
+    ],
+    "connect": [
+      "https://www.google-analytics.com",
+      "https://region1.google-analytics.com",
+      "https://www.googletagmanager.com"
+    ],
+    "frame": [],
+    "img": [
+      "https://www.google-analytics.com",
+      "https://www.googletagmanager.com"
+    ]
+  }
+}

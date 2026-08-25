@@ -1,0 +1,39 @@
+# 檢查（PRD Phase 6 / F6-2.1）——每個 PR 與每次進 main 都跑。
+# 這一份不碰任何憑證，所以 fork 來的 PR 也跑得動；部署另外一份 workflow。
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test
+
+      # 不帶任何 VITE_* 變數：這一步同時驗證「什麼都沒設定也建得起來、而且零廣告」
+      - name: Build
+        run: npx vite build
+
+      # 首屏 bundle 是硬指標（< 200KB gz）。守在 CI 才不會靠人記得檢查
+      - name: Check first-load bundle budget
+        run: node scripts/check-bundle-size.mjs

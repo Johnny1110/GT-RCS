@@ -91,3 +91,15 @@ body {
   height: 0.875rem;
   cursor: pointer;
 }
+
+/* 廣告版位保留高度（PRD F6-3.1，CLS = 0）。
+   高度由組件以 CSS 變數注入；用 media query 而不是行內樣式，是因為行內樣式做不到斷點。 */
+.rcs-ad {
+  min-height: var(--ad-h-mobile);
+}
+
+@media (min-width: 640px) {
+  .rcs-ad {
+    min-height: var(--ad-h-desktop);
+  }
+}
