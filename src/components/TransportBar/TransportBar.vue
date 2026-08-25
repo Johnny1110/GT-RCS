@@ -8,7 +8,8 @@
  * 拍號與細分播放中也可切換 —— core Transport 會排到下一個小節線生效，
  * 不會留下長度不明的殘拍（Phase 4 起）。掛著節奏 pattern 時兩者改由 pattern
  * 決定，此處轉為唯讀顯示，避免出現「譜上畫 16 分、click 卻響 8 分」。
- * TODO(opus) Phase 5 / F5-4：全域鍵盤快捷鍵（space 播放、↑↓ 調 BPM）掛載於此。
+ * 全域鍵盤快捷鍵掛在這裡（F5-4）：本組件只在練習頁存在，作用範圍剛好就是
+ * 「有 click 的頁面」。實作在 composables/useKeyboardShortcuts.ts。
  */
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -18,10 +19,15 @@ import {
 } from '@/core/audio'
 import BeatLamps from '@/components/ui/BeatLamps.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
+import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
+import { useShortcutsStore } from '@/stores/shortcuts'
 import { useTransportStore } from '@/stores/transport'
 
 const { t } = useI18n()
 const transport = useTransportStore()
+const shortcuts = useShortcutsStore()
+
+useKeyboardShortcuts()
 
 const timeSigOptions = Object.keys(TIME_SIGNATURES).map((key) => ({ value: key, label: key }))
 const currentTimeSig = computed(() => timeSignatureKey(transport.timeSig))
@@ -62,7 +68,7 @@ function onVolumeInput(role: SoundingRole, event: Event): void {
     </button>
 
     <div class="flex flex-col gap-1">
-      <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">{{ t('transport.bpm') }}</span>
+      <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('transport.bpm') }}</span>
       <div class="flex items-center gap-3">
         <span class="font-mono text-2xl font-bold leading-none tabular-nums text-ink-50">{{ transport.bpm }}</span>
         <input
@@ -78,16 +84,16 @@ function onVolumeInput(role: SoundingRole, event: Event): void {
     </div>
 
     <div v-if="transport.patternDriven" class="flex flex-col gap-1">
-      <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">{{ t('transport.meter') }}</span>
+      <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('transport.meter') }}</span>
       <p class="font-mono text-sm leading-[26px] tabular-nums text-ink-300">
-        {{ currentTimeSig }}<span class="mx-1.5 text-ink-600">·</span>{{ currentSubdivisionLabel }}
-        <span class="ml-2 text-[10px] uppercase tracking-[0.16em] text-ink-500">{{ t('transport.fromPattern') }}</span>
+        {{ currentTimeSig }}<span class="mx-1.5 text-ink-600" aria-hidden="true">·</span>{{ currentSubdivisionLabel }}
+        <span class="ml-2 text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('transport.fromPattern') }}</span>
       </p>
     </div>
 
     <template v-else>
       <div class="flex flex-col gap-1">
-        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">{{ t('transport.timeSignature') }}</span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('transport.timeSignature') }}</span>
         <SegmentedControl
           :model-value="currentTimeSig"
           :options="timeSigOptions"
@@ -97,7 +103,7 @@ function onVolumeInput(role: SoundingRole, event: Event): void {
       </div>
 
       <div class="flex flex-col gap-1">
-        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">{{ t('transport.subdivision') }}</span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('transport.subdivision') }}</span>
         <SegmentedControl
           :model-value="currentSubdivision"
           :options="subdivisions"
@@ -108,7 +114,7 @@ function onVolumeInput(role: SoundingRole, event: Event): void {
     </template>
 
     <div class="flex flex-col gap-1">
-      <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">{{ t('transport.beat') }}</span>
+      <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('transport.beat') }}</span>
       <BeatLamps
         :beats="transport.timeSig.beats"
         :current="transport.position.beat"
@@ -122,7 +128,7 @@ function onVolumeInput(role: SoundingRole, event: Event): void {
         <button
           type="button"
           class="text-left font-mono text-[10px] uppercase tracking-[0.16em] hover:text-ink-100"
-          :class="transport.voiceMuted[role] ? 'text-ink-600 line-through' : 'text-ink-500'"
+          :class="transport.voiceMuted[role] ? 'text-ink-600 line-through' : 'text-ink-400'"
           :aria-pressed="transport.voiceMuted[role]"
           @click="transport.toggleVoiceMute(role)"
         >
@@ -140,5 +146,14 @@ function onVolumeInput(role: SoundingRole, event: Event): void {
         >
       </div>
     </div>
+
+    <button
+      type="button"
+      class="ml-auto shrink-0 rounded border border-ink-700 px-2 py-1 font-mono text-xs text-ink-400 hover:bg-ink-800 hover:text-ink-100"
+      :aria-label="t('shortcuts.title')"
+      @click="shortcuts.toggleHelp()"
+    >
+      ?
+    </button>
   </div>
 </template>

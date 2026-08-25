@@ -183,6 +183,27 @@ export function parseProgression(input: string, harmonyLevel: HarmonyLevel = 'se
   return trimmed.split(/\s+/).map((raw, index) => parseToken(raw, index, harmonyLevel))
 }
 
+/** 羅馬數字（大寫），index 0 未用 */
+const NUMERAL_BY_NUMBER: readonly string[] = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
+
+/**
+ * 級數 → 記法字串，parseProgression 的反向（自訂進行編輯器用，PRD F5-3.1）。
+ *
+ * 大小寫依大調的自然品質（ii、iii、vi、vii 小寫）；帶升降記號的一律大寫，
+ * 與 parser 的借用規則對稱（bVII、bIII、bVI 就是慣用寫法）。
+ * 保證 parseProgression(degreeToNumeral(d))[0].degree === d。
+ */
+export function degreeToNumeral(degree: DegreeLabel): string {
+  const parsed = parseDegree(degree)
+  const numeral = NUMERAL_BY_NUMBER[parsed.number]
+  if (numeral === undefined) throw new Error(`Unsupported degree for numeral: ${degree}`)
+  if (parsed.accidentalOffset === 0) {
+    return DIATONIC_UPPER[parsed.number] === true ? numeral : numeral.toLowerCase()
+  }
+  const accidental = parsed.accidentalOffset < 0 ? 'b'.repeat(-parsed.accidentalOffset) : '#'.repeat(parsed.accidentalOffset)
+  return `${accidental}${numeral}`
+}
+
 /** 把一個 token 帶入調，算出根音、顯示名與內音 */
 export function realizeChord(token: ProgressionToken, options: RealizeOptions): RealizedChord {
   const root = spellDegree(options.key, token.degree)

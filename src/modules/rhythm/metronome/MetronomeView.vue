@@ -37,13 +37,13 @@ const beatLabel = computed(() => (playing.value ? String(position.beat) : EMPTY)
 
     <div class="flex items-end gap-10">
       <div class="flex flex-col items-center gap-1">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('metronome.bar') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('metronome.bar') }}</span>
         <span class="font-mono text-4xl font-bold tabular-nums text-ink-50">{{ barLabel }}</span>
       </div>
       <div class="flex flex-col items-center gap-1">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('metronome.beatOf') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('metronome.beatOf') }}</span>
         <span class="font-mono text-4xl font-bold tabular-nums text-ink-50">
-          {{ beatLabel }}<span class="text-xl text-ink-500">/{{ beats }}</span>
+          {{ beatLabel }}<span class="text-xl text-ink-400">/{{ beats }}</span>
         </span>
       </div>
     </div>

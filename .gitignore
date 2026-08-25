@@ -141,3 +141,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Firebase 本機專案關聯（每個人不同，不進版控）
+.firebaserc

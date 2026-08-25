@@ -8,10 +8,13 @@ import { useI18n } from 'vue-i18n'
 import { chordPositions, mapToFretboard } from '@/core/theory'
 import CircleOfFifths from '@/components/CircleOfFifths/CircleOfFifths.vue'
 import ChordTimeline, { type TimelineEntry } from '@/components/ChordTimeline/ChordTimeline.vue'
+import ChordDemoControl from '@/components/ui/ChordDemoControl.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
+import { useChordDemo } from '@/composables/useChordDemo'
 import { useModuleSettings } from '@/composables/useModuleSettings'
+import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
 import { useTransportTick } from '@/composables/useTransportTick'
@@ -38,6 +41,13 @@ usePracticeSession({
 })
 
 const { position, playing } = useTransportTick()
+/** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
+usePresetNavigation({
+  items: () => CIRCLE_PROGRESSIONS.map((p) => p.id),
+  current: () => settings.presetId,
+  select: (id) => { settings.presetId = id },
+})
+
 
 const preset = computed(() => findCircleProgression(settings.presetId) ?? CIRCLE_PROGRESSIONS[0]!)
 const cycle = computed(() =>
@@ -87,6 +97,9 @@ const presetOptions = computed(() =>
 const barsOptions = BARS_PER_KEY_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))
 const keyOptions = DESCENDING_FIFTHS.map((key) => ({ value: key, label: key }))
 
+/** 示範音：直接由 cycle 查小節，不經過視覺 position——發聲要提前排程 */
+useChordDemo((bar) => cycleBarAt(cycle.value, bar)?.chords[0])
+
 const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
 </script>
 
@@ -99,11 +112,11 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.progression') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.progression') }}</span>
         <SegmentedControl v-model="settings.presetId" :options="presetOptions" :aria-label="t('chords.progression')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.barsPerKey') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.barsPerKey') }}</span>
         <SegmentedControl
           :model-value="String(settings.barsPerKey)"
           :options="barsOptions"
@@ -112,9 +125,10 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
         />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.startKey') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.startKey') }}</span>
         <SegmentedControl v-model="settings.startKey" :options="keyOptions" :aria-label="t('chords.startKey')" wrap />
       </div>
+      <ChordDemoControl />
     </div>
 
     <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
@@ -127,10 +141,10 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
       <div class="flex min-w-0 flex-col gap-4">
         <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2 font-mono text-xs text-ink-400">
           <span>{{ t('chords.key') }} <b class="text-base text-ink-50">{{ current?.key }}</b>
-            <span class="text-ink-600"> {{ (current?.keyIndex ?? 0) + 1 }}/12</span></span>
+            <span class="text-ink-400"> {{ (current?.keyIndex ?? 0) + 1 }}/12</span></span>
           <span>{{ t('metronome.bar') }}
             <b class="text-base tabular-nums text-ink-50">{{ current?.barInKey ?? 1 }}</b>
-            <span class="text-ink-600">/{{ settings.barsPerKey }}</span></span>
+            <span class="text-ink-400">/{{ settings.barsPerKey }}</span></span>
           <span v-if="nextChord">{{ t('chords.next') }} <b class="text-ink-100">{{ nextChord.symbol }}</b></span>
         </div>
 
@@ -139,7 +153,7 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
     </div>
 
     <section class="flex flex-col gap-2">
-      <p class="font-mono text-[11px] text-ink-500">
+      <p class="font-mono text-[11px] text-ink-400">
         <span class="uppercase tracking-[0.18em]">{{ t('chords.chordTones') }}</span>
         <span class="ml-2 text-sm text-ink-300">{{ currentChord?.symbol }}</span>
       </p>

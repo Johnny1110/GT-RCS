@@ -34,7 +34,7 @@ watch(
   <section class="flex flex-col gap-3">
     <button
       type="button"
-      class="flex w-fit items-center gap-2 rounded px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500 hover:bg-ink-800 hover:text-ink-100"
+      class="flex w-fit items-center gap-2 rounded px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400 hover:bg-ink-800 hover:text-ink-100"
       :aria-expanded="open"
       @click="open = !open"
     >
@@ -47,7 +47,7 @@ watch(
         <h3 class="text-base font-semibold text-ink-50">{{ entry.title }}</h3>
         <RichText :blocks="entry.blocks" />
       </template>
-      <p v-else class="text-sm text-ink-500">
+      <p v-else class="text-sm text-ink-400">
         {{ missing ? t('knowledge.missing') : t('knowledge.loading') }}
       </p>
     </article>

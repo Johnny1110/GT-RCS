@@ -8,10 +8,13 @@ import { useI18n } from 'vue-i18n'
 import { chordPositions, mapToFretboard, realizeProgression } from '@/core/theory'
 import CircleOfFifths from '@/components/CircleOfFifths/CircleOfFifths.vue'
 import ChordTimeline, { type TimelineEntry } from '@/components/ChordTimeline/ChordTimeline.vue'
+import ChordDemoControl from '@/components/ui/ChordDemoControl.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
+import { useChordDemo } from '@/composables/useChordDemo'
 import { useModuleSettings } from '@/composables/useModuleSettings'
+import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
 import { useTransportTick } from '@/composables/useTransportTick'
@@ -47,6 +50,13 @@ usePracticeSession({
 })
 
 const { position, playing } = useTransportTick()
+/** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
+usePresetNavigation({
+  items: () => level.value.progressions.map((p) => p.id),
+  current: () => settings.presetId,
+  select: (id) => { settings.presetId = id },
+})
+
 
 const bars = computed(() =>
   realizeProgression(preset.value, { key: settings.key, harmonyLevel: preset.value.harmonyLevel }),
@@ -68,6 +78,11 @@ const positions = computed(() =>
 const focusedPositionId = ref<string | null>(null)
 watch(() => currentChord.value?.root.pc, () => { focusedPositionId.value = null })
 
+
+/** 示範音：直接由 bars 查小節，不經過視覺 position——發聲要提前排程 */
+useChordDemo((bar) =>
+  bars.value.length === 0 ? undefined : bars.value[(bar - 1) % bars.value.length]?.chords[0],
+)
 
 const timeline = computed<TimelineEntry[]>(() => {
   if (bars.value.length === 0) return []
@@ -105,17 +120,18 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0] ?? level.value
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.key') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.key') }}</span>
         <SegmentedControl v-model="settings.key" :options="keyOptions" :aria-label="t('chords.key')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.level') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.level') }}</span>
         <SegmentedControl v-model="settings.levelId" :options="levelOptions" :aria-label="t('chords.level')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.progression') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.progression') }}</span>
         <SegmentedControl v-model="settings.presetId" :options="progressionOptions" :aria-label="t('chords.progression')" wrap />
       </div>
+      <ChordDemoControl />
     </div>
 
     <p class="max-w-[65ch] text-sm text-ink-400">{{ t(level.descriptionKey) }}</p>
@@ -129,7 +145,7 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0] ?? level.value
     </div>
 
     <section class="flex flex-col gap-2">
-      <p class="font-mono text-[11px] text-ink-500">
+      <p class="font-mono text-[11px] text-ink-400">
         <span class="uppercase tracking-[0.18em]">{{ t('chords.chordTones') }}</span>
         <span class="ml-2 text-sm text-ink-300">{{ currentChord?.symbol }}</span>
       </p>

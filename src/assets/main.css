@@ -65,3 +65,41 @@ body {
   accent-color: var(--color-ink-600);
   cursor: not-allowed;
 }
+
+/* 文字輸入：與 segmented control 同一套邊框語言，聚焦時邊框提亮（design-system.md §5） */
+.rcs-input {
+  border-radius: 4px;
+  border: 1px solid var(--color-ink-700);
+  background-color: var(--color-ink-950);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-ink-100);
+}
+
+.rcs-input::placeholder {
+  color: var(--color-ink-600);
+}
+
+.rcs-input[aria-invalid='true'] {
+  border-color: var(--color-ink-400);
+}
+
+/* 核取方塊：同樣不引入 accent 色 */
+.rcs-check {
+  accent-color: var(--color-ink-50);
+  width: 0.875rem;
+  height: 0.875rem;
+  cursor: pointer;
+}
+
+/* 廣告版位保留高度（PRD F6-3.1，CLS = 0）。
+   高度由組件以 CSS 變數注入；用 media query 而不是行內樣式，是因為行內樣式做不到斷點。 */
+.rcs-ad {
+  min-height: var(--ad-h-mobile);
+}
+
+@media (min-width: 640px) {
+  .rcs-ad {
+    min-height: var(--ad-h-desktop);
+  }
+}

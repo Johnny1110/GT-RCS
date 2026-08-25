@@ -32,7 +32,7 @@ defineProps<{ entries: readonly TimelineEntry[] }>()
     >
       <span
         class="font-mono text-[10px] uppercase tracking-[0.16em]"
-        :class="entry.state === 'current' ? 'text-ink-600' : 'text-ink-500'"
+        :class="entry.state === 'current' ? 'text-ink-600' : 'text-ink-400'"
       >{{ entry.caption }}</span>
       <span
         class="font-mono text-lg font-bold tabular-nums"

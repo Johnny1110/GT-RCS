@@ -11,6 +11,7 @@ import RhythmSheet from '@/components/RhythmSheet/RhythmSheet.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
 import { useModuleSettings } from '@/composables/useModuleSettings'
+import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
 import { useTransportTick } from '@/composables/useTransportTick'
@@ -33,6 +34,13 @@ settings.countStyle = resolveCountStyle(settings.countStyle, SUBDIVISION_DEFAULT
 
 const transport = useTransportStore()
 const stage = computed(() => findStage(settings.stageId) ?? SUBDIVISION_STAGES[0]!)
+/** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
+usePresetNavigation({
+  items: () => stage.value.patterns.map((p) => p.id),
+  current: () => settings.patternId,
+  select: (id) => { settings.patternId = id },
+})
+
 
 // 換課表時，原本選的 pattern 不屬於新課表 → 落到該級的第一個
 watch(stage, (value) => {
@@ -89,11 +97,11 @@ const knowledgeId = computed(() => stage.value.knowledgeIds?.[0])
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('rhythm.stage') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.stage') }}</span>
         <SegmentedControl v-model="settings.stageId" :options="stageOptions" :aria-label="t('rhythm.stage')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('rhythm.pattern') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.pattern') }}</span>
         <SegmentedControl v-model="settings.patternId" :options="patternOptions" :aria-label="t('rhythm.pattern')" wrap />
       </div>
     </div>
@@ -102,13 +110,13 @@ const knowledgeId = computed(() => stage.value.knowledgeIds?.[0])
 
     <section class="flex min-w-0 flex-col gap-4 rounded-lg border border-ink-700 bg-ink-900 p-5">
       <div class="flex flex-wrap items-center justify-between gap-4">
-        <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">
+        <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
           {{ t(pattern.titleKey) }}
         </p>
         <p
           v-if="playing"
           class="rounded px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.16em]"
-          :class="silent ? 'bg-ink-50 text-ink-950' : 'text-ink-500'"
+          :class="silent ? 'bg-ink-50 text-ink-950' : 'text-ink-400'"
         >
           {{ silent ? t('rhythm.statusSilent') : t('rhythm.statusDemo') }}
         </p>
@@ -127,11 +135,11 @@ const knowledgeId = computed(() => stage.value.knowledgeIds?.[0])
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('rhythm.demoSilence') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.demoSilence') }}</span>
         <SegmentedControl v-model="settings.demoSilence" :options="demoOptions" :aria-label="t('rhythm.demoSilence')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('rhythm.counting') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.counting') }}</span>
         <SegmentedControl v-model="settings.countStyle" :options="countOptions" :aria-label="t('rhythm.counting')" />
       </div>
     </div>

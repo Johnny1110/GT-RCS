@@ -124,7 +124,7 @@ function onCell(barIndex: number, cellIndex: number): void {
       <div v-for="row in rows" :key="row.barIndex" class="flex items-start gap-3">
         <span
           class="w-5 shrink-0 pt-3 text-right font-mono text-[11px] tabular-nums"
-          :class="row.barIndex === cursorBar ? 'text-ink-100' : 'text-ink-600'"
+          :class="row.barIndex === cursorBar ? 'text-ink-100' : 'text-ink-400'"
         >{{ row.barIndex + 1 }}</span>
 
           <!-- 拍與拍之間 16px、拍內 6px：視覺分組就是「拍」 -->
@@ -157,7 +157,7 @@ function onCell(barIndex: number, cellIndex: number): void {
               <!-- w-full + overflow-hidden：格寬壓到下限時，計數文字不得溢出去撞到隔壁格 -->
               <span
                 class="w-full overflow-hidden text-center font-mono text-[11px] leading-none"
-                :class="cell.beatHead ? 'font-bold text-ink-100' : 'text-ink-500'"
+                :class="cell.beatHead ? 'font-bold text-ink-100' : 'text-ink-400'"
               >{{ cell.label }}</span>
             </button>
           </div>

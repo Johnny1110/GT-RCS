@@ -12,6 +12,7 @@ import BeatLamps from '@/components/ui/BeatLamps.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
 import { useModuleSettings } from '@/composables/useModuleSettings'
+import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
 import { useTransportTick } from '@/composables/useTransportTick'
@@ -40,6 +41,13 @@ usePracticeSession({
   moduleId: MODULE_ID,
   params: () => ({ root: settings.root, scale: settings.scale }),
 })
+/** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
+usePresetNavigation({
+  items: () => SCALE_TYPES,
+  current: () => settings.scale,
+  select: (id) => { settings.scale = id as typeof settings.scale },
+})
+
 
 const transport = useTransportStore()
 const log = usePracticeLogStore()
@@ -75,31 +83,31 @@ const totalMinutes = computed(() =>
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
       <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.scales.practice.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.scales.practice.description') }}</p>
-      <p v-if="totalMinutes > 0" class="ml-auto font-mono text-xs text-ink-500">
+      <p v-if="totalMinutes > 0" class="ml-auto font-mono text-xs text-ink-400">
         {{ t('practice.totalMinutes', { minutes: totalMinutes }) }}
       </p>
     </header>
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('explorer.key') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.key') }}</span>
         <SegmentedControl v-model="settings.root" :options="keyOptions" :aria-label="t('explorer.key')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('explorer.scale') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.scale') }}</span>
         <SegmentedControl v-model="settings.scale" :options="scaleOptions" :aria-label="t('explorer.scale')" wrap />
       </div>
     </div>
 
     <div class="flex flex-wrap items-center gap-x-8 gap-y-3 rounded-lg border border-ink-700 bg-ink-900 px-5 py-3">
       <div class="flex flex-col gap-1">
-        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">{{ t('metronome.bar') }}</span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('metronome.bar') }}</span>
         <span class="font-mono text-2xl font-bold tabular-nums text-ink-50">
           {{ playing ? position.bar : '—' }}
         </span>
       </div>
       <div class="flex flex-col gap-1">
-        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">{{ t('transport.beat') }}</span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('transport.beat') }}</span>
         <BeatLamps
           :beats="transport.timeSig.beats"
           :current="position.beat"
@@ -108,7 +116,7 @@ const totalMinutes = computed(() =>
           :gap="10"
         />
       </div>
-      <p class="ml-auto max-w-sm text-xs leading-6 text-ink-500">{{ t('practice.hint') }}</p>
+      <p class="ml-auto max-w-sm text-xs leading-6 text-ink-400">{{ t('practice.hint') }}</p>
     </div>
 
     <div class="flex flex-col gap-2">
@@ -120,10 +128,10 @@ const totalMinutes = computed(() =>
         position-mode="focus"
         label-mode="degree"
       />
-      <p class="text-xs text-ink-500">{{ t('fretboard.scalePositionHint') }}</p>
+      <p class="text-xs text-ink-400">{{ t('fretboard.scalePositionHint') }}</p>
     </div>
 
-    <p v-if="signatureDegree" class="font-mono text-xs text-ink-500">
+    <p v-if="signatureDegree" class="font-mono text-xs text-ink-400">
       {{ t('explorer.signatureNote', { degree: signatureDegree }) }}
     </p>
 

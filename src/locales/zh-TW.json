@@ -42,6 +42,10 @@
       "keyPractice": {
         "title": "固定調練習",
         "description": "留在同一個調，從入門三和弦練到 fusion 與 neo-soul"
+      },
+      "custom": {
+        "title": "自訂進行",
+        "description": "自己打級數記法，存起來就能像內建 preset 一樣跟練"
       }
     }
   },
@@ -117,6 +121,95 @@
     "now": "當前",
     "next": "下一個",
     "chordTones": "組成音（全指板）"
+  },
+  "chordDemo": {
+    "label": "示範音",
+    "off": "關",
+    "pad": "鋪底",
+    "strum": "掃弦",
+    "volume": "示範音音量",
+    "hint": "示範音只是讓你聽見和弦換了，click 仍是主角。手機外放時 pad 比 strum 不容易蓋掉拍點。"
+  },
+  "error": {
+    "title": "這一頁出了問題",
+    "body": "練習紀錄與設定都存在瀏覽器裡，沒有受到影響。換一頁或重新整理就能繼續；如果一直發生，建議先到統計頁匯出一份備份。",
+    "home": "回首頁",
+    "backup": "去匯出備份"
+  },
+  "shortcuts": {
+    "title": "鍵盤快捷鍵",
+    "play": "播放／停止",
+    "bpm": "BPM ±1",
+    "bpmLarge": "BPM ±10",
+    "preset": "上一個／下一個 preset",
+    "help": "開關這個說明",
+    "close": "關閉說明",
+    "typingHint": "在文字輸入框裡打字時不會觸發快捷鍵。",
+    "dismiss": "關閉"
+  },
+  "custom": {
+    "new": "新增",
+    "newName": "我的進行 {n}",
+    "copySuffix": "(複製)",
+    "duplicate": "複製",
+    "delete": "刪除",
+    "deleteConfirm": "刪除「{name}」？無法復原。",
+    "empty": "還沒有自訂進行。按「新增」開始，或在統計頁匯入備份。",
+    "name": "名稱",
+    "namePlaceholder": "例如：我的爵士 2-5-1",
+    "tokens": "級數記法",
+    "tokensPlaceholder": "例如：ii V I 或 I vi IV V",
+    "removeLast": "退一個",
+    "clickToAdd": "點五度圈加和弦",
+    "barsPerChord": "每和弦小節",
+    "harmonyLevel": "和聲",
+    "harmony": {
+      "triad": "三和弦",
+      "seventh": "七和弦"
+    },
+    "cycleKeys": "沿五度圈走完 12 調",
+    "errorEmpty": "還沒有輸入任何和弦。",
+    "errorToken": "第 {index} 個看不懂：「{token}」",
+    "syntaxHint": "大寫＝大、小寫＝小；可加品質（V7、Imaj7、iim7b5）、借用（bVII）、副屬（V/ii）。",
+    "notPlayable": "記法還不能解析，修好之後就能開始跟練。",
+    "backupHint": "自訂進行只存在這台瀏覽器。到統計頁匯出備份，換裝置時匯入即可還原。"
+  },
+  "stats": {
+    "title": "統計",
+    "description": "練了多久、練了什麼、有沒有變快",
+    "empty": "還沒有練習紀錄。開始跟練並持續超過 30 秒，這裡就會開始累積。",
+    "week": "本週",
+    "streak": "連續",
+    "total": "累計",
+    "minutes": "分鐘",
+    "days": "天",
+    "daily": "近 {days} 天",
+    "dailyAria": "近 {days} 天每日練習時長長條圖，依節奏、和弦、音階三條線堆疊",
+    "share": "各模組佔比",
+    "bpmProgress": "BPM 進步",
+    "bpmHint": "同一個模組、同一組參數才算同一件事；一天取當天最高的 BPM。",
+    "bpmAria": "{module} 的 BPM 進步折線",
+    "detail": "明細",
+    "allLines": "全部",
+    "date": "日期",
+    "module": "模組",
+    "duration": "時長",
+    "showMore": "顯示更多",
+    "data": "資料管理",
+    "dataHint": "所有紀錄只存在這台瀏覽器，清快取就會消失。換裝置或重灌前請先匯出一份。",
+    "export": "匯出備份",
+    "import": "匯入備份",
+    "clear": "清除全部紀錄",
+    "clearConfirm": "將刪除 {count} 筆紀錄，且無法復原。",
+    "clearYes": "確定刪除",
+    "cancel": "取消",
+    "importError": {
+      "notJson": "這不是一個 JSON 檔。",
+      "notRcs": "這不是 RCS 的備份檔。",
+      "futureFormat": "這份備份來自較新的版本，此版本讀不了。",
+      "noStores": "備份檔內容不完整。",
+      "unknown": "匯入失敗。"
+    }
   },
   "progression": {
     "2516": "2516",
@@ -276,5 +369,55 @@
     "sixEightSix": "六小拍 feel",
     "sixEightGospel": "Gospel 6/8",
     "twelveEightBlues": "12/8 慢藍調"
+  },
+  "ads": {
+    "label": "廣告"
+  },
+  "home": {
+    "intro": {
+      "what": "RCS 是給吉他手的線上練習室：節拍器、指板、五度圈與樂理解說擺在同一個畫面上。打開瀏覽器就能用，不必安裝、不必註冊，練習紀錄只留在你自己的裝置裡。",
+      "why": "節拍器只給你拍子，樂理網站只給你圖表，中間那條「知道了、但手要怎麼動」的鴻溝沒人補。RCS 讓你在聽得到拍子的同時看得到音在哪裡，也讀得到那個音為什麼是那個音。",
+      "privacy": "練習中不會出現廣告——任何會播放節拍的畫面上都不存在廣告版位，這是產品承諾不是設定選項。"
+    },
+    "highlight": {
+      "rhythm": "節拍器、細分練習、Groove 譜面跟練，支援 swing 與重音設計",
+      "chords": "級數進行、12 調循環、五度圈導覽，可自訂任意進行",
+      "scales": "全指板音名與度數、五種指型框、跟著拍子走的音階練習"
+    }
+  },
+  "knowledgeIndex": {
+    "title": "樂理知識",
+    "cta": "翻開樂理知識庫",
+    "description": "音階、和弦、進行與節奏的解說。每一條都寫給正在練琴的人看：什麼時候用、為什麼是這個音、聽起來像什麼。",
+    "count": "共 {count} 篇",
+    "related": "同類條目",
+    "group": {
+      "scale": "音階",
+      "chord": "和弦",
+      "progression": "和弦進行",
+      "rhythm": "節奏",
+      "other": "其他"
+    }
+  },
+  "legal": {
+    "updated": "最後更新：{date}",
+    "cookieSettings": "Cookie 設定",
+    "footerNote": "練習紀錄只留在你的瀏覽器",
+    "privacy": {
+      "title": "隱私權政策",
+      "description": "RCS 沒有後端伺服器，練習紀錄只存在你的瀏覽器。這份政策說明廣告與分析各自使用哪些資料。"
+    },
+    "cookies": {
+      "title": "Cookie 政策",
+      "description": "RCS 自己不放 cookie。這一頁列出第三方廣告、分析與同意管理各自使用的 cookie，以及怎麼控制它們。"
+    },
+    "about": {
+      "title": "關於",
+      "description": "RCS 是給吉他手的免費線上練習室：節奏、和弦、音階三件事，一個畫面。"
+    }
+  },
+  "notFound": {
+    "title": "找不到這一頁",
+    "body": "網址可能打錯了，或這一頁已經不在。從首頁或樂理知識庫繼續吧。"
   }
 }

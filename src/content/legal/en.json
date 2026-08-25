@@ -1,0 +1,136 @@
+{
+  "privacy": {
+    "title": "Privacy Policy",
+    "updated": "2026-08-25",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "RCS is a purely static website: there is no backend server, no sign-up, and no account is ever created for you. This policy explains what data we can reach, and where that data actually goes."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Your practice data never leaves this device.** Settings, the practice log, and your custom chord progressions all live in the browser's localStorage. No network request sends them anywhere. The \"Export backup\" button on the stats page produces a JSON file that downloads to your computer — it does not pass through us."
+      },
+      {
+        "type": "list",
+        "items": [
+          "We have no server that could hold your practice records, so we have no way to read them",
+          "We collect no name, email, phone number, or account information",
+          "Clearing your browser data deletes everything — we neither know about it nor can undo it"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "**Third-party services.** Ads pay for the hosting, and analytics tell us which content people actually read. Both come from Google, and both may set cookies or use similar technologies in your browser:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "**Google AdSense** — serves the ads. Google and its partners may use your prior visits to serve personalised ads",
+          "**Google Analytics 4** — aggregate traffic statistics (page views, approximate region, device type)",
+          "**A Google-certified Consent Management Platform (CMP)** — shows the consent prompt in regions that require prior consent"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "What reaches us is aggregate reporting only; we cannot see individual users. Each service has its own privacy policy — see Google's \"How Google uses information from sites or apps that use our services\"."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Consent and choices.** If you are in the European Economic Area, the UK, or Switzerland, you will see a consent prompt on your first visit. Declining changes nothing about how the site works; ads simply become non-personalised. You can revisit your choice any time from \"Cookie settings\" in the footer."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Children.** This site is not directed at users under 13, and we do not knowingly collect their data."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Changes.** The date at the top of this page is updated whenever the policy changes. Material changes will be called out on the site."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Contact.** Questions about privacy: contact@rcs.guitar."
+      }
+    ]
+  },
+  "cookies": {
+    "title": "Cookie Policy",
+    "updated": "2026-08-25",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "This page lists the cookies and similar technologies used on RCS, what each one does, and how you control them."
+      },
+      {
+        "type": "paragraph",
+        "text": "**RCS sets no cookies of its own.** We store data in localStorage instead — the key difference being that localStorage is **never attached to network requests**. It stays in your browser."
+      },
+      {
+        "type": "list",
+        "items": [
+          "`rcs.settings` — language, volumes, and each practice module's settings",
+          "`rcs.practiceLog` — your practice log (the source for the stats page)",
+          "`rcs.customProgressions` — the chord progressions you wrote yourself"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "**Third-party cookies.** The following services do set cookies in your browser:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "**Advertising (Google AdSense, DoubleClick)** — records ad impressions and clicks, caps how often you see the same ad, and serves personalised ads where you have consented",
+          "**Analytics (Google Analytics 4)** — distinguishes unique visitors and counts page views",
+          "**Consent management (Google CMP)** — remembers your answer to the consent prompt so you are not asked every visit"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "**How to control them.** In regions where prior consent is required, \"Cookie settings\" in the footer reopens the prompt at any time. In any region you can block third-party cookies in your browser settings or use an ad blocker — every RCS feature keeps working, ad containers collapse on their own with no leftover blank space, and you will never see a nag asking you to turn the blocker off."
+      },
+      {
+        "type": "paragraph",
+        "text": "To clear your practice records as well, use \"Clear all data\" on the stats page, or clear this site's browser data directly."
+      }
+    ]
+  },
+  "about": {
+    "title": "About RCS",
+    "updated": "2026-08-25",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "RCS stands for **Rhythm, Chord, Scales** — the three things guitarists practise every day. It is a free practice room in a browser tab: open it and play. Nothing to install, nothing to sign up for."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Why it exists.** Metronomes give you a pulse. Theory sites give you diagrams. Nobody fills the gap between them — the one where you understand the idea but your hands still don't know where to go. RCS puts the metronome, the fretboard, the circle of fifths, and the theory explanation on one screen, so you hear the beat, see where the notes are, and read why those are the notes, all at once."
+      },
+      {
+        "type": "list",
+        "items": [
+          "**Rhythm** — metronome, subdivision drills, and groove sheets to play along with, including swing and accent design",
+          "**Chords** — numeral progressions, the 12-key cycle, circle-of-fifths navigation, and any progression you write yourself",
+          "**Scales** — full-fretboard note names and degrees, five position frames, and scale practice that follows the click"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "**A few deliberate decisions.** The interface is a greyscale instrument panel; colour is reserved for intervals, so every colour on screen carries a specific musical meaning and none of it is decoration. Every note name and chord tone is derived from formulas rather than looked up in a table, so the spelling is right in any key and any scale. The click runs on Web Audio lookahead scheduling rather than setInterval, so a long session does not drift."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Zero ads while you practise.** That is a product promise, not a setting: no ad container exists on any screen that plays a click. Ads appear only on the home page, the theory pages, and the stats page — the pages you read. Those slots pay the hosting bill."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Your data is yours.** Practice records live in your browser only; we have no server that could hold them. Moving to another device is what export/import on the stats page is for."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Contact.** Suggestions, bug reports, and collaboration: contact@rcs.guitar."
+      }
+    ]
+  }
+}

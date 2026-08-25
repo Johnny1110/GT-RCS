@@ -178,12 +178,12 @@ function focusPosition(position: FretboardPosition): void {
               :x="frame.rect.labelX" :y="frame.rect.labelY"
               font-family="var(--font-mono)" font-size="10" font-weight="700"
               letter-spacing="0.08em" class="pointer-events-none"
-              :fill="frame.active ? 'var(--color-ink-400)' : 'var(--color-ink-700)'">{{ frame.label }}</text>
+              :fill="frame.active ? 'var(--color-ink-100)' : 'var(--color-ink-400)'">{{ frame.label }}</text>
 
         <text v-for="num in layout.fretNumbers" :key="`num-${num.fret}`"
               :x="num.x" :y="num.y" text-anchor="middle"
               font-family="var(--font-mono)" font-size="10"
-              :fill="num.marker ? 'var(--color-ink-400)' : 'var(--color-ink-600)'">{{ num.fret }}</text>
+              :fill="num.marker ? 'var(--color-ink-100)' : 'var(--color-ink-400)'">{{ num.fret }}</text>
 
         <g v-for="dot in dots" :key="dot.key" :opacity="dot.opacity"
            @click="$emit('cellClick', dot.cell)">
@@ -197,7 +197,7 @@ function focusPosition(position: FretboardPosition): void {
 
     <!-- 有把位框時，把位本身就是最好的跳轉目標，不再另外列固定格號 -->
     <div v-if="positions.length" class="flex flex-wrap items-center gap-2 self-end">
-      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">
+      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
         {{ t('fretboard.position') }}
       </span>
       <button type="button"
@@ -222,7 +222,7 @@ function focusPosition(position: FretboardPosition): void {
     </div>
 
     <div v-else class="flex items-center gap-2 self-end">
-      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">
+      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
         {{ t('fretboard.jumpTo') }}
       </span>
       <button v-for="fret in POSITION_MARKS" :key="fret" type="button"

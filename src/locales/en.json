@@ -42,6 +42,10 @@
       "keyPractice": {
         "title": "Key Practice",
         "description": "Stay in one key, from beginner triads through fusion and neo-soul"
+      },
+      "custom": {
+        "title": "Custom Progressions",
+        "description": "Type your own numeral notation, save it, play along just like a built-in preset"
       }
     }
   },
@@ -117,6 +121,95 @@
     "now": "Now",
     "next": "Next",
     "chordTones": "Chord tones (full neck)"
+  },
+  "chordDemo": {
+    "label": "Chord demo",
+    "off": "Off",
+    "pad": "Pad",
+    "strum": "Strum",
+    "volume": "Chord demo volume",
+    "hint": "The demo only tells you the chord changed — the click is still the lead. On phone speakers a pad covers the beat less than a strum."
+  },
+  "error": {
+    "title": "This page ran into a problem",
+    "body": "Your practice log and settings live in this browser and are untouched. Switch pages or reload to carry on; if it keeps happening, export a backup from the Stats page first.",
+    "home": "Back to home",
+    "backup": "Export a backup"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "play": "Play / stop",
+    "bpm": "BPM by 1",
+    "bpmLarge": "BPM by 10",
+    "preset": "Previous / next preset",
+    "help": "Toggle this panel",
+    "close": "Close this panel",
+    "typingHint": "Shortcuts stay out of the way while you're typing in a text field.",
+    "dismiss": "Close"
+  },
+  "custom": {
+    "new": "New",
+    "newName": "My progression {n}",
+    "copySuffix": "(copy)",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "deleteConfirm": "Delete \"{name}\"? This cannot be undone.",
+    "empty": "No custom progressions yet. Hit New to start, or import a backup from the Stats page.",
+    "name": "Name",
+    "namePlaceholder": "e.g. My jazz 2-5-1",
+    "tokens": "Numerals",
+    "tokensPlaceholder": "e.g. ii V I or I vi IV V",
+    "removeLast": "Undo last",
+    "clickToAdd": "Click the circle to add",
+    "barsPerChord": "Bars per chord",
+    "harmonyLevel": "Harmony",
+    "harmony": {
+      "triad": "Triads",
+      "seventh": "Sevenths"
+    },
+    "cycleKeys": "Cycle all 12 keys around the circle",
+    "errorEmpty": "No chords entered yet.",
+    "errorToken": "Chord {index} isn't valid: \"{token}\"",
+    "syntaxHint": "Uppercase = major, lowercase = minor; add a quality (V7, Imaj7, iim7b5), borrow (bVII), or a secondary (V/ii).",
+    "notPlayable": "The notation doesn't parse yet - fix it and playback turns back on.",
+    "backupHint": "Custom progressions live in this browser only. Export a backup from the Stats page to move them."
+  },
+  "stats": {
+    "title": "Stats",
+    "description": "How long you practised, on what, and whether you got faster",
+    "empty": "No practice logged yet. Play along for more than 30 seconds and it starts adding up here.",
+    "week": "This week",
+    "streak": "Streak",
+    "total": "All time",
+    "minutes": "min",
+    "days": "days",
+    "daily": "Last {days} days",
+    "dailyAria": "Daily practice minutes over the last {days} days, stacked by rhythm, chords and scales",
+    "share": "Time per module",
+    "bpmProgress": "BPM progress",
+    "bpmHint": "Same module and same settings counts as the same thing; each day takes that day's highest BPM.",
+    "bpmAria": "BPM progress line for {module}",
+    "detail": "Sessions",
+    "allLines": "All",
+    "date": "Date",
+    "module": "Module",
+    "duration": "Length",
+    "showMore": "Show more",
+    "data": "Your data",
+    "dataHint": "Everything lives in this browser only — clearing site data wipes it. Export a copy before switching devices.",
+    "export": "Export backup",
+    "import": "Import backup",
+    "clear": "Clear all history",
+    "clearConfirm": "This deletes {count} sessions and cannot be undone.",
+    "clearYes": "Delete",
+    "cancel": "Cancel",
+    "importError": {
+      "notJson": "That is not a JSON file.",
+      "notRcs": "That is not an RCS backup.",
+      "futureFormat": "This backup comes from a newer version and cannot be read here.",
+      "noStores": "The backup file is incomplete.",
+      "unknown": "Import failed."
+    }
   },
   "progression": {
     "2516": "2516",
@@ -276,5 +369,55 @@
     "sixEightSix": "Six-small-beat feel",
     "sixEightGospel": "Gospel 6/8",
     "twelveEightBlues": "12/8 slow blues"
+  },
+  "ads": {
+    "label": "Advertisement"
+  },
+  "home": {
+    "intro": {
+      "what": "RCS is an online practice room for guitarists: metronome, fretboard, circle of fifths, and theory notes on one screen. Open a browser tab and play — nothing to install, nothing to sign up for, and your practice records stay on your own device.",
+      "why": "Metronomes give you a pulse. Theory sites give you diagrams. Nobody fills the gap between them — the one where you understand the idea but your hands still don't know where to go. RCS lets you hear the beat, see where the notes are, and read why those are the notes, all at once.",
+      "privacy": "No ads while you practise. No ad container exists on any screen that plays a click — that is a product promise, not a setting."
+    },
+    "highlight": {
+      "rhythm": "Metronome, subdivision drills, and groove sheets to play along with, including swing and accent design",
+      "chords": "Numeral progressions, the 12-key cycle, circle-of-fifths navigation, and any progression you write yourself",
+      "scales": "Full-fretboard note names and degrees, five position frames, and scale practice that follows the click"
+    }
+  },
+  "knowledgeIndex": {
+    "title": "Theory",
+    "cta": "Open the theory library",
+    "description": "Notes on scales, chords, progressions, and rhythm — written for someone with a guitar in hand: when to use it, why that note, and what it sounds like.",
+    "count": "{count} entries",
+    "related": "Related entries",
+    "group": {
+      "scale": "Scales",
+      "chord": "Chords",
+      "progression": "Progressions",
+      "rhythm": "Rhythm",
+      "other": "Other"
+    }
+  },
+  "legal": {
+    "updated": "Last updated: {date}",
+    "cookieSettings": "Cookie settings",
+    "footerNote": "Practice records stay in your browser",
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "RCS has no backend server and your practice records live only in your browser. This policy covers what the ads and analytics use."
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "description": "RCS sets no cookies of its own. This page lists the third-party advertising, analytics, and consent cookies and how to control them."
+    },
+    "about": {
+      "title": "About",
+      "description": "RCS is a free online practice room for guitarists: rhythm, chords, and scales on one screen."
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "That URL may be a typo, or the page has moved. Head back to the home page or the theory library."
   }
 }
