@@ -14,6 +14,7 @@ import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
 import { useChordDemo } from '@/composables/useChordDemo'
 import { useModuleSettings } from '@/composables/useModuleSettings'
+import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
 import { useTransportTick } from '@/composables/useTransportTick'
@@ -49,6 +50,13 @@ usePracticeSession({
 })
 
 const { position, playing } = useTransportTick()
+/** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
+usePresetNavigation({
+  items: () => level.value.progressions.map((p) => p.id),
+  current: () => settings.presetId,
+  select: (id) => { settings.presetId = id },
+})
+
 
 const bars = computed(() =>
   realizeProgression(preset.value, { key: settings.key, harmonyLevel: preset.value.harmonyLevel }),
@@ -112,15 +120,15 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0] ?? level.value
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.key') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.key') }}</span>
         <SegmentedControl v-model="settings.key" :options="keyOptions" :aria-label="t('chords.key')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.level') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.level') }}</span>
         <SegmentedControl v-model="settings.levelId" :options="levelOptions" :aria-label="t('chords.level')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.progression') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.progression') }}</span>
         <SegmentedControl v-model="settings.presetId" :options="progressionOptions" :aria-label="t('chords.progression')" wrap />
       </div>
       <ChordDemoControl />
@@ -137,7 +145,7 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0] ?? level.value
     </div>
 
     <section class="flex flex-col gap-2">
-      <p class="font-mono text-[11px] text-ink-500">
+      <p class="font-mono text-[11px] text-ink-400">
         <span class="uppercase tracking-[0.18em]">{{ t('chords.chordTones') }}</span>
         <span class="ml-2 text-sm text-ink-300">{{ currentChord?.symbol }}</span>
       </p>

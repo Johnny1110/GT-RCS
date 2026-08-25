@@ -79,6 +79,13 @@ const sectors = computed<SectorView[]>(() =>
   }),
 )
 
+/** 可點的扇形必須也用得了鍵盤（F5-4.2）：Enter／Space 等同點擊 */
+function onSectorKey(event: KeyboardEvent, key: NoteName): void {
+  if (event.key !== 'Enter' && event.key !== ' ') return
+  event.preventDefault()
+  onSelect(key)
+}
+
 function onSelect(key: NoteName): void {
   if (props.interactive) emit('selectKey', key)
 }
@@ -99,12 +106,16 @@ function onSelect(key: NoteName): void {
         stroke="var(--color-ink-700)"
         stroke-width="1"
         :class="interactive ? 'cursor-pointer' : ''"
+        :role="interactive ? 'button' : undefined"
+        :tabindex="interactive ? 0 : undefined"
+        :aria-label="interactive ? sector.major : undefined"
         @click="onSelect(sector.major)"
+        @keydown="interactive && onSectorKey($event, sector.major)"
       />
       <text
         :x="sector.majorLabel.x" :y="sector.majorLabel.y" dy="-0.1em"
         text-anchor="middle" font-family="var(--font-mono)" font-size="14" font-weight="700"
-        :fill="sector.isTonic ? 'var(--color-ink-950)' : sector.outerDegree ? 'var(--color-ink-100)' : 'var(--color-ink-600)'"
+        :fill="sector.isTonic ? 'var(--color-ink-950)' : sector.outerDegree ? 'var(--color-ink-100)' : 'var(--color-ink-400)'"
         class="pointer-events-none"
       >{{ sector.major }}</text>
       <circle
@@ -120,12 +131,16 @@ function onSelect(key: NoteName): void {
         stroke="var(--color-ink-700)"
         stroke-width="1"
         :class="interactive ? 'cursor-pointer' : ''"
+        :role="interactive ? 'button' : undefined"
+        :tabindex="interactive ? 0 : undefined"
+        :aria-label="interactive ? `${sector.minor}m` : undefined"
         @click="onSelect(sector.minor)"
+        @keydown="interactive && onSectorKey($event, sector.minor)"
       />
       <text
         :x="sector.minorLabel.x" :y="sector.minorLabel.y" dy="-0.05em"
         text-anchor="middle" font-family="var(--font-mono)" font-size="11" font-weight="700"
-        :fill="sector.innerDegree ? 'var(--color-ink-100)' : 'var(--color-ink-600)'"
+        :fill="sector.innerDegree ? 'var(--color-ink-100)' : 'var(--color-ink-400)'"
         class="pointer-events-none"
       >{{ sector.minor }}m</text>
       <circle
@@ -151,7 +166,7 @@ function onSelect(key: NoteName): void {
     >{{ tonic }}</text>
     <text
       v-if="diminished" :x="layout.center" :y="layout.center + 14" text-anchor="middle"
-      font-family="var(--font-mono)" font-size="9" fill="var(--color-ink-500)"
+      font-family="var(--font-mono)" font-size="9" fill="var(--color-ink-400)"
     >vii dim = {{ diminished }}</text>
   </svg>
 </template>

@@ -13,6 +13,7 @@ import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
 import { useModuleSettings } from '@/composables/useModuleSettings'
+import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
 import { scaleKnowledgeId } from '@/content/knowledge'
 import { KEYS, SCALE_TYPES, isKey, isScaleType } from '../shared'
@@ -29,6 +30,13 @@ if (settings.labelMode !== 'degree' && settings.labelMode !== 'noteName') {
 }
 
 usePracticeTransport(settings)
+/** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
+usePresetNavigation({
+  items: () => SCALE_TYPES,
+  current: () => settings.scale,
+  select: (id) => { settings.scale = id as typeof settings.scale },
+})
+
 
 const notes = computed(() => spell(settings.root, SCALE_FORMULAS[settings.scale]))
 const cells = computed(() => mapToFretboard(notes.value))
@@ -82,15 +90,15 @@ const noteDots = computed(() =>
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('explorer.key') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.key') }}</span>
         <SegmentedControl v-model="settings.root" :options="keyOptions" :aria-label="t('explorer.key')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('explorer.scale') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.scale') }}</span>
         <SegmentedControl v-model="settings.scale" :options="scaleOptions" :aria-label="t('explorer.scale')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('explorer.labelMode') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.labelMode') }}</span>
         <SegmentedControl v-model="settings.labelMode" :options="labelOptions" :aria-label="t('explorer.labelMode')" />
       </div>
     </div>
@@ -104,7 +112,7 @@ const noteDots = computed(() =>
         :positions="positions"
         position-mode="focus"
       />
-      <p class="text-xs text-ink-500">{{ t('fretboard.scalePositionHint') }}</p>
+      <p class="text-xs text-ink-400">{{ t('fretboard.scalePositionHint') }}</p>
     </div>
 
     <section class="flex flex-col gap-3">
@@ -115,13 +123,13 @@ const noteDots = computed(() =>
             :class="dot.signature ? 'ring-2 ring-ink-50 ring-offset-2 ring-offset-ink-950' : ''"
             :style="{ backgroundColor: dot.hex, color: dot.textHex }"
           >{{ dot.note.name }}</span>
-          <span class="font-mono text-[11px]" :class="dot.signature ? 'text-ink-100' : 'text-ink-500'">
+          <span class="font-mono text-[11px]" :class="dot.signature ? 'text-ink-100' : 'text-ink-400'">
             {{ dot.note.degree }}
           </span>
         </div>
       </div>
 
-      <p class="font-mono text-xs text-ink-500">
+      <p class="font-mono text-xs text-ink-400">
         {{ settings.root }} {{ t(`scale.${settings.scale}`) }} · {{ formula }}
       </p>
       <p v-if="signatureDegree" class="text-xs text-ink-400">

@@ -12,6 +12,7 @@ import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
 import { COUNT_STYLES } from '@/components/RhythmSheet/counting'
 import { useModuleSettings } from '@/composables/useModuleSettings'
+import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
 import { useTransportTick } from '@/composables/useTransportTick'
@@ -43,6 +44,13 @@ if (!settings.overrides || typeof settings.overrides !== 'object') settings.over
 const transport = useTransportStore()
 const editing = ref(false)
 const style = computed(() => findStyle(settings.styleId) ?? GROOVE_STYLES[0]!)
+/** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
+usePresetNavigation({
+  items: () => style.value.patterns.map((p) => p.id),
+  current: () => settings.patternId,
+  select: (id) => { settings.patternId = id },
+})
+
 
 // 換風格：pattern 落到新風格的第一個；swing 回到該風格的預設
 // （shuffle 的 pattern 用 50% 直拍播出來根本不是同一個節奏，這不是偏好問題）
@@ -121,15 +129,15 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('rhythm.style') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.style') }}</span>
         <SegmentedControl v-model="settings.styleId" :options="styleOptions" :aria-label="t('rhythm.style')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('rhythm.pattern') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.pattern') }}</span>
         <SegmentedControl v-model="settings.patternId" :options="patternOptions" :aria-label="t('rhythm.pattern')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('rhythm.chordHint') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.chordHint') }}</span>
         <p class="font-mono text-lg font-bold leading-[26px] text-ink-50">{{ chordSymbol }}</p>
       </div>
     </div>
@@ -138,7 +146,7 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
 
     <section class="flex min-w-0 flex-col gap-4 rounded-lg border border-ink-700 bg-ink-900 p-5">
       <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-        <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">
+        <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
           {{ t(pattern.titleKey) }}
           <span v-if="customized" class="ml-2 text-ink-300">· {{ t('rhythm.customized') }}</span>
         </p>
@@ -182,7 +190,7 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div v-if="swingApplies" class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('rhythm.swing') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.swing') }}</span>
         <div class="flex items-center gap-3">
           <span class="w-10 font-mono text-sm font-bold tabular-nums text-ink-50">{{ Math.round(transport.swing) }}%</span>
           <input
@@ -209,7 +217,7 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('rhythm.counting') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.counting') }}</span>
         <SegmentedControl v-model="settings.countStyle" :options="countOptions" :aria-label="t('rhythm.counting')" />
       </div>
     </div>

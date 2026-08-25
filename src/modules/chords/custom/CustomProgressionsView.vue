@@ -22,6 +22,7 @@ import ChordDemoControl from '@/components/ui/ChordDemoControl.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import { useChordDemo } from '@/composables/useChordDemo'
 import { useModuleSettings } from '@/composables/useModuleSettings'
+import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
 import { useTransportTick } from '@/composables/useTransportTick'
@@ -46,6 +47,13 @@ usePracticeSession({
 })
 
 const { position, playing } = useTransportTick()
+/** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
+usePresetNavigation({
+  items: () => store.items.map((i) => i.id),
+  current: () => settings.selectedId,
+  select: (id) => { settings.selectedId = id },
+})
+
 
 /** 選中的進行；持久化的 id 可能已被刪除 → 落到第一個 */
 const selected = computed<CustomProgression | undefined>(
@@ -211,7 +219,7 @@ watch(selected, () => { confirmingDelete.value = false })
         <button
           v-if="!confirmingDelete"
           type="button"
-          class="rounded border border-ink-700 px-3 py-1 font-mono text-xs text-ink-500 hover:bg-ink-800 hover:text-ink-100"
+          class="rounded border border-ink-700 px-3 py-1 font-mono text-xs text-ink-400 hover:bg-ink-800 hover:text-ink-100"
           @click="confirmingDelete = true"
         >
           {{ t('custom.delete') }}
@@ -273,7 +281,7 @@ watch(selected, () => { confirmingDelete.value = false })
         </div>
 
         <section class="flex flex-col gap-2">
-          <p class="font-mono text-[11px] text-ink-500">
+          <p class="font-mono text-[11px] text-ink-400">
             <span class="uppercase tracking-[0.18em]">{{ t('chords.chordTones') }}</span>
             <span class="ml-2 text-sm text-ink-300">{{ currentChord?.symbol }}</span>
           </p>
@@ -288,6 +296,6 @@ watch(selected, () => { confirmingDelete.value = false })
       </template>
     </template>
 
-    <p class="max-w-[65ch] text-xs text-ink-500">{{ t('custom.backupHint') }}</p>
+    <p class="max-w-[65ch] text-xs text-ink-400">{{ t('custom.backupHint') }}</p>
   </div>
 </template>

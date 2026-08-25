@@ -58,18 +58,18 @@ const delta = computed(() => (last.value && first.value ? last.value.value - fir
         v-for="point in layout.points"
         :key="point.key"
         :cx="point.x" :cy="point.y" r="2.5"
-        :fill="point === last ? 'var(--color-ink-50)' : 'var(--color-ink-500)'"
+        :fill="point === last ? 'var(--color-ink-50)' : 'var(--color-ink-400)'"
       >
         <title>{{ point.key }} · {{ point.value }} {{ unit }}</title>
       </circle>
     </svg>
 
-    <figcaption class="flex items-baseline gap-2 font-mono text-[11px] tabular-nums text-ink-500">
+    <figcaption class="flex items-baseline gap-2 font-mono text-[11px] tabular-nums text-ink-400">
       <span>{{ first?.value }}</span>
       <span class="text-ink-700">→</span>
       <span class="text-sm font-bold text-ink-50">{{ last?.value }}</span>
       <span>{{ unit }}</span>
-      <span v-if="delta !== 0" class="ml-auto" :class="delta > 0 ? 'text-ink-300' : 'text-ink-600'">
+      <span v-if="delta !== 0" class="ml-auto" :class="delta > 0 ? 'text-ink-300' : 'text-ink-400'">
         {{ delta > 0 ? '+' : '' }}{{ delta }}
       </span>
     </figcaption>

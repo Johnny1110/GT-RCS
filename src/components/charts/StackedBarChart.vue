@@ -86,7 +86,7 @@ const colorOf = computed<Record<string, string>>(() =>
       <span
         v-for="bar in layout.bars"
         :key="`label-${bar.key}`"
-        class="min-w-0 flex-1 text-center font-mono text-[10px] tabular-nums text-ink-600"
+        class="min-w-0 flex-1 text-center font-mono text-[10px] tabular-nums text-ink-400"
       >{{ rows.find((r) => r.key === bar.key)?.label }}</span>
     </div>
 
@@ -95,7 +95,7 @@ const colorOf = computed<Record<string, string>>(() =>
         <span class="h-2.5 w-2.5 rounded-[2px]" :style="{ backgroundColor: s.color }" />
         {{ s.label }}
       </span>
-      <span class="ml-auto font-mono text-[10px] tabular-nums text-ink-600">
+      <span class="ml-auto font-mono text-[10px] tabular-nums text-ink-400">
         {{ Math.round(layout.max) }} {{ unit }}
       </span>
     </figcaption>

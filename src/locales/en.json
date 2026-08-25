@@ -130,6 +130,23 @@
     "volume": "Chord demo volume",
     "hint": "The demo only tells you the chord changed — the click is still the lead. On phone speakers a pad covers the beat less than a strum."
   },
+  "error": {
+    "title": "This page ran into a problem",
+    "body": "Your practice log and settings live in this browser and are untouched. Switch pages or reload to carry on; if it keeps happening, export a backup from the Stats page first.",
+    "home": "Back to home",
+    "backup": "Export a backup"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "play": "Play / stop",
+    "bpm": "BPM by 1",
+    "bpmLarge": "BPM by 10",
+    "preset": "Previous / next preset",
+    "help": "Toggle this panel",
+    "close": "Close this panel",
+    "typingHint": "Shortcuts stay out of the way while you're typing in a text field.",
+    "dismiss": "Close"
+  },
   "custom": {
     "new": "New",
     "newName": "My progression {n}",

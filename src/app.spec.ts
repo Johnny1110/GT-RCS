@@ -234,4 +234,86 @@ describe('App 掛載', () => {
     expect(parsed.version).toBe(3)
     expect(parsed.data.moduleSettings['scales.explorer']?.root).toBe('G')
   })
+
+  /**
+   * 持久化資料損毀（手動改過、被別的分頁寫壞、版本超前）不該讓使用者開不了 app。
+   * VersionedStore 的規則是「壞掉就回退預設，不丟例外」——這裡驗證整條路徑真的接得起來。
+   */
+  it.each(['rcs.settings', 'rcs.practiceLog', 'rcs.customProgressions'])(
+    '%s 損毀時仍然開得起來（回退預設值）',
+    async (key) => {
+      localStorage.setItem(key, 'not-json{{')
+      const { pinia, i18n, router } = createTestApp()
+      router.push('/chords/custom')
+      await router.isReady()
+      const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+      await flushPromises()
+      expect(wrapper.text()).toContain(i18n.global.t('modules.chords.custom.title'))
+    },
+  )
+
+  it('版本超前的持久化資料也回退，不是白畫面', async () => {
+    localStorage.setItem('rcs.settings', JSON.stringify({ version: 999, data: { locale: 'kl' } }))
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+    expect(wrapper.text()).toContain('RCS')
+  })
 })
+
+describe('全域錯誤邊界', () => {
+  beforeEach(() => localStorage.clear())
+
+  /** 練習頁炸掉時最糟的失敗是整片白畫面——使用者不知道自己的紀錄還在不在 */
+  function createCrashingApp() {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const i18n = createI18n({ legacy: false, locale: 'zh-TW', fallbackLocale: 'en', messages: { 'zh-TW': zhTW, en } })
+    const router = createRouter({
+      history: createMemoryHistory(),
+      routes: [
+        { path: '/', name: 'home', component: () => import('./views/HomeView.vue') },
+        { path: '/stats', name: 'stats', component: () => import('./views/StatsView.vue') },
+        // 首頁會替每個模組畫 RouterLink，路由缺了會噴 warning——照樣註冊進來
+        ...listModules().map((m) => ({ path: m.route, name: m.id, component: m.loadComponent })),
+        {
+          path: '/boom',
+          name: 'boom',
+          component: { setup: () => { throw new Error('模組爆了') } },
+        },
+      ],
+    })
+    return { pinia, i18n, router }
+  }
+
+  it('渲染錯誤換成說明畫面，而不是整片白', async () => {
+    const { pinia, i18n, router } = createCrashingApp()
+    router.push('/boom')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    expect(wrapper.text()).toContain(i18n.global.t('error.title'))
+    // 明確告訴使用者紀錄沒事，並給得出下一步
+    expect(wrapper.text()).toContain(i18n.global.t('error.body'))
+    expect(wrapper.text()).toContain('模組爆了')
+    expect(wrapper.findAll('a').length).toBeGreaterThan(0)
+  })
+
+  it('換頁就恢復（壞的是某一頁，不是整個 app）', async () => {
+    const { pinia, i18n, router } = createCrashingApp()
+    router.push('/boom')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+    expect(wrapper.text()).toContain(i18n.global.t('error.title'))
+
+    await router.push('/')
+    await flushPromises()
+    expect(wrapper.text()).not.toContain(i18n.global.t('error.title'))
+    expect(wrapper.text()).toContain(i18n.global.t('app.tagline'))
+  })
+})
+

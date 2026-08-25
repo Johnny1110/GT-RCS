@@ -68,6 +68,12 @@
 | `core/audio/pattern.ts` | **編譯步驟**（pattern → 時刻表） | swing 讓細分不等距。把「一小節 → 每格的角色與偏移（單位＝拍）」先編譯成純資料，Transport 只吃時刻表 —— 之後新增 feel 不必動排程核心，且時刻可被單元測試逐格鎖定 |
 | `core/audio/transport.ts` | **Facade** + TickSource | 播放控制的唯一入口；tick 生成邏輯（BPM/拍號/pattern/swing）全部集中於此 |
 | `core/audio/voices.ts` | **Strategy**（ClickVoice） | 換音色不動排程；NullClickVoice 供測試 |
+| `core/audio/chordVoice.ts` | **Strategy**（ChordVoice） | 和弦示範音與 click 同一套骨架。**彈哪幾個音不在這裡**——那是 core/theory 的 voiceChord()；本層只把 MIDI 音高變成聲音。pad 的低通壓在 click 頻段以下是規格不是調味 |
+| `core/theory/voicing.ts` | 純函式推導（聲位） | pitch class 沒有八度資訊，要發聲就得決定「這個 C 是哪一個 C」。中音域 close voicing + 自動聲部連接（挑移動距離最小的轉位），是樂理不是音訊 |
+| `core/stats/aggregate.ts` | 純函式聚合（統計） | 「今天」由外部注入，本層不讀時鐘（測試才寫得出「連續 5 天」）；分組方式由呼叫端注入，core 不認識模組註冊表 |
+| `components/charts/geometry.ts` | 純函式幾何 | 與 Fretboard／CircleOfFifths 同一套分工：座標算在 .ts、畫在 .vue。不引圖表庫（首屏 bundle 是硬指標） |
+| `persistence/backup.ts` | 原樣搬運（envelope 不展開） | 匯出／匯入直接搬各 store 的 envelope（含 version），讀取時照走 migration 鏈 —— 舊備份檔自動升級，這一層不需要認識任何 schema |
+| `stores/shortcuts.ts` | 註冊表（有生命週期） | ←→「換 preset」在每個模組語意不同，由當前頁註冊清單，鍵盤層只認識「上一個／下一個」；離開頁面自動解除 |
 | `core/audio/tickBus.ts` | Producer/Consumer queue | 聲音視覺同步的唯一橋樑：UI 只消費「已到時」的 tick |
 | `core/colors/` | Token 表（interval 為 key） | 12 色全站唯一 mapping；#9 與 b3 同色是刻意設計（同聽感） |
 | `modules/registry.ts` | **Registry**（plugin 式模組） | 新增練習 = 新資料夾 + manifest + 一行註冊；路由與首頁自動生成 |
@@ -129,6 +135,7 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 | TickEvent / RhythmPattern / CellRole | `src/core/audio/types.ts` |
 | TickSource / Scheduler 行為 | `src/core/audio/scheduler.ts` |
 | ClickVoice Strategy | `src/core/audio/voices.ts` |
+| ChordVoice Strategy | `src/core/audio/chordVoice.ts` |
 | 12 色 mapping | `src/core/colors/degreeColors.ts`（CSS token 副本：`src/assets/main.css`，兩處需同步） |
 | UI 設計系統（灰階 token、元件視覺規格） | `docs/design-system.md`（規範性）＋ `src/assets/main.css` ink token |
 | 練習模組 manifest | `src/modules/types.ts` |
@@ -206,7 +213,7 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 
 ---
 
-## 9. 現況基線（Phase 4 完成）
+## 9. 現況基線（Phase 5 完成）
 
 **已實作並有測試（65 個測試）**：theory（音程／拼寫／公式／指板推導）、colors、
 scheduler + Transport（含 10 分鐘無漂移驗證）、TickBus、三音色 SynthClickVoice、
@@ -233,5 +240,13 @@ pattern 驅動的 Transport（播放中換 pattern／拍號一律對齊小節線
 節奏線已於瀏覽器實測驗收：游標與 click 同步、示範→靜默切換正確、編輯改格即時反映並持久化、
 6/8 拍號與細分標籤正確（`6/8 · 8`）、375px 手機無頁面橫捲且游標自動跟捲、無 console 錯誤。
 
-**契約已定、待實作（搜尋 `TODO(opus)`）**：全域鍵盤快捷鍵與統計儀表板（Phase 5）、
-GCP 部署與 AdSense（Phase 6）。
+**Phase 5 追加（370+ 個測試）**：和弦示範音（core/theory 的中音域 close voicing 與自動聲部
+連接、core/audio 的 SynthChordVoice、pad／strum 兩種模式）、練習統計儀表板（core/stats 純函式
+聚合 + 自繪 SVG 圖表 + 備份匯出／匯入）、自訂進行編輯器（逐 token 即時驗證、五度圈點選輸入、
+獨立模組 chords.custom）、體驗打磨（全域鍵盤快捷鍵與說明面板、五度圈鍵盤可達、
+全域錯誤邊界、文字對比全面複核）。
+
+三件事在瀏覽器實測驗收：示範音在小節線準時發聲且聲部就近移動（C→F 只動兩個聲部）、
+strum 音符錯開 14ms、快捷鍵在文字輸入框內不攔截、六條路由的文字對比全數通過 AA。
+
+**待實作（搜尋 `TODO(opus)`）**：GCP 部署與 AdSense（Phase 6）。

@@ -76,7 +76,7 @@ function removeLast(): void {
 <template>
   <div class="grid gap-6 lg:grid-cols-[300px_1fr]">
     <div class="flex flex-col gap-2">
-      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('custom.clickToAdd') }}</span>
+      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('custom.clickToAdd') }}</span>
       <CircleOfFifths
         :tonic="item.key"
         :current-chord-pc="currentChordPc"
@@ -87,7 +87,7 @@ function removeLast(): void {
 
     <div class="flex min-w-0 flex-col gap-5">
       <label class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('custom.name') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('custom.name') }}</span>
         <input
           class="rcs-input w-full max-w-sm"
           type="text"
@@ -98,7 +98,7 @@ function removeLast(): void {
       </label>
 
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('custom.tokens') }}</span>
+        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('custom.tokens') }}</span>
         <div class="flex flex-wrap items-center gap-2">
           <input
             class="rcs-input w-full max-w-lg font-mono"
@@ -126,7 +126,7 @@ function removeLast(): void {
             :key="`${chord.raw}-${i}`"
             class="rounded bg-ink-800 px-2 py-0.5 font-mono text-xs text-ink-100"
           >
-            {{ chord.symbol }}<span class="ml-1.5 text-ink-500">{{ chord.raw }}</span>
+            {{ chord.symbol }}<span class="ml-1.5 text-ink-400">{{ chord.raw }}</span>
           </span>
         </div>
         <div v-else class="flex flex-col gap-1">
@@ -135,7 +135,7 @@ function removeLast(): void {
               v-for="(raw, i) in parsed.rawTokens"
               :key="`${raw}-${i}`"
               class="rounded px-2 py-0.5 font-mono text-xs"
-              :class="i === parsed.index ? 'bg-ink-50 font-bold text-ink-950' : 'bg-ink-800 text-ink-500'"
+              :class="i === parsed.index ? 'bg-ink-50 font-bold text-ink-950' : 'bg-ink-800 text-ink-400'"
             >{{ raw }}</span>
           </div>
           <p class="text-xs text-ink-300">
@@ -143,13 +143,13 @@ function removeLast(): void {
               ? t('custom.errorEmpty')
               : t('custom.errorToken', { index: parsed.index + 1, token: parsed.raw }) }}
           </p>
-          <p class="font-mono text-[11px] text-ink-600">{{ t('custom.syntaxHint') }}</p>
+          <p class="font-mono text-[11px] text-ink-400">{{ t('custom.syntaxHint') }}</p>
         </div>
       </div>
 
       <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
         <div class="flex flex-col gap-1.5">
-          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('custom.barsPerChord') }}</span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('custom.barsPerChord') }}</span>
           <SegmentedControl
             :model-value="String(item.barsPerChord)"
             :options="barsOptions"
@@ -158,7 +158,7 @@ function removeLast(): void {
           />
         </div>
         <div class="flex flex-col gap-1.5">
-          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('custom.harmonyLevel') }}</span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('custom.harmonyLevel') }}</span>
           <SegmentedControl
             :model-value="item.harmonyLevel"
             :options="harmonyOptions"
@@ -167,7 +167,7 @@ function removeLast(): void {
           />
         </div>
         <div class="flex flex-col gap-1.5">
-          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.key') }}</span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.key') }}</span>
           <SegmentedControl
             :model-value="item.key"
             :options="keyOptions"
@@ -189,7 +189,7 @@ function removeLast(): void {
           {{ t('custom.cycleKeys') }}
         </label>
         <div v-if="item.cycleKeys" class="flex items-center gap-2">
-          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">{{ t('chords.barsPerKey') }}</span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.barsPerKey') }}</span>
           <SegmentedControl
             :model-value="String(item.barsPerKey)"
             :options="barsPerKeyOptions"

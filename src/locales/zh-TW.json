@@ -42,8 +42,7 @@
       "keyPractice": {
         "title": "固定調練習",
         "description": "留在同一個調，從入門三和弦練到 fusion 與 neo-soul"
-      }
-      ,
+      },
       "custom": {
         "title": "自訂進行",
         "description": "自己打級數記法，存起來就能像內建 preset 一樣跟練"
@@ -130,6 +129,23 @@
     "strum": "掃弦",
     "volume": "示範音音量",
     "hint": "示範音只是讓你聽見和弦換了，click 仍是主角。手機外放時 pad 比 strum 不容易蓋掉拍點。"
+  },
+  "error": {
+    "title": "這一頁出了問題",
+    "body": "練習紀錄與設定都存在瀏覽器裡，沒有受到影響。換一頁或重新整理就能繼續；如果一直發生，建議先到統計頁匯出一份備份。",
+    "home": "回首頁",
+    "backup": "去匯出備份"
+  },
+  "shortcuts": {
+    "title": "鍵盤快捷鍵",
+    "play": "播放／停止",
+    "bpm": "BPM ±1",
+    "bpmLarge": "BPM ±10",
+    "preset": "上一個／下一個 preset",
+    "help": "開關這個說明",
+    "close": "關閉說明",
+    "typingHint": "在文字輸入框裡打字時不會觸發快捷鍵。",
+    "dismiss": "關閉"
   },
   "custom": {
     "new": "新增",

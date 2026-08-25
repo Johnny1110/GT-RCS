@@ -19,15 +19,15 @@ const categories: PracticeCategory[] = ['rhythm', 'chords', 'scales']
 
     <section v-for="category in categories" :key="category" class="flex flex-col gap-3">
       <div class="flex items-baseline gap-3">
-        <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500">
+        <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
           {{ t(`category.${category}`) }}
         </h2>
-        <span class="font-mono text-[11px] tabular-nums text-ink-600">
+        <span class="font-mono text-[11px] tabular-nums text-ink-400">
           {{ modulesByCategory(category).length }}
         </span>
       </div>
 
-      <p v-if="modulesByCategory(category).length === 0" class="text-sm text-ink-600">
+      <p v-if="modulesByCategory(category).length === 0" class="text-sm text-ink-400">
         {{ t('app.comingSoon') }}
       </p>
 
