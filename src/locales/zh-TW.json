@@ -43,6 +43,11 @@
         "title": "固定調練習",
         "description": "留在同一個調，從入門三和弦練到 fusion 與 neo-soul"
       }
+      ,
+      "custom": {
+        "title": "自訂進行",
+        "description": "自己打級數記法，存起來就能像內建 preset 一樣跟練"
+      }
     }
   },
   "transport": {
@@ -125,6 +130,33 @@
     "strum": "掃弦",
     "volume": "示範音音量",
     "hint": "示範音只是讓你聽見和弦換了，click 仍是主角。手機外放時 pad 比 strum 不容易蓋掉拍點。"
+  },
+  "custom": {
+    "new": "新增",
+    "newName": "我的進行 {n}",
+    "copySuffix": "(複製)",
+    "duplicate": "複製",
+    "delete": "刪除",
+    "deleteConfirm": "刪除「{name}」？無法復原。",
+    "empty": "還沒有自訂進行。按「新增」開始，或在統計頁匯入備份。",
+    "name": "名稱",
+    "namePlaceholder": "例如：我的爵士 2-5-1",
+    "tokens": "級數記法",
+    "tokensPlaceholder": "例如：ii V I 或 I vi IV V",
+    "removeLast": "退一個",
+    "clickToAdd": "點五度圈加和弦",
+    "barsPerChord": "每和弦小節",
+    "harmonyLevel": "和聲",
+    "harmony": {
+      "triad": "三和弦",
+      "seventh": "七和弦"
+    },
+    "cycleKeys": "沿五度圈走完 12 調",
+    "errorEmpty": "還沒有輸入任何和弦。",
+    "errorToken": "第 {index} 個看不懂：「{token}」",
+    "syntaxHint": "大寫＝大、小寫＝小；可加品質（V7、Imaj7、iim7b5）、借用（bVII）、副屬（V/ii）。",
+    "notPlayable": "記法還不能解析，修好之後就能開始跟練。",
+    "backupHint": "自訂進行只存在這台瀏覽器。到統計頁匯出備份，換裝置時匯入即可還原。"
   },
   "stats": {
     "title": "統計",

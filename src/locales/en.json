@@ -42,6 +42,10 @@
       "keyPractice": {
         "title": "Key Practice",
         "description": "Stay in one key, from beginner triads through fusion and neo-soul"
+      },
+      "custom": {
+        "title": "Custom Progressions",
+        "description": "Type your own numeral notation, save it, play along just like a built-in preset"
       }
     }
   },
@@ -125,6 +129,33 @@
     "strum": "Strum",
     "volume": "Chord demo volume",
     "hint": "The demo only tells you the chord changed — the click is still the lead. On phone speakers a pad covers the beat less than a strum."
+  },
+  "custom": {
+    "new": "New",
+    "newName": "My progression {n}",
+    "copySuffix": "(copy)",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "deleteConfirm": "Delete \"{name}\"? This cannot be undone.",
+    "empty": "No custom progressions yet. Hit New to start, or import a backup from the Stats page.",
+    "name": "Name",
+    "namePlaceholder": "e.g. My jazz 2-5-1",
+    "tokens": "Numerals",
+    "tokensPlaceholder": "e.g. ii V I or I vi IV V",
+    "removeLast": "Undo last",
+    "clickToAdd": "Click the circle to add",
+    "barsPerChord": "Bars per chord",
+    "harmonyLevel": "Harmony",
+    "harmony": {
+      "triad": "Triads",
+      "seventh": "Sevenths"
+    },
+    "cycleKeys": "Cycle all 12 keys around the circle",
+    "errorEmpty": "No chords entered yet.",
+    "errorToken": "Chord {index} isn't valid: \"{token}\"",
+    "syntaxHint": "Uppercase = major, lowercase = minor; add a quality (V7, Imaj7, iim7b5), borrow (bVII), or a secondary (V/ii).",
+    "notPlayable": "The notation doesn't parse yet - fix it and playback turns back on.",
+    "backupHint": "Custom progressions live in this browser only. Export a backup from the Stats page to move them."
   },
   "stats": {
     "title": "Stats",

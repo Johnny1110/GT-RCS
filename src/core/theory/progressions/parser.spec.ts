@@ -4,8 +4,9 @@
  */
 import { describe, it, expect } from 'vitest'
 import {
-  ProgressionSyntaxError, parseProgression, progressionBarCount, realizeProgression,
+  ProgressionSyntaxError, degreeToNumeral, parseProgression, progressionBarCount, realizeProgression,
 } from './parser'
+import type { DegreeLabel } from '../types'
 import type { ProgressionPreset } from './types'
 
 const preset = (tokens: string, barsPerChord: number[], harmonyLevel: 'triad' | 'seventh' = 'seventh'): ProgressionPreset => ({
@@ -140,3 +141,24 @@ describe('realizeProgression', () => {
     expect(progressionBarCount(preset('ii V7', [1, 1]))).toBe(2)
   })
 })
+
+describe('degreeToNumeral（parseProgression 的反向，自訂進行編輯器用）', () => {
+  it('diatonic 級數的大小寫依大調自然品質', () => {
+    expect(['1', '2', '3', '4', '5', '6', '7'].map((d) => degreeToNumeral(d as DegreeLabel)))
+      .toEqual(['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii'])
+  })
+
+  it('借用級數一律大寫（bVII、bIII、bVI 是慣用寫法）', () => {
+    expect(degreeToNumeral('b7')).toBe('bVII')
+    expect(degreeToNumeral('b3')).toBe('bIII')
+    expect(degreeToNumeral('b6')).toBe('bVI')
+    expect(degreeToNumeral('#4')).toBe('#IV')
+  })
+
+  it('round-trip：轉出去的記法解析回來是同一個級數', () => {
+    for (const degree of ['1', 'b2', '2', 'b3', '3', '4', '#4', '5', 'b6', '6', 'b7', '7'] as const) {
+      expect(parseProgression(degreeToNumeral(degree))[0]!.degree, degree).toBe(degree)
+    }
+  })
+})
+

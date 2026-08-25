@@ -17,11 +17,20 @@ import en from './locales/en.json'
 function createTestApp() {
   const pinia = createPinia()
   setActivePinia(pinia)
-  const i18n = createI18n({ legacy: false, locale: 'zh-TW', fallbackLocale: 'en', messages: { 'zh-TW': zhTW, en } })
+  // 收集查不到的 key：vue-i18n 找不到就把 key 本身印在畫面上，建置與 typecheck 都抓不到
+  const missingKeys: string[] = []
+  const i18n = createI18n({
+    legacy: false,
+    locale: 'zh-TW',
+    fallbackLocale: 'en',
+    messages: { 'zh-TW': zhTW, en },
+    missing: (_locale, key) => { missingKeys.push(key) },
+  })
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [
       { path: '/', name: 'home', component: () => import('./views/HomeView.vue') },
+      { path: '/stats', name: 'stats', component: () => import('./views/StatsView.vue') },
       ...listModules().map((m) => ({
         path: m.route,
         name: m.id,
@@ -30,8 +39,11 @@ function createTestApp() {
       })),
     ],
   })
-  return { pinia, i18n, router }
+  return { pinia, i18n, router, missingKeys }
 }
+
+/** 所有實際會被使用者打開的路由：模組由 registry 生成，加上首頁與統計 */
+const ALL_ROUTES = ['/', '/stats', ...listModules().map((m) => m.route)]
 
 describe('App 掛載', () => {
   beforeEach(() => localStorage.clear())
@@ -66,7 +78,7 @@ describe('App 掛載', () => {
   })
 
   // 路由清單取自 registry：新增模組自動納入煙霧測試，不會有人忘了補一行
-  it.each(listModules().map((m) => m.route))('%s 可掛載且渲染內容', async (route) => {
+  it.each(ALL_ROUTES)('%s 可掛載且渲染內容', async (route) => {
     const { pinia, i18n, router } = createTestApp()
     router.push(route)
     await router.isReady()
@@ -74,6 +86,21 @@ describe('App 掛載', () => {
     await flushPromises()
     expect(wrapper.text().length).toBeGreaterThan(40)
     expect(wrapper.text()).not.toContain('undefined')
+  })
+
+  /**
+   * 缺 i18n key 時 vue-i18n 會把 key 本身印在畫面上，建置與 typecheck 都抓不到。
+   * 用 missing hook 逐條路由檢查——比事後掃畫面文字可靠（掃描表跟語系檔是同一份，
+   * 兩邊一起漏掉就掃不出來）。fallback 也會觸發，因此只存在於 en 的 key 同樣會被抓到，
+   * 這正好落實「兩個語系必須同步」。
+   */
+  it.each(ALL_ROUTES)('%s 沒有漏翻的 i18n key', async (route) => {
+    const { pinia, i18n, router, missingKeys } = createTestApp()
+    router.push(route)
+    await router.isReady()
+    mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+    expect([...new Set(missingKeys)], `${route} 有查不到的 key`).toEqual([])
   })
 
   it('切分專項渲染節奏譜格子，且停止時沒有游標', async () => {
