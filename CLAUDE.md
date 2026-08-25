@@ -7,7 +7,8 @@
 - `npm run dev` — 開發伺服器
 - `npm run test` — Vitest（core 層行為鎖定測試）
 - `npm run typecheck` — vue-tsc strict 檢查
-- `npm run build` — typecheck + 產線建置（首屏 bundle 目標 < 200KB gz）
+- `npm run build` — typecheck + 產線建置（首屏 bundle 目標 < 200KB gz，CI 以 `scripts/check-bundle-size.mjs` 守門）
+- `npm run gen:firebase` — 由 `deploy/firebaseConfig.ts` 產生 `firebase.json`（改過第三方網域白名單才需要）
 
 ## 開工前必讀（依序）
 
@@ -26,6 +27,14 @@
 - localStorage 只走 `VersionedStore`；改 schema 必附 migration。
 - 練習模組：新資料夾 + manifest + 在 `src/modules/index.ts` 註冊一行；模組間禁止互相 import。
 - 使用者可見字串走 i18n，`src/locales/zh-TW.json` 與 `en.json` 同步。
+- 第三方 script 只走 `src/thirdParty/**`，網域必須在 `src/config/third-party.json` 白名單內
+  （那份白名單同時是 production CSP 的來源，改完要 `npm run gen:firebase`）。
+- 廣告版位是白名單制：`src/config/ads.ts` 沒列到的路由連容器都不存在。
+  **任何會播放節拍的畫面上不得出現廣告**，這是產品承諾也是測試鎖定的規則。
+- SEO 中繼資料只走 `core/seo` 的純函式；`vite.config.ts` 讀得到的模組（`config/site.ts`、
+  `config/routes.ts`、`content/knowledge/slug.ts`）不得 import Vue、不得讀 `import.meta.env`、
+  不得用 `@/` 別名。
+- 部署與營運的人工步驟見 `docs/ops/runbook.md`。
 
 ## 找工作項
 

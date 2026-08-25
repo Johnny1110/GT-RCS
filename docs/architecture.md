@@ -47,12 +47,21 @@
 | `composables/` | core、stores、Vue | components、modules |
 | `components/**` | core（型別與純函式）、Vue | **stores（純顯示組件）**、modules、直接 new core/audio 類別 |
 | `views/`、`modules/**` | 全部下層 | **其他模組**（模組間橫向 import 一律禁止） |
+| `config/` | 只能 import `core/` 的型別 | Vue、stores、components（它是最底下的常數層） |
+| `thirdParty/` | config、DOM | core、stores、components（它只負責注入 script） |
+| `build/`、`deploy/` | `src/**` 的純 TS 與 JSON | Vue SFC、任何帶 `@/` 別名的模組（Node 情境解析不到） |
 
 例外註記：
 - `components/` 中的 **container 組件**（目前僅 `TransportBar`）允許使用 stores，
   檔案頂部契約註解必須聲明自己是 container。預設所有組件都是 presentational。
 - `core/audio` 內 `WebAudioClock`、`SynthClickVoice` 是唯二允許碰 Web Audio API 的
   adapter；audio 層其餘檔案必須維持純邏輯（ManualClock 可測）。
+- `src/thirdParty/**` 是**唯一**允許碰第三方全域物件（`window.gtag`／`adsbygoogle`／
+  `googlefc`）與注入 `<script>` 的地方。其他層一律經由它，且注入的網域必須在
+  `config/third-party.json` 白名單內——那份白名單同時是 production CSP 的來源。
+- `src/config/site.ts`、`src/config/routes.ts`、`src/content/knowledge/slug.ts`
+  被 `vite.config.ts` 在 Node 情境 import，**不得**讀 `import.meta.env`、
+  不得 import Vue，也不得用 `@/` 別名。環境變數一律走 `config/env.ts`。
 
 ---
 
@@ -87,6 +96,14 @@
 | `modules/rhythm/presets.ts` | 速記法 DSL（`parseCells`） | `X`／`o`／`g`／`.` 一格一字元，preset 在原始碼裡就看得出節奏形狀；未知字元丟例外，打錯字在測試就爆而不是悄悄變成休止 |
 | `composables/useModuleSettings` | 響應式持久化綁定 | 模組設定以模組 id 為 key 自動存取，杜絕直接碰 localStorage |
 | `composables/usePracticeTransport` | Template Method | 每個練習共通的 click 接線：載入設定 → 回寫調整 → 離開停止播放 |
+| `core/seo/` | 純函式（中繼資料） | 同一份 canonical／hreflang／sitemap 算法要服務三個呼叫端：執行期 useSeo、建置期預渲染、sitemap 產生器。三者只要有一個自己拼字串，Google 就會判成重複內容 |
+| `config/third-party.json` | **Single Source of Truth**（第三方網域） | 執行期載入清單與 production CSP 讀同一份。漂移的症狀只在正式站出現（廣告靜靜消失），本機與預覽都看不到，所以由 `deploy/firebase.spec.ts` 鎖死 |
+| `config/routes.ts` | 目錄 + 漂移守門測試 | sitemap 與預渲染需要一份 Node 讀得到的路由清單，而 manifest 連著 Vue。手寫一份、用 `config.spec.ts` 鎖定它與 registry 一致：漏了新模組會測試失敗，而不是從 sitemap 靜靜消失 |
+| `config/ads.ts` | **白名單**（版位 → 路由） | 「練習中零廣告」寫成程式碼：沒列在白名單的路由連廣告容器都不存在。不是播放時隱藏——已投放才隱藏是 AdSense 政策風險 |
+| `thirdParty/loader.ts` | Gateway + 去重 | script 注入的單一入口：網域不在白名單就拒絕（production 的 CSP 也會擋，與其上線才發現不如 dev 就爆）、同一 URL 只載一次、一律 async |
+| `thirdParty/consentMode.ts` | 前置佇列（gtag stub） | Consent Mode 預設值**必須**排在任何 Google tag 之前。順序反了就會有一次未經同意的請求送出去 |
+| `build/prerender.ts` | 建置期產生器 | 內容是結構化 JSON，變成 HTML 只需要純函式，不需要在 Node 裡跑一次 Vue。省下整條 SSR 相依鏈，而首屏 bundle 是硬指標 |
+| `build/renderContent.ts` | 與執行期共用實作 | 靜態 HTML 與畫面上的 DOM 必須逐字相同，所以粗體解析與摘要直接用 `content/blocks.ts`，不重寫第二份 |
 
 **新需求選模式的原則**：先找上表已有的模式套用；要引入新模式時，在本表加一列說明理由。
 
@@ -146,10 +163,24 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 | 五度圈幾何與調性位置 | `src/components/CircleOfFifths/geometry.ts` |
 | 進行記法文法 | `src/core/theory/progressions/parser.ts` 頂部註解 |
 | 進行 preset 與分級課表 | `src/modules/chords/presets.ts` |
-| 知識內容格式與行內標記 | `src/content/knowledge/types.ts` |
+| 知識內容格式與行內標記 | `src/content/blocks.ts`（知識條目與法遵頁共用） |
+| 知識條目 id ↔ 網址 slug | `src/content/knowledge/slug.ts` |
+| 法遵頁內容格式（含 updated 日期） | `src/content/legal/index.ts` |
 | 音階線共用選項與驗證 | `src/modules/scales/shared.ts` |
 | 測試輔助（AudioContext stub、withSetup） | `src/test/` |
 | 持久化 envelope 與 migration | `src/persistence/storage.ts` |
+| 站台常數與 SiteConfig 組裝（不得讀 env） | `src/config/site.ts` |
+| 建置期環境變數的唯一讀取點 | `src/config/env.ts` |
+| 靜態路由目錄（sitemap／預渲染來源） | `src/config/routes.ts` |
+| 廣告版位白名單與保留高度 | `src/config/ads.ts` |
+| 第三方網域白名單（＝ production CSP 來源） | `src/config/third-party.json` |
+| 需事前同意的地區清單 | `src/config/consentRegions.ts` |
+| canonical／hreflang／OG／sitemap／robots | `src/core/seo/` |
+| head 標籤的唯一套用點與 `data-rcs-seo` 標記 | `src/composables/useSeo.ts`（預渲染端：`build/prerender.ts` 的 `SEO_MARKER`） |
+| 語系前綴的脫／裝規則 | `src/router/pageMeta.ts` |
+| 第三方 script 注入閘門 | `src/thirdParty/loader.ts` |
+| Firebase Hosting 設定（產生式） | `deploy/firebaseConfig.ts` → `firebase.json` |
+| 部署與營運的人工步驟 | `docs/ops/runbook.md` |
 
 ---
 
@@ -213,7 +244,7 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 
 ---
 
-## 9. 現況基線（Phase 5 完成）
+## 9. 現況基線（Phase 6 完成）
 
 **已實作並有測試（65 個測試）**：theory（音程／拼寫／公式／指板推導）、colors、
 scheduler + Transport（含 10 分鐘無漂移驗證）、TickBus、三音色 SynthClickVoice、
@@ -249,4 +280,24 @@ pattern 驅動的 Transport（播放中換 pattern／拍號一律對齊小節線
 三件事在瀏覽器實測驗收：示範音在小節線準時發聲且聲部就近移動（C→F 只動兩個聲部）、
 strum 音符錯開 14ms、快捷鍵在文字輸入框內不攔截、六條路由的文字對比全數通過 AA。
 
-**待實作（搜尋 `TODO(opus)`）**：GCP 部署與 AdSense（Phase 6）。
+**Phase 6 追加（545 個測試）**：營運上線的整套骨架——
+
+- **部署**：`firebase.json` 由 `deploy/firebaseConfig.ts` 產生（SPA rewrite、資產 immutable
+  快取、HTML no-cache、CSP + 三個安全標頭），GitHub Actions 兩份 workflow
+  （CI 不碰憑證所以 fork PR 跑得動；部署走 Workload Identity Federation，零長期金鑰）。
+- **SEO**：`core/seo` 純函式產生 canonical／hreflang／OG／sitemap／robots；
+  `build/prerender.ts` 在建置期把 33 條雙語知識條目 + 首頁 + 索引 + 三份法遵頁
+  寫成 76 個靜態 HTML，不執行 JS 也讀得到全文與內部連結。
+- **內容路由**：`/knowledge`、`/knowledge/:slug`、`/privacy`、`/cookies`、`/about`，
+  每一條都有 `/en/…` 孿生路由；catch-all 404 標 noindex。
+- **廣告與同意**：AdSlot（保留高度 → CLS = 0、未投放或被攔截就整塊收合）、
+  Consent Mode v2 預設值、全站載入的 Google CMP、受同意管控的 GA4。
+  廣告版位白名單只含首頁／知識頁／統計頁。
+
+瀏覽器實測驗收：投放成功時版位保留 250–280px、unfilled 與攔截器情境整塊收合且不留白、
+三條跟練路由零廣告容器、關閉 JS 時六個預渲染網址都有完整內文與 4–37 條外連、
+canonical／hreflang／lang 三者一致、七個新頁面文字對比全數通過 AA、無 console 錯誤。
+
+**待人工完成（需要帳號，不是程式碼）**：見 `docs/ops/runbook.md`——
+建立 Firebase 專案與自訂網域、設定 GitHub repository variables、AdSense 送審與版位建立、
+CMP 訊息設定、GCP 預算警示、Search Console 驗證。程式端已就緒，缺的只是這些設定值。
