@@ -39,7 +39,12 @@
 | 資料保存 | localStorage：各練習設定 + 練習日誌（日期、項目、時長、BPM） |
 | 樣式 | Tailwind CSS；指板／五度圈／節奏譜為自訂 SVG 組件 |
 | 主題 | 深色優先單一主題；主音用**白色**（無彩度 = 中心的色彩邏輯），淺色主題列為未來擴充 |
-| 開發順序 | 共用基礎 → **音階線 → 和弦線 → 節奏線** → 進階功能 |
+| 開發順序 | 共用基礎 → **音階線 → 和弦線 → 節奏線** → 進階功能 → 營運上線 |
+| 部署 | Firebase Hosting（GCP 生態、內建 CDN 與 HTTPS、預覽頻道）；純靜態，維持無後端 |
+| 收入模式 | Google AdSense 支撐主機開銷。**練習中零廣告是產品承諾**：任何會播放節拍的畫面上不存在廣告版位（不是隱藏，是不存在），版位只在首頁、樂理知識頁、統計頁 |
+| 網址與語系 | 中文為預設語系（無前綴），英文為 `/en/…`。網址是語系的真相來源，canonical／hreflang 成對宣告 |
+| 內容資產 | 樂理知識庫以 `/knowledge/<slug>` 獨立網址呈現，建置期預渲染成靜態 HTML——同時是 SEO 資產與 AdSense 審核的「實質內容」依據 |
+| 隱私 | 練習紀錄只在 localStorage，不外傳、我方無伺服器可存放。這是產品優勢，寫進隱私權政策也寫在每一頁的頁尾 |
 
 ### 目前的非目標（未來擴充候選）
 
@@ -228,3 +233,7 @@ interface PracticeModule {
 | 6 | 營運上線 | GCP 公開部署（Firebase Hosting）、CI/CD、AdSense 廣告、同意管理與隱私頁、成本監控 | [phase-06](PRD/phase-06.md) |
 
 每個 Phase 結束皆為**可部署可用**的狀態（Phase 1 結束時至少有可玩的指板 + 節拍器 demo 頁）。
+
+Phase 6 之後，程式端已具備上線條件；實際上線還需要帳號層面的設定
+（Firebase 專案、自訂網域、AdSense 送審、CMP 訊息、GCP 預算警示、Search Console），
+步驟與確認方式見 [`docs/ops/runbook.md`](ops/runbook.md)。
