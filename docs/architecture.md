@@ -94,7 +94,9 @@
 | `theory/progressions/` | 白名單 parser + 展開器 | 級數記法 → 任意調的實際和弦；文法外一律報錯不猜，錯誤帶 tokenIndex |
 | `modules/chords/cycle.ts` | 純函式查表 | 12 調循環先算成小節表，跟練畫面只依當前小節查表，不在畫面裡算樂理 |
 | `modules/scales/recall/quiz.ts` | 純函式出題（回想測驗） | 出題是**練習設計**不是樂理：core 回答「A dorian 的 b3 在指板哪幾格」，「該不該考這一題、什麼算對」屬於模組層。亂數由呼叫端注入，洗牌與比對才測得起來 |
-| `modules/chords/timeline.ts` | 純函式組裝（時間軸） | 「當前這一段的每個和弦」是三個和弦模組共用的組裝規則。條目位置固定、游標在上面移動（與節奏譜同一種讀法），使用者才點得到看得見的和弦 |
+| `modules/chords/timeline.ts` | 純函式組裝（時間軸） | 「當前這一段的每個和弦」是和弦線各模組共用的組裝規則。條目位置固定、游標在上面移動（與節奏譜同一種讀法），使用者才點得到看得見的和弦 |
+| `modules/chords/arpeggio/sequence.ts` | 純函式（音序 + 格位對應） | 琶音把時間解析度從「小節線換和弦」推進到「格線換音」。哪一格該彈哪個音是**練習設計**不是樂理（與 recall/quiz.ts 同一條界線）；而且畫面與示範音必須共用同一份順序——各自排一次，遲早出現「畫面圈著 3 音、耳朵聽到 b7」，那是最難察覺的一種錯 |
+| `composables/useArpeggioDemo` | 訂閱排程 tick（發聲） | 與 useChordDemo 同骨架，差別就是琶音的定義：一格一個音。仍走 subscribeSchedule——用視覺 tick 排程等於每個音遲到半幀，十六分細分下聽得出來 |
 | `composables/useBarCursor` | 位移游標（不動時鐘） | 「點和弦強制切換過去」不能改 Transport 的小節數——節拍不能因為換和弦而斷。改成記一個位移，視覺與示範音都經同一個 `barFor()`；只改視覺會出現「畫面換了、聲音沒換」 |
 | `modules/rhythm/presets.ts` | 速記法 DSL（`parseCells`） | `X`／`o`／`g`／`.` 一格一字元，preset 在原始碼裡就看得出節奏形狀；未知字元丟例外，打錯字在測試就爆而不是悄悄變成休止 |
 | `composables/useModuleSettings` | 響應式持久化綁定 | 模組設定以模組 id 為 key 自動存取，杜絕直接碰 localStorage |
@@ -171,6 +173,9 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 | 和弦時間軸條目與選取事件 | `src/components/ChordTimeline/ChordTimeline.vue` |
 | 小節游標（強制切換）的位移語意 | `src/composables/useBarCursor.ts` |
 | 和弦線共用調選項與同音異名正規化 | `src/modules/chords/keys.ts` |
+| 琶音音序與「第幾格彈第幾個音」 | `src/modules/chords/arpeggio/sequence.ts` |
+| 七和弦琶音課表（級數記法） | `src/modules/chords/arpeggio/drills.ts` |
+| 琶音示範音（一格一音） | `src/composables/useArpeggioDemo.ts` |
 | 進行記法文法 | `src/core/theory/progressions/parser.ts` 頂部註解 |
 | 進行 preset 與分級課表 | `src/modules/chords/presets.ts` |
 | 知識內容格式與行內標記 | `src/content/blocks.ts`（知識條目與法遵頁共用） |
@@ -317,6 +322,15 @@ canonical／hreflang／lang 三者一致、七個新頁面文字對比全數通�
 答案藏起來再問。兩個正交設定（方向 find／name × 語言 note／degree）＝四種練法共用一套機制；
 限時模式的換題由 transport 小節數驅動，不引入第二條時間線。Fretboard 取得互動能力
 （`selectable` 的透明命中層、`marks` 空心圈），`FretCell` 抽出 `FretPosition` 基底型別。
+
+**Phase 7 之後的追加（640 個測試）**：七和弦琶音模組（`chords.arpeggio`）——和弦線的第四個模組，
+也是第一個把時間解析度推進到**音符**的跟練：小節線換和弦，格線換音（`useArpeggioDemo` 一格送一個音高
+進 ChordVoice，仍走排程訂閱）。八份課表以級數記法定義（順階七和弦、大小調 2-5-1，以及
+maj7／7／m7／m7b5／dim7 各自走 12 調），沿五度圈的展開直接沿用 `buildCircleCycle`，
+12 調的拼寫（含 Gb 調減七的重降記號）全部由公式表推導。音序、格位對應與「序列除不盡小節格數」
+的判斷都是純函式（`arpeggio/sequence.ts`），畫面與示範音共用同一份索引序列。
+指板的把位聚焦改記**錨定弦**而不是把位 id——id 綁在根音的格號上，換調就失效，
+而「根音在第 6 弦的指型」正是這個練習要練的東西；`marks` 從回想測驗的題目標記兼任「這一格該彈的音」。
 
 **待人工完成（需要帳號，不是程式碼）**：見 `docs/ops/runbook.md`——
 建立 Firebase 專案與自訂網域、設定 GitHub repository variables、AdSense 送審與版位建立、

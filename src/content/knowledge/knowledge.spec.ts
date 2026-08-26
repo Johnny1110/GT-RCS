@@ -5,6 +5,7 @@
 import { describe, it, expect } from 'vitest'
 import { SCALE_FORMULAS } from '@/core/theory'
 import { CIRCLE_PROGRESSIONS, PRACTICE_LEVELS } from '@/modules/chords/presets'
+import { ARPEGGIO_DRILLS } from '@/modules/chords/arpeggio/drills'
 import { GROOVE_STYLES, SUBDIVISION_STAGES } from '@/modules/rhythm/presets'
 import { parseInline, type KnowledgeBundle } from './types'
 import zhTW from './zh-TW.json'
@@ -31,6 +32,7 @@ describe('知識內容', () => {
   it('preset 引用的每個 knowledgeId 都真的存在（兩個語系都要有）', () => {
     const referenced = [
       ...CIRCLE_PROGRESSIONS.flatMap((p) => p.knowledgeIds ?? []),
+      ...ARPEGGIO_DRILLS.flatMap((drill) => drill.knowledgeIds ?? []),
       ...PRACTICE_LEVELS.flatMap((level) => [
         ...(level.knowledgeIds ?? []),
         ...level.progressions.flatMap((p) => p.knowledgeIds ?? []),

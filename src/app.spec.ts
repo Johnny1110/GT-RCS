@@ -287,6 +287,81 @@ describe('App 掛載', () => {
     })
   })
 
+  it('七和弦琶音：未播放時就看得見這個調的整份課表與琶音音序', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/arpeggio')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    // 預設是 C 調的順階七和弦：四種實用七和弦一次走完，時間軸整段可見
+    const tiles = wrapper.findAll(`ol[aria-label="${i18n.global.t('chords.jumpChordHint')}"] li button`)
+    expect(tiles.map((b) => b.text().replace(/\s+/g, ' ')))
+      .toEqual(expect.arrayContaining([expect.stringContaining('Cmaj7'), expect.stringContaining('Bm7b5')]))
+    expect(tiles).toHaveLength(7)
+
+    // 音序＝要彈的順序（上行），音名與度數都由公式表推導
+    // 每一格是「音名 + 度數」，兩者都由公式表推導（畫面零 hardcode 音名）
+    const notes = wrapper.findAll(`ol[aria-label="${i18n.global.t('arpeggio.sequence')}"] li`)
+    expect(notes.map((li) => li.text().replace(/\s+/g, ''))).toEqual(['C1', 'E3', 'G5', 'B7'])
+  })
+
+  it('七和弦琶音：點五度圈外圈跳到那個調，音序跟著換', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/arpeggio')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    await wrapper.find('path[aria-label="Eb"]').trigger('click')
+    await flushPromises()
+
+    const notes = wrapper.findAll(`ol[aria-label="${i18n.global.t('arpeggio.sequence')}"] li`)
+    expect(notes.map((li) => li.text().replace(/\s+/g, ''))).toEqual(['Eb1', 'G3', 'Bb5', 'D7'])
+    expect(wrapper.text()).toContain('Ebmaj7')
+  })
+
+  it('七和弦琶音：單一品質的課表，時間軸小字換成調名（換的是調不是級數）', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/arpeggio')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const halfDim = wrapper.findAll('button').find((b) => b.text() === 'm7b5')
+    expect(halfDim).toBeDefined()
+    await halfDim!.trigger('click')
+    await flushPromises()
+
+    // 一個調只有一個和弦，所以時間軸預告接下來的三個調（五度下行）
+    // 小字：當前與下一個用譯文，之後的格子用調名——後者寫十二次 I7 等於什麼都沒說
+    const tiles = wrapper.findAll(`ol[aria-label="${i18n.global.t('chords.jumpChordHint')}"] li button`)
+    expect(tiles.map((b) => b.text().replace(/\s+/g, ''))).toEqual([
+      `${i18n.global.t('chords.now')}Cm7b5`,
+      `${i18n.global.t('chords.next')}Fm7b5`,
+      'BbBbm7b5',
+      'EbEbm7b5',
+    ])
+  })
+
+  it('七和弦琶音：上下行的音序會折返，除不盡小節格數時畫面說出來', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/arpeggio')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const upDown = wrapper.findAll('button').find((b) => b.text() === i18n.global.t('arpeggio.upDown'))
+    expect(upDown).toBeDefined()
+    await upDown!.trigger('click')
+    await flushPromises()
+
+    const notes = wrapper.findAll(`ol[aria-label="${i18n.global.t('arpeggio.sequence')}"] li`)
+    expect(notes.map((li) => li.text().replace(/\s+/g, ''))).toEqual(['C1', 'E3', 'G5', 'B7', 'G5', 'E3'])
+    // 6 個音塞不進 4/4 正拍的 4 格：提示必須出現，否則使用者以為壞了
+    expect(wrapper.text()).toContain(i18n.global.t('arpeggio.fitHint', { notes: 6, slots: 4 }))
+  })
+
   it('指板回想（找位置）：一開始全空，點對才亮、點錯說得出你點的是什麼', async () => {
     const { pinia, i18n, router } = createTestApp()
     router.push('/scales/recall')

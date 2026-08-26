@@ -50,6 +50,10 @@
       "custom": {
         "title": "Custom Progressions",
         "description": "Type your own numeral notation, save it, play along just like a built-in preset"
+      },
+      "arpeggio": {
+        "title": "Seventh Arpeggios",
+        "description": "Take maj7, dominant 7, m7 and m7b5 arpeggios through all 12 keys around the circle"
       }
     }
   },
@@ -121,6 +125,7 @@
     "barsPerKey": "Bars per key",
     "startKey": "Start key",
     "key": "Key",
+    "chord": "Chord",
     "level": "Level",
     "now": "Now",
     "next": "Next",
@@ -136,6 +141,19 @@
     "strum": "Strum",
     "volume": "Chord demo volume",
     "hint": "The demo only tells you the chord changed — the click is still the lead. On phone speakers a pad covers the beat less than a strum."
+  },
+  "arpeggio": {
+    "drill": "Drill",
+    "direction": "Direction",
+    "up": "Up",
+    "down": "Down",
+    "upDown": "Up & down",
+    "repeats": "Passes per key",
+    "pass": "Pass {pass}/{total}",
+    "sequence": "Arpeggio order",
+    "markHint": "The white ring is the note due on this slot; click a box on the neck to follow a single shape.",
+    "fitHint": "{notes} notes over {slots} slots per bar: they do not divide evenly, so the order is cut at the bar line. Change the subdivision or the direction to line them up.",
+    "hint": "One note per grid slot, following the click — turn the demo on (pad or strum) and it plays the arpeggio note by note. Lock onto one position and take it through all 12 keys before moving to the next: an arpeggio drill is one shape found in 12 places."
   },
   "error": {
     "title": "This page ran into a problem",
@@ -235,6 +253,16 @@
     "bVII": "bVII",
     "secondaryChain": "Secondary chain",
     "neoSoul": "Neo-soul"
+  },
+  "arpeggioDrill": {
+    "diatonic7": "Diatonic 7ths",
+    "major251": "Major ii-V-I",
+    "minor251": "Minor ii-V-i",
+    "maj7": "maj7",
+    "dom7": "7",
+    "min7": "m7",
+    "halfDim7": "m7b5",
+    "dim7": "dim7"
   },
   "level": {
     "1": {
