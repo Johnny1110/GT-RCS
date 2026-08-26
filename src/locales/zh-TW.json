@@ -120,7 +120,10 @@
     "level": "級別",
     "now": "當前",
     "next": "下一個",
-    "chordTones": "組成音（全指板）"
+    "chordTones": "組成音（全指板）",
+    "switchKeyHint": "點五度圈外圈換調",
+    "jumpKeyHint": "點五度圈外圈跳到那個調",
+    "jumpChordHint": "點和弦直接切換過去"
   },
   "chordDemo": {
     "label": "示範音",

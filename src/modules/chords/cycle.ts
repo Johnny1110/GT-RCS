@@ -2,7 +2,10 @@
  * 12 調循環模型（PRD F3-3）：把一個進行沿五度圈逆時針展開成完整的小節表。
  * 純函式——跟練畫面只是依當前小節查表，不在畫面裡算樂理。
  */
-import { realizeProgression, type NoteName, type ProgressionPreset, type RealizedChord } from '@/core/theory'
+import {
+  parseNoteName, realizeProgression,
+  type NoteName, type ProgressionPreset, type RealizedChord,
+} from '@/core/theory'
 import { DESCENDING_FIFTHS } from '@/components/CircleOfFifths/geometry'
 
 export interface CycleBar {
@@ -68,4 +71,13 @@ export function cycleBarAt(cycle: readonly CycleBar[], transportBar: number): Cy
 export function nextChordAfter(cycle: readonly CycleBar[], transportBar: number): RealizedChord | undefined {
   const next = cycleBarAt(cycle, transportBar + 1)
   return next?.chords[0]
+}
+
+/**
+ * 某個調在循環中的第一個小節（點五度圈強制切換調用）。
+ * 以 pitch class 比對——圈上寫 F#、循環表裡寫 Gb，指的是同一個調。
+ */
+export function firstBarOfKey(cycle: readonly CycleBar[], key: NoteName): number | undefined {
+  const pc = parseNoteName(key).pc
+  return cycle.find((bar) => parseNoteName(bar.key).pc === pc)?.globalBar
 }

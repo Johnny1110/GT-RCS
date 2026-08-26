@@ -103,3 +103,15 @@ body {
     min-height: var(--ad-h-desktop);
   }
 }
+
+/* 五度圈可點扇形（design-system.md §5）：色彩只屬於音高，
+   所以 hover 只提亮描邊、不動填色——動填色會讓主音那格從反白翻成深色。 */
+.rcs-circle-hit {
+  cursor: pointer;
+  transition: stroke 120ms ease;
+}
+
+.rcs-circle-hit:hover {
+  stroke: var(--color-ink-400);
+  stroke-width: 2;
+}

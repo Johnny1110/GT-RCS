@@ -120,7 +120,10 @@
     "level": "Level",
     "now": "Now",
     "next": "Next",
-    "chordTones": "Chord tones (full neck)"
+    "chordTones": "Chord tones (full neck)",
+    "switchKeyHint": "Click the outer ring to change key",
+    "jumpKeyHint": "Click the outer ring to jump to that key",
+    "jumpChordHint": "Click a chord to jump to it"
   },
   "chordDemo": {
     "label": "Chord demo",

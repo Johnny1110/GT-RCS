@@ -182,6 +182,79 @@ describe('App 掛載', () => {
     expect(wrapper.findAll('svg > g > circle[r="11"]').length).toBeGreaterThan(20)
   })
 
+  it('五度圈進行：點五度圈外圈強制切換到那個調', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/circle-progressions')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    expect(wrapper.findAll('ol li').map((li) => li.text())[0]).toContain('Dm7')
+
+    // 圈上的扇形以調名為無障礙名稱；Eb 在 C 起算的循環裡是第 4 個調
+    const sector = wrapper.find('path[aria-label="Eb"]')
+    expect(sector.exists()).toBe(true)
+    await sector.trigger('click')
+    await flushPromises()
+
+    // 時間軸、指板與圓心同時換到 Eb 調的 2516
+    const tiles = wrapper.findAll('ol li').map((li) => li.text())
+    expect(tiles[0]).toContain('Fm7')
+    expect(tiles[1]).toContain('Bb7')
+    expect(wrapper.text()).toContain('4/12')
+  })
+
+  it('五度圈進行：內圈（關係小調）不可點——這些進行一律以大調為基準', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/circle-progressions')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    expect(wrapper.find('path[aria-label="Cm"]').exists()).toBe(false)
+    expect(wrapper.findAll('path[role="button"]')).toHaveLength(12)
+  })
+
+  it('固定調練習：點五度圈換調，換算成選單用的拼寫後寫進設定', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/key-practice')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    // 圈上寫 F#，模組的調選單只收 Gb——寫進設定的必須是 Gb，否則選單會變成沒有任何一格選中
+    await wrapper.find('path[aria-label="F#"]').trigger('click')
+    await flushPromises()
+
+    const parsed = JSON.parse(localStorage.getItem('rcs.settings')!) as {
+      data: { moduleSettings: Record<string, { key: string }> }
+    }
+    expect(parsed.data.moduleSettings['chords.key-practice']?.key).toBe('Gb')
+    expect(wrapper.findAll('ol li').map((li) => li.text())[0]).toContain('Gb')
+  })
+
+  it('固定調練習：點時間軸的和弦就強制切換過去', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/chords/key-practice')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    // 預設 C 調的 I IV V I：整段進行都在時間軸上，每一格都可點
+    const tiles = () => wrapper.findAll('ol li button')
+    expect(tiles().map((b) => b.text().replace(/\s+/g, ' '))).toHaveLength(4)
+    expect(tiles()[0]?.attributes('aria-current')).toBe('true')
+
+    await tiles()[2]!.trigger('click')
+    await flushPromises()
+
+    const current = tiles().filter((b) => b.attributes('aria-current') === 'true')
+    expect(current).toHaveLength(1)
+    expect(current[0]!.text()).toContain('G')
+    // 指板的組成音標題跟著換（視覺與資料同一個游標）
+    expect(wrapper.text()).toContain('組成音（全指板）')
+  })
+
   it('固定調練習：換級別時進行自動落到該級別的第一個', async () => {
     const { pinia, i18n, router } = createTestApp()
     router.push('/chords/key-practice')

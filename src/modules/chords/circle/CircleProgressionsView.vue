@@ -1,30 +1,33 @@
 <script setup lang="ts">
 /**
  * 五度圈經典進行跟練（PRD F3-3）：沿五度圈逆時針走完 12 調。
- * 五度圈 highlight、和弦時間軸、指板組成音三者都由同一個 transport 小節數驅動。
+ * 五度圈 highlight、和弦時間軸、指板組成音三者都由同一個小節游標驅動。
+ *
+ * 兩種強制切換（useBarCursor 的位移，不動時鐘）：
+ * 點五度圈外圈 → 跳到那個調的第一小節；點時間軸的和弦 → 跳到那一小節。
  */
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { chordPositions, mapToFretboard } from '@/core/theory'
+import { chordPositions, mapToFretboard, type NoteName } from '@/core/theory'
 import CircleOfFifths from '@/components/CircleOfFifths/CircleOfFifths.vue'
 import ChordTimeline, { type TimelineEntry } from '@/components/ChordTimeline/ChordTimeline.vue'
 import ChordDemoControl from '@/components/ui/ChordDemoControl.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
+import { useBarCursor } from '@/composables/useBarCursor'
 import { useChordDemo } from '@/composables/useChordDemo'
 import { useModuleSettings } from '@/composables/useModuleSettings'
 import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
-import { useTransportTick } from '@/composables/useTransportTick'
-import { DESCENDING_FIFTHS } from '@/components/CircleOfFifths/geometry'
-import { buildCircleCycle, cycleBarAt, nextChordAfter } from '../cycle'
+import { buildCircleCycle, cycleBarAt, firstBarOfKey, nextChordAfter } from '../cycle'
+import { PRACTICE_KEYS, isPracticeKey } from '../keys'
 import { CIRCLE_PROGRESSIONS, findCircleProgression } from '../presets'
+import { buildChordStrip } from '../timeline'
 import { BARS_PER_KEY_OPTIONS, CIRCLE_DEFAULTS, type CircleProgressionSettings } from '../settings'
 
 const MODULE_ID = 'chords.circle-progressions'
-const TIMELINE_WINDOW = 4
 
 const { t } = useI18n()
 const settings = useModuleSettings<CircleProgressionSettings>(MODULE_ID, CIRCLE_DEFAULTS)
@@ -32,7 +35,7 @@ const settings = useModuleSettings<CircleProgressionSettings>(MODULE_ID, CIRCLE_
 // 持久化資料不可信：preset 可能已被移除、barsPerKey 可能被竄改
 if (!findCircleProgression(settings.presetId)) settings.presetId = CIRCLE_DEFAULTS.presetId
 if (!BARS_PER_KEY_OPTIONS.includes(settings.barsPerKey as never)) settings.barsPerKey = CIRCLE_DEFAULTS.barsPerKey
-if (!DESCENDING_FIFTHS.includes(settings.startKey)) settings.startKey = CIRCLE_DEFAULTS.startKey
+if (!isPracticeKey(settings.startKey)) settings.startKey = CIRCLE_DEFAULTS.startKey
 
 usePracticeTransport(settings)
 usePracticeSession({
@@ -40,7 +43,6 @@ usePracticeSession({
   params: () => ({ presetId: settings.presetId, barsPerKey: settings.barsPerKey }),
 })
 
-const { position, playing } = useTransportTick()
 /** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
 usePresetNavigation({
   items: () => CIRCLE_PROGRESSIONS.map((p) => p.id),
@@ -54,8 +56,12 @@ const cycle = computed(() =>
   buildCircleCycle(preset.value, { barsPerKey: settings.barsPerKey, startKey: settings.startKey }),
 )
 
-/** 未播放時停在第 1 小節，畫面先把第一個和弦亮出來 */
-const activeBar = computed(() => (playing.value ? position.bar : 1))
+/** 小節游標：未播放時停在第 1 小節，加上使用者按下的強制切換 */
+const cursor = useBarCursor()
+/** 換 preset／每調小節／起始調 = 換了一張小節表，上一張的跳轉不該留著 */
+watch(() => [settings.presetId, settings.barsPerKey, settings.startKey], () => cursor.reset())
+
+const activeBar = cursor.bar
 const current = computed(() => cycleBarAt(cycle.value, activeBar.value))
 const currentChord = computed(() => current.value?.chords[0])
 const nextChord = computed(() => nextChordAfter(cycle.value, activeBar.value))
@@ -75,30 +81,35 @@ const focusedPositionId = ref<string | null>(null)
 watch(() => currentChord.value?.root.pc, () => { focusedPositionId.value = null })
 
 
+/** 時間軸＝當前這個調的整段小節（點任何一格就切換過去） */
 const timeline = computed<TimelineEntry[]>(() => {
-  const entries: TimelineEntry[] = []
-  for (let offset = 0; offset < TIMELINE_WINDOW; offset++) {
-    const bar = cycleBarAt(cycle.value, activeBar.value + offset)
-    const chord = bar?.chords[0]
-    if (!bar || !chord) continue
-    entries.push({
-      key: `${bar.globalBar}`,
-      symbol: chord.symbol,
-      caption: offset === 0 ? t('chords.now') : offset === 1 ? t('chords.next') : `${bar.key}`,
-      state: offset === 0 ? 'current' : offset === 1 ? 'next' : 'future',
-    })
-  }
-  return entries
+  const now = current.value
+  if (!now) return []
+  return buildChordStrip({
+    firstBar: activeBar.value - (now.barInKey - 1),
+    count: settings.barsPerKey,
+    activeBar: activeBar.value,
+    symbolAt: (bar) => cycleBarAt(cycle.value, bar)?.chords[0]?.symbol,
+    captionAt: (bar) => `${t('metronome.bar')} ${cycleBarAt(cycle.value, bar)?.barInKey ?? ''}`,
+    nowLabel: t('chords.now'),
+    nextLabel: t('chords.next'),
+  })
 })
+
+/** 點五度圈：跳到那個調在循環裡的第一小節（不重排循環，順序仍由起始調決定） */
+function jumpToKey(key: NoteName): void {
+  const bar = firstBarOfKey(cycle.value, key)
+  if (bar !== undefined) cursor.jumpTo(bar)
+}
 
 const presetOptions = computed(() =>
   CIRCLE_PROGRESSIONS.map((item) => ({ value: item.id, label: t(item.titleKey) })),
 )
 const barsOptions = BARS_PER_KEY_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))
-const keyOptions = DESCENDING_FIFTHS.map((key) => ({ value: key, label: key }))
+const keyOptions = PRACTICE_KEYS.map((key) => ({ value: key, label: key }))
 
 /** 示範音：直接由 cycle 查小節，不經過視覺 position——發聲要提前排程 */
-useChordDemo((bar) => cycleBarAt(cycle.value, bar)?.chords[0])
+useChordDemo((bar) => cycleBarAt(cycle.value, cursor.barFor(bar))?.chords[0])
 
 const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
 </script>
@@ -132,11 +143,15 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
     </div>
 
     <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
-      <CircleOfFifths
-        v-if="current"
-        :tonic="current.key"
-        :current-chord-pc="currentChord?.root.pc"
-      />
+      <div v-if="current" class="flex flex-col gap-2">
+        <CircleOfFifths
+          :tonic="current.key"
+          :current-chord-pc="currentChord?.root.pc"
+          mode="key"
+          @select-key="jumpToKey"
+        />
+        <p class="font-mono text-[11px] text-ink-500">{{ t('chords.jumpKeyHint') }}</p>
+      </div>
 
       <div class="flex min-w-0 flex-col gap-4">
         <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2 font-mono text-xs text-ink-400">
@@ -148,7 +163,13 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
           <span v-if="nextChord">{{ t('chords.next') }} <b class="text-ink-100">{{ nextChord.symbol }}</b></span>
         </div>
 
-        <ChordTimeline :entries="timeline" />
+        <ChordTimeline
+          :entries="timeline"
+          selectable
+          :label="t('chords.jumpChordHint')"
+          @select="cursor.jumpBy"
+        />
+        <p class="font-mono text-[11px] text-ink-500">{{ t('chords.jumpChordHint') }}</p>
       </div>
     </div>
 
