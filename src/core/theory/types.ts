@@ -49,9 +49,17 @@ export interface Note {
 /** 調弦：string 1（高音 e）→ string N（低音）。預設 6 弦標準調弦。 */
 export type Tuning = readonly NoteName[]
 
-/** 指板上的一格（string 1-based 由高音弦起算；fret 0 = 空弦） */
-export interface FretCell {
+/**
+ * 指板座標（string 1-based 由高音弦起算；fret 0 = 空弦）。
+ * 與 FretCell 分開是因為「哪一格」與「那一格上有什麼音」是兩件事——
+ * 回想測驗要的是前者（使用者點了一格，還不知道那裡有沒有音）。
+ */
+export interface FretPosition {
   string: number
   fret: number
+}
+
+/** 指板上的一格，帶已拼寫的音 */
+export interface FretCell extends FretPosition {
   note: Note
 }

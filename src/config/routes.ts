@@ -21,6 +21,7 @@ export const APP_ROUTES: readonly string[] = [
   '/chords/custom',
   '/scales/explorer',
   '/scales/practice',
+  '/scales/recall',
 ]
 
 export const LEGAL_DOCS = ['privacy', 'cookies', 'about'] as const

@@ -93,6 +93,7 @@
 | `content/knowledge/` | 內容與程式分離 | 模組只引用 entry id；內容依語系 lazy 載入並快取，獨立分包 |
 | `theory/progressions/` | 白名單 parser + 展開器 | 級數記法 → 任意調的實際和弦；文法外一律報錯不猜，錯誤帶 tokenIndex |
 | `modules/chords/cycle.ts` | 純函式查表 | 12 調循環先算成小節表，跟練畫面只依當前小節查表，不在畫面裡算樂理 |
+| `modules/scales/recall/quiz.ts` | 純函式出題（回想測驗） | 出題是**練習設計**不是樂理：core 回答「A dorian 的 b3 在指板哪幾格」，「該不該考這一題、什麼算對」屬於模組層。亂數由呼叫端注入，洗牌與比對才測得起來 |
 | `modules/chords/timeline.ts` | 純函式組裝（時間軸） | 「當前這一段的每個和弦」是三個和弦模組共用的組裝規則。條目位置固定、游標在上面移動（與節奏譜同一種讀法），使用者才點得到看得見的和弦 |
 | `composables/useBarCursor` | 位移游標（不動時鐘） | 「點和弦強制切換過去」不能改 Transport 的小節數——節拍不能因為換和弦而斷。改成記一個位移，視覺與示範音都經同一個 `barFor()`；只改視覺會出現「畫面換了、聲音沒換」 |
 | `modules/rhythm/presets.ts` | 速記法 DSL（`parseCells`） | `X`／`o`／`g`／`.` 一格一字元，preset 在原始碼裡就看得出節奏形狀；未知字元丟例外，打錯字在測試就爆而不是悄悄變成休止 |
@@ -162,6 +163,9 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 | 練習模組的 click 接線 | `src/composables/usePracticeTransport.ts` |
 | 拍號表與持久化驗證 | `src/core/audio/types.ts`（TIME_SIGNATURES / resolveTimeSignature） |
 | 指板幾何 | `src/components/Fretboard/geometry.ts` |
+| 指板座標 vs 指板上的音（FretPosition／FretCell） | `src/core/theory/types.ts` |
+| 指板的互動能力（selectable／marks／fretClick） | `src/components/Fretboard/Fretboard.vue` 頂部註解 |
+| 回想測驗的出題、洗牌與計分 | `src/modules/scales/recall/quiz.ts` |
 | 五度圈幾何與調性位置 | `src/components/CircleOfFifths/geometry.ts` |
 | 五度圈的三種互動模式（display／key／chord） | `src/components/CircleOfFifths/CircleOfFifths.vue` 頂部註解 |
 | 和弦時間軸條目與選取事件 | `src/components/ChordTimeline/ChordTimeline.vue` |
@@ -308,6 +312,11 @@ canonical／hreflang／lang 三者一致、七個新頁面文字對比全數通�
 改為「當前這一段的每一個和弦」且每一格可點，五度圈外圈在跟練畫面可點以切換 Root
 （12 調循環跳到那個調、固定調練習直接改設定並正規化同音異名）。兩者都走 `useBarCursor` 的
 小節位移，時鐘不停、示範音在下一個小節線跟上。
+
+**Phase 7 追加（599 個測試）**：指板回想模組（`scales.recall`）——把資訊流向反過來，
+答案藏起來再問。兩個正交設定（方向 find／name × 語言 note／degree）＝四種練法共用一套機制；
+限時模式的換題由 transport 小節數驅動，不引入第二條時間線。Fretboard 取得互動能力
+（`selectable` 的透明命中層、`marks` 空心圈），`FretCell` 抽出 `FretPosition` 基底型別。
 
 **待人工完成（需要帳號，不是程式碼）**：見 `docs/ops/runbook.md`——
 建立 Firebase 專案與自訂網域、設定 GitHub repository variables、AdSense 送審與版位建立、

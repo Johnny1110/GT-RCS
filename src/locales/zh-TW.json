@@ -18,6 +18,10 @@
       "practice": {
         "title": "音階跟練",
         "description": "掛上節拍器跟練音階，自動記錄練習時間"
+      },
+      "recall": {
+        "title": "指板回想",
+        "description": "把答案藏起來：找音、找度數、說出這一格是什麼"
       }
     },
     "rhythm": {
@@ -422,5 +426,38 @@
   "notFound": {
     "title": "找不到這一頁",
     "body": "網址可能打錯了，或這一頁已經不在。從首頁或樂理知識庫繼續吧。"
+  },
+  "recall": {
+    "direction": "方向",
+    "dirFind": "找位置",
+    "dirName": "說名字",
+    "language": "語言",
+    "langNote": "音名",
+    "langDegree": "度數",
+    "barsPerQuestion": "每題小節",
+    "untimed": "不限時",
+    "findNote": "找出全指板所有的 {target}",
+    "findDegree": "在 {root} {scale} 找出所有的 {target}",
+    "nameNote": "白圈那一格是什麼音？",
+    "nameDegree": "白圈那一格在 {root} {scale} 是幾度？",
+    "next": "下一題",
+    "restart": "重新計分",
+    "allFound": "{target} 全部找到了",
+    "correct": "答對了，是 {name}",
+    "missNote": "那是 {name}",
+    "missDegree": "那是 {degree}",
+    "missOutside": "{name} 不在 {root} {scale} 裡",
+    "missPick": "不是 {picked}，再想想",
+    "summary": "上一題 {target}：找到 {found}/{total}",
+    "summaryName": "上一題是 {target}",
+    "timedHint": "限時模式由 click 換題——按下播放才會開始",
+    "untimedHint": "答完按「下一題」；想被追著跑就把每題小節設成 2 到 8",
+    "stats": "本輪",
+    "questions": "題數",
+    "hits": "命中",
+    "misses": "誤點",
+    "missed": "漏掉",
+    "accuracy": "正確率",
+    "keyboardNote": "「說名字」方向可以完全用鍵盤作答；「找位置」需要點指板，這是目前已知的限制。"
   }
 }

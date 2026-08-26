@@ -15,10 +15,17 @@
  * - tile（和弦）：把位互不重疊 → 全部框一起畫，標籤是根音格號，框外音點淡出。
  * - focus（音階）：把位天生重疊 → 一次只畫聚焦的那一個框，標籤是錨定音的度數；
  *   沒選把位時完全不畫框，維持原本的全指板呈現。
+ *
+ * 互動（回想測驗，PRD F7-4）：`selectable` 時在**每一格**（含沒有音點的格）鋪一層透明命中區，
+ * 點下去只 emit 座標——這一格上有沒有音、答對沒答對，一律由模組層判斷。
+ * `marks` 畫空心圈，用來標出「要辨認的是這一格」。
  */
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isInPosition, type FretCell, type FretboardPosition, type PitchClass } from '@/core/theory'
+import {
+  isInPosition,
+  type FretCell, type FretPosition, type FretboardPosition, type PitchClass,
+} from '@/core/theory'
 import { colorForInterval } from '@/core/colors'
 import { POSITION_MARKS, fretboardLayout, positionRect, scrollLeftForFret } from './geometry'
 
@@ -35,6 +42,10 @@ export interface FretboardProps {
   focusedPositionId?: string | null
   /** 把位彼此重疊時用 'focus'（音階）；互不重疊時用 'tile'（和弦） */
   positionMode?: 'tile' | 'focus'
+  /** 互動練習：整塊指板可點（含沒有音點的格），emit fretClick */
+  selectable?: boolean
+  /** 空心圈標記（回想測驗的題目「就是這一格」）；不帶音名也不帶顏色 */
+  marks?: readonly FretPosition[]
 }
 
 const props = withDefaults(defineProps<FretboardProps>(), {
@@ -44,6 +55,8 @@ const props = withDefaults(defineProps<FretboardProps>(), {
   positions: () => [],
   focusedPositionId: null,
   positionMode: 'tile',
+  selectable: false,
+  marks: () => [],
 })
 
 const emit = defineEmits<{
@@ -51,6 +64,8 @@ const emit = defineEmits<{
   (e: 'cellClick', cell: FretCell): void
   /** 聚焦的把位改變（支援 v-model:focused-position-id） */
   (e: 'update:focusedPositionId', id: string | null): void
+  /** 點擊任何一格（selectable 時才有）；純座標，不含樂理 */
+  (e: 'fretClick', position: FretPosition): void
 }>()
 
 /** 框外音點的透明度：看得見（它確實是和弦音）但退到背景 */
@@ -126,6 +141,35 @@ const dots = computed(() =>
   }),
 )
 
+/** 命中半徑略大於音點：手機上 22 格已經很窄，命中區再等於音點就按不到 */
+const HIT_R = 1.4
+
+/** 每一格一個透明圓；只有 selectable 時才產生（平時是 0 個節點） */
+const hits = computed(() => {
+  if (!props.selectable) return []
+  const cells: { key: string; cx: number; cy: number; position: FretPosition }[] = []
+  for (let string = 1; string <= props.stringCount; string++) {
+    for (let fret = 0; fret <= props.fretCount; fret++) {
+      cells.push({
+        key: `hit-${string}-${fret}`,
+        cx: layout.value.cellX(fret),
+        cy: layout.value.cellY(string),
+        position: { string, fret },
+      })
+    }
+  }
+  return cells
+})
+
+const markDots = computed(() =>
+  props.marks.map((mark) => ({
+    key: `mark-${mark.string}-${mark.fret}`,
+    cx: layout.value.cellX(mark.fret),
+    cy: layout.value.cellY(mark.string),
+    position: mark,
+  })),
+)
+
 function jumpTo(fret: number): void {
   scroller.value?.scrollTo({ left: scrollLeftForFret(layout.value, fret), behavior: 'smooth' })
 }
@@ -192,6 +236,21 @@ function focusPosition(position: FretboardPosition): void {
                 font-family="var(--font-mono)" :font-size="layout.labelSize" font-weight="700"
                 :fill="dot.textFill">{{ dot.label }}</text>
         </g>
+
+        <!-- 題目標記：空心圈，不帶標記也不帶顏色（顏色只屬於已知的音） -->
+        <circle v-for="mark in markDots" :key="mark.key"
+                :cx="mark.cx" :cy="mark.cy" :r="layout.dotR + 2"
+                fill="none" stroke="var(--color-ink-50)" stroke-width="2"
+                class="pointer-events-none"
+                :data-mark-string="mark.position.string" :data-mark-fret="mark.position.fret" />
+
+        <!-- 命中層畫在最上層，否則音點與把位框會先吃掉點擊。
+             座標寫成 data 屬性：這些圓形沒有標記也沒有顏色，不標出來連除錯都看不出誰是誰 -->
+        <circle v-for="hit in hits" :key="hit.key"
+                :cx="hit.cx" :cy="hit.cy" :r="layout.dotR * HIT_R"
+                fill="transparent" class="cursor-pointer"
+                :data-hit-string="hit.position.string" :data-hit-fret="hit.position.fret"
+                @click="$emit('fretClick', hit.position)" />
       </svg>
     </div>
 
