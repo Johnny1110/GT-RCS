@@ -18,6 +18,10 @@
       "practice": {
         "title": "Scale Practice",
         "description": "Run scales against the click; practice time is logged automatically"
+      },
+      "recall": {
+        "title": "Fretboard Recall",
+        "description": "Answers hidden: find the note, find the degree, name the fret"
       }
     },
     "rhythm": {
@@ -422,5 +426,38 @@
   "notFound": {
     "title": "Page not found",
     "body": "That URL may be a typo, or the page has moved. Head back to the home page or the theory library."
+  },
+  "recall": {
+    "direction": "Direction",
+    "dirFind": "Find it",
+    "dirName": "Name it",
+    "language": "Language",
+    "langNote": "Note name",
+    "langDegree": "Degree",
+    "barsPerQuestion": "Bars per question",
+    "untimed": "Untimed",
+    "findNote": "Find every {target} on the neck",
+    "findDegree": "Find every {target} in {root} {scale}",
+    "nameNote": "What note is the circled fret?",
+    "nameDegree": "What degree is the circled fret in {root} {scale}?",
+    "next": "Next question",
+    "restart": "Reset score",
+    "allFound": "Found every {target}",
+    "correct": "Correct — it's {name}",
+    "missNote": "That one is {name}",
+    "missDegree": "That one is {degree}",
+    "missOutside": "{name} is not in {root} {scale}",
+    "missPick": "Not {picked} — try again",
+    "summary": "Previous {target}: found {found}/{total}",
+    "summaryName": "Previous answer was {target}",
+    "timedHint": "Timed mode advances on the click — press play to start",
+    "untimedHint": "Press Next question when you're done; set bars per question to 2–8 to be chased",
+    "stats": "This round",
+    "questions": "Questions",
+    "hits": "Hits",
+    "misses": "Wrong taps",
+    "missed": "Missed",
+    "accuracy": "Accuracy",
+    "keyboardNote": "Name it is fully keyboard-operable; Find it needs the fretboard — a known limitation."
   }
 }

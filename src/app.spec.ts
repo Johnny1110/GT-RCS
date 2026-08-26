@@ -8,6 +8,9 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
 import { createMemoryHistory } from 'vue-router'
+import { chromaticBoard } from './modules/scales/recall/quiz'
+import { KEYS } from './modules/scales/shared'
+import { mapToFretboard, parseNoteName, spellDegree, type NoteName } from './core/theory'
 import App from './App.vue'
 import { createAppRouter } from './router'
 import { LEGAL_DOCS, KNOWLEDGE_BASE_PATH, legalPath } from './config/routes'
@@ -34,6 +37,13 @@ function createTestApp() {
   // 用**正式的**路由表，不自己抄一份：抄的那份漏掉新路由時，測試會全綠地騙人
   const router = createAppRouter(createMemoryHistory())
   return { pinia, i18n, router, missingKeys }
+}
+
+/** 從畫面上讀出「找位置」這一題要找的音；隨機出題，測試不預設是哪一個 */
+function readTarget(text: string): NoteName {
+  const match = /找出全指板所有的 ([A-G][#b]?)/.exec(text)
+  if (!match?.[1]) throw new Error(`讀不出題目：${text.slice(0, 120)}`)
+  return match[1] as NoteName
 }
 
 /** 所有實際會被使用者打開的路由：模組由 registry 生成，加上首頁、統計與內容頁 */
@@ -275,6 +285,86 @@ describe('App 掛載', () => {
     expect(parsed.data.moduleSettings['chords.key-practice']).toMatchObject({
       levelId: 'level5', presetId: 'l5-borrowed',
     })
+  })
+
+  it('指板回想（找位置）：一開始全空，點對才亮、點錯說得出你點的是什麼', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/scales/recall')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    // 題目是隨機抽的，所以測試從畫面上讀出這一題要找什麼，再自己用 core 算出答案。
+    // 用 regex 而不是 includes：'D' 會誤中 'Db' 的題目
+    const target = readTarget(wrapper.text())
+    const answers = mapToFretboard([spellDegree(target, '1')])
+    // 指板一開始沒有任何音點——這就是「把答案藏起來」
+    expect(wrapper.findAll('svg circle[r="11"]')).toHaveLength(0)
+
+    const first = answers[0]!
+    await wrapper.find(`circle[data-hit-string="${first.string}"][data-hit-fret="${first.fret}"]`).trigger('click')
+    await flushPromises()
+    expect(wrapper.findAll('svg circle[r="11"]')).toHaveLength(1)
+
+    // 點一個不是答案的格：不亮，而且回饋要說出那一格是什麼音
+    const board = chromaticBoard('C')
+    const wrong = board.find((cell) => cell.note.pc !== first.note.pc)!
+    await wrapper.find(`circle[data-hit-string="${wrong.string}"][data-hit-fret="${wrong.fret}"]`).trigger('click')
+    await flushPromises()
+    expect(wrapper.findAll('svg circle[r="11"]')).toHaveLength(1)
+    expect(wrapper.text()).toContain(`那是 ${wrong.note.name}`)
+  })
+
+  it('指板回想（說名字）：白圈標出題目，答對以 pitch class 比對', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/scales/recall')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const toName = wrapper.findAll('button').find((b) => b.text() === '說名字')
+    expect(toName).toBeDefined()
+    await toName!.trigger('click')
+    await flushPromises()
+
+    const mark = wrapper.find('circle[data-mark-string]')
+    expect(mark.exists(), '說名字方向要在指板上圈出題目').toBe(true)
+    const asked = {
+      string: Number(mark.attributes('data-mark-string')),
+      fret: Number(mark.attributes('data-mark-fret')),
+    }
+
+    // 答案自己算：白圈那一格的音高
+    const cell = chromaticBoard('C').find((c) => c.string === asked.string && c.fret === asked.fret)!
+    const answer = KEYS.find((key) => parseNoteName(key).pc === cell.note.pc)!
+    const button = wrapper.findAll('button').find((b) => b.text() === answer)
+    expect(button, `選項裡找不到 ${answer}`).toBeDefined()
+    await button!.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('答對了')
+    // 答對後白圈填上正確答案
+    expect(wrapper.findAll('svg circle[r="11"]')).toHaveLength(1)
+  })
+
+  it('指板回想：換方向或換語言就重新計分（換了一整副牌）', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/scales/recall')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const first = mapToFretboard([spellDegree(readTarget(wrapper.text()), '1')])[0]!
+    await wrapper.find(`circle[data-hit-string="${first.string}"][data-hit-fret="${first.fret}"]`).trigger('click')
+    await flushPromises()
+
+    const toDegree = wrapper.findAll('button').find((b) => b.text() === '度數')
+    await toDegree!.trigger('click')
+    await flushPromises()
+
+    // 命中歸零，指板重新變空
+    expect(wrapper.findAll('svg circle[r="11"]')).toHaveLength(0)
+    expect(wrapper.text()).toContain('在 C')
   })
 
   it('知識卡展開後載入對應語系內容', async () => {
