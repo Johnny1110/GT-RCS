@@ -44,6 +44,8 @@ export interface FretboardLayout {
   width: number
   height: number
   dotR: number
+  /** 指位記號半徑 */
+  inlayR: number
   labelSize: number
   /** 頂端是否已留出把位標籤的空間 */
   positionRow: boolean
@@ -67,8 +69,15 @@ const FRET_NUM_ROW = 26
 const FRET_W = 42
 const STRING_GAP = 28
 const DOT_R = 11
+/** 指位記號比音點小得多：它是琴的一部分，不是資料 */
+const INLAY_R = 5.5
 const LABEL_SIZE = 10
 
+/**
+ * 指位記號（inlay）落點沿用實體吉他的慣例：一個八度內在 3/5/7/9 各一點，
+ * 八度整數倍（12、24）改成上下兩點——手在高把位時，一點與兩點的差別就是
+ * 「我在第幾個八度」。第二個八度的 15/17/19/21 是 3/5/7/9 加 12。
+ */
 const SINGLE_INLAY_FRETS = [3, 5, 7, 9, 15, 17, 19, 21]
 const DOUBLE_INLAY_STEP = 12
 
@@ -127,6 +136,7 @@ export function fretboardLayout(
     width: OPEN_COL + fretCount * FRET_W + PAD_RIGHT,
     height: boardBottom + FRET_NUM_ROW + (positionRow ? 8 : 0),
     dotR: DOT_R,
+    inlayR: INLAY_R,
     labelSize: LABEL_SIZE,
     positionRow,
     fretLines,

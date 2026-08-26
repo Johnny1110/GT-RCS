@@ -192,9 +192,10 @@ function focusPosition(position: FretboardPosition): void {
         role="img"
         :aria-label="t('fretboard.aria', { count: cells.length })"
       >
-        <!-- 指位記號在最底層，弦與音點壓在其上 -->
+        <!-- 指位記號在最底層，弦與音點壓在其上。
+             亮度取 ink-600（與弦同級）：它要能一眼數到第 12 格，但不能跟音點搶眼睛 -->
         <circle v-for="(dot, i) in layout.inlays" :key="`inlay-${i}`"
-                :cx="dot.cx" :cy="dot.cy" r="4" fill="var(--color-ink-800)" />
+                :cx="dot.cx" :cy="dot.cy" :r="layout.inlayR" fill="var(--color-ink-600)" />
 
         <line v-for="fret in layout.fretLines" :key="`fret-${fret.fret}`"
               :x1="fret.x" :x2="fret.x"

@@ -29,8 +29,35 @@ describe('fretboardLayout', () => {
     expect(layout.inlays).toHaveLength(10)
   })
 
+  it('單點記號正好落在 3/5/7/9/15/17/19/21 的格中央、指板中線上', () => {
+    const mid = (layout.cellY(1) + layout.cellY(6)) / 2
+    const singles = layout.inlays
+      .filter((d) => Math.abs(d.cy - mid) < 0.01)
+      .map((d) => layout.fretNumbers.find((n) => Math.abs(n.x - d.cx) < 0.01)?.fret)
+    expect(singles).toEqual([3, 5, 7, 9, 15, 17, 19, 21])
+  })
+
+  it('沒有記號的格不會冒出點（4 格、6 格、13 格）', () => {
+    for (const fret of [1, 2, 4, 6, 8, 10, 11, 13, 14, 16]) {
+      expect(layout.inlays.some((d) => Math.abs(d.cx - layout.cellX(fret)) < 0.01)).toBe(false)
+    }
+  })
+
   it('24 格時 24 格也有雙點', () => {
-    expect(fretboardLayout(24, 6).inlays).toHaveLength(12)
+    const long = fretboardLayout(24, 6)
+    expect(long.inlays).toHaveLength(12)
+    expect(long.inlays.filter((d) => Math.abs(d.cx - long.cellX(24)) < 0.01)).toHaveLength(2)
+  })
+
+  it('12 格以下的指板不會畫出畫布外的記號', () => {
+    const short = fretboardLayout(12, 6)
+    expect(short.inlays).toHaveLength(6) // 3/5/7/9 單 + 12 雙
+    expect(short.inlays.every((d) => d.cx < short.width)).toBe(true)
+  })
+
+  it('指位記號比音點小：它是琴的一部分，不是資料', () => {
+    expect(layout.inlayR).toBeGreaterThan(0)
+    expect(layout.inlayR).toBeLessThan(layout.dotR)
   })
 
   it('12 格雙點上下對稱於指板中線', () => {
