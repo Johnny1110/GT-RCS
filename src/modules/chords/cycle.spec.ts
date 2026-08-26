@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildCircleCycle, cycleBarAt, keySequence, nextChordAfter } from './cycle'
+import { buildCircleCycle, cycleBarAt, firstBarOfKey, keySequence, nextChordAfter } from './cycle'
 import { findCircleProgression } from './presets'
 
 const preset2516 = findCircleProgression('2516')!
@@ -77,5 +77,28 @@ describe('cycleBarAt / nextChordAfter', () => {
   it('空循環不炸', () => {
     expect(cycleBarAt([], 3)).toBeUndefined()
     expect(nextChordAfter([], 3)).toBeUndefined()
+  })
+})
+
+describe('firstBarOfKey', () => {
+  const cycle = buildCircleCycle(preset2516, { barsPerKey: 8, startKey: 'C' })
+
+  it('回傳那個調的第一小節（點五度圈就是跳到這裡）', () => {
+    expect(firstBarOfKey(cycle, 'C')).toBe(1)
+    expect(firstBarOfKey(cycle, 'F')).toBe(9)
+    expect(firstBarOfKey(cycle, 'G')).toBe(89)
+  })
+
+  it('同音異名視為同一個調（圈上寫 F#、循環表裡寫 Gb）', () => {
+    expect(firstBarOfKey(cycle, 'Gb')).toBe(49)
+    expect(firstBarOfKey(cycle, 'F#')).toBe(49)
+  })
+
+  it('起始調換了，同一個調的位置跟著換', () => {
+    expect(firstBarOfKey(buildCircleCycle(preset2516, { barsPerKey: 4, startKey: 'Eb' }), 'Eb')).toBe(1)
+  })
+
+  it('空循環回傳 undefined（呼叫端不跳）', () => {
+    expect(firstBarOfKey([], 'C')).toBeUndefined()
   })
 })

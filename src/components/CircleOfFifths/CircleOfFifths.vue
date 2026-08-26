@@ -5,14 +5,19 @@
  * 架構契約：純 props in / events out。不 import stores、不做樂理計算
  * （調內和弦位置由 geometry.diatonicPlacement 提供）。
  *
- * 兩種用法：
- * - 互動：不傳 currentChordPc，點選扇形發出 selectKey
- * - 跟練：傳入 tonic 與 currentChordPc，組件只負責渲染 highlight
+ * 三種用法（mode）：
+ * - 'display'：純顯示。傳入 tonic 與 currentChordPc，組件只負責渲染 highlight。
+ * - 'key'：**外圈**可點，emit 該格的大調——跟練畫面用它直接切換 Root。
+ *   內圈是關係小調，這些練習模組的記法一律以大調為基準（小調進行寫成 vi ii V），
+ *   讓內圈也可點只會 emit 出選單裡沒有的調，所以在這個模式下不開放。
+ * - 'chord'：內外圈都可點，emit 點到的那一格的根音——進行編輯器的輸入介面。
  */
 import { computed } from 'vue'
 import { colorForInterval } from '@/core/colors'
 import { parseNoteName, spellDegree, type NoteName, type PitchClass } from '@/core/theory'
 import { circleLayout, diatonicPlacement, sectorIndexForPitch } from './geometry'
+
+export type CircleMode = 'display' | 'key' | 'chord'
 
 const props = withDefaults(
   defineProps<{
@@ -20,10 +25,10 @@ const props = withDefaults(
     tonic?: NoteName | undefined
     /** 跟練模式：目前正在響的和弦根音 pitch class；undefined = 無當前和弦 */
     currentChordPc?: number | undefined
-    /** 是否可點選切換調 */
-    interactive?: boolean
+    /** 互動模式，見檔頭 */
+    mode?: CircleMode
   }>(),
-  { interactive: false },
+  { mode: 'display' },
 )
 
 const emit = defineEmits<{ (e: 'selectKey', key: NoteName): void }>()
@@ -39,6 +44,10 @@ const diminished = computed(() => (props.tonic ? spellDegree(props.tonic, '7').n
 const currentIndex = computed(() =>
   props.currentChordPc === undefined ? -1 : sectorIndexForPitch(props.currentChordPc),
 )
+
+/** 外圈在 'key' 與 'chord' 兩種模式都可點；內圈只有 'chord' 模式可點 */
+const outerClickable = computed(() => props.mode !== 'display')
+const innerClickable = computed(() => props.mode === 'chord')
 
 interface SectorView {
   index: number
@@ -83,11 +92,7 @@ const sectors = computed<SectorView[]>(() =>
 function onSectorKey(event: KeyboardEvent, key: NoteName): void {
   if (event.key !== 'Enter' && event.key !== ' ') return
   event.preventDefault()
-  onSelect(key)
-}
-
-function onSelect(key: NoteName): void {
-  if (props.interactive) emit('selectKey', key)
+  emit('selectKey', key)
 }
 </script>
 
@@ -105,12 +110,12 @@ function onSelect(key: NoteName): void {
         :fill="sector.isTonic ? 'var(--color-ink-50)' : sector.outerDegree ? 'var(--color-ink-800)' : 'var(--color-ink-900)'"
         stroke="var(--color-ink-700)"
         stroke-width="1"
-        :class="interactive ? 'cursor-pointer' : ''"
-        :role="interactive ? 'button' : undefined"
-        :tabindex="interactive ? 0 : undefined"
-        :aria-label="interactive ? sector.major : undefined"
-        @click="onSelect(sector.major)"
-        @keydown="interactive && onSectorKey($event, sector.major)"
+        :class="outerClickable ? 'rcs-circle-hit' : ''"
+        :role="outerClickable ? 'button' : undefined"
+        :tabindex="outerClickable ? 0 : undefined"
+        :aria-label="outerClickable ? sector.major : undefined"
+        @click="outerClickable && emit('selectKey', sector.major)"
+        @keydown="outerClickable && onSectorKey($event, sector.major)"
       />
       <text
         :x="sector.majorLabel.x" :y="sector.majorLabel.y" dy="-0.1em"
@@ -130,12 +135,12 @@ function onSelect(key: NoteName): void {
         :fill="sector.innerDegree ? 'var(--color-ink-800)' : 'var(--color-ink-900)'"
         stroke="var(--color-ink-700)"
         stroke-width="1"
-        :class="interactive ? 'cursor-pointer' : ''"
-        :role="interactive ? 'button' : undefined"
-        :tabindex="interactive ? 0 : undefined"
-        :aria-label="interactive ? `${sector.minor}m` : undefined"
-        @click="onSelect(sector.minor)"
-        @keydown="interactive && onSectorKey($event, sector.minor)"
+        :class="innerClickable ? 'rcs-circle-hit' : ''"
+        :role="innerClickable ? 'button' : undefined"
+        :tabindex="innerClickable ? 0 : undefined"
+        :aria-label="innerClickable ? `${sector.minor}m` : undefined"
+        @click="innerClickable && emit('selectKey', sector.minor)"
+        @keydown="innerClickable && onSectorKey($event, sector.minor)"
       />
       <text
         :x="sector.minorLabel.x" :y="sector.minorLabel.y" dy="-0.05em"

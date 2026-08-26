@@ -93,6 +93,8 @@
 | `content/knowledge/` | 內容與程式分離 | 模組只引用 entry id；內容依語系 lazy 載入並快取，獨立分包 |
 | `theory/progressions/` | 白名單 parser + 展開器 | 級數記法 → 任意調的實際和弦；文法外一律報錯不猜，錯誤帶 tokenIndex |
 | `modules/chords/cycle.ts` | 純函式查表 | 12 調循環先算成小節表，跟練畫面只依當前小節查表，不在畫面裡算樂理 |
+| `modules/chords/timeline.ts` | 純函式組裝（時間軸） | 「當前這一段的每個和弦」是三個和弦模組共用的組裝規則。條目位置固定、游標在上面移動（與節奏譜同一種讀法），使用者才點得到看得見的和弦 |
+| `composables/useBarCursor` | 位移游標（不動時鐘） | 「點和弦強制切換過去」不能改 Transport 的小節數——節拍不能因為換和弦而斷。改成記一個位移，視覺與示範音都經同一個 `barFor()`；只改視覺會出現「畫面換了、聲音沒換」 |
 | `modules/rhythm/presets.ts` | 速記法 DSL（`parseCells`） | `X`／`o`／`g`／`.` 一格一字元，preset 在原始碼裡就看得出節奏形狀；未知字元丟例外，打錯字在測試就爆而不是悄悄變成休止 |
 | `composables/useModuleSettings` | 響應式持久化綁定 | 模組設定以模組 id 為 key 自動存取，杜絕直接碰 localStorage |
 | `composables/usePracticeTransport` | Template Method | 每個練習共通的 click 接線：載入設定 → 回寫調整 → 離開停止播放 |
@@ -161,6 +163,10 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 | 拍號表與持久化驗證 | `src/core/audio/types.ts`（TIME_SIGNATURES / resolveTimeSignature） |
 | 指板幾何 | `src/components/Fretboard/geometry.ts` |
 | 五度圈幾何與調性位置 | `src/components/CircleOfFifths/geometry.ts` |
+| 五度圈的三種互動模式（display／key／chord） | `src/components/CircleOfFifths/CircleOfFifths.vue` 頂部註解 |
+| 和弦時間軸條目與選取事件 | `src/components/ChordTimeline/ChordTimeline.vue` |
+| 小節游標（強制切換）的位移語意 | `src/composables/useBarCursor.ts` |
+| 和弦線共用調選項與同音異名正規化 | `src/modules/chords/keys.ts` |
 | 進行記法文法 | `src/core/theory/progressions/parser.ts` 頂部註解 |
 | 進行 preset 與分級課表 | `src/modules/chords/presets.ts` |
 | 知識內容格式與行內標記 | `src/content/blocks.ts`（知識條目與法遵頁共用） |
@@ -297,6 +303,11 @@ strum 音符錯開 14ms、快捷鍵在文字輸入框內不攔截、六條路由
 瀏覽器實測驗收：投放成功時版位保留 250–280px、unfilled 與攔截器情境整塊收合且不留白、
 三條跟練路由零廣告容器、關閉 JS 時六個預渲染網址都有完整內文與 4–37 條外連、
 canonical／hreflang／lang 三者一致、七個新頁面文字對比全數通過 AA、無 console 錯誤。
+
+**Phase 6 之後的優化（573 個測試）**：跟練畫面的**強制切換**——和弦時間軸由滾動的 4 格視窗
+改為「當前這一段的每一個和弦」且每一格可點，五度圈外圈在跟練畫面可點以切換 Root
+（12 調循環跳到那個調、固定調練習直接改設定並正規化同音異名）。兩者都走 `useBarCursor` 的
+小節位移，時鐘不停、示範音在下一個小節線跟上。
 
 **待人工完成（需要帳號，不是程式碼）**：見 `docs/ops/runbook.md`——
 建立 Firebase 專案與自訂網域、設定 GitHub repository variables、AdSense 送審與版位建立、

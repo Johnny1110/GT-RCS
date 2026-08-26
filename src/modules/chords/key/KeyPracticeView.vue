@@ -2,33 +2,36 @@
 /**
  * 固定調分級練習（PRD F3-4）：單一調內，由入門三和弦一路到 fusion／neo-soul。
  * 與 12 調循環的差別是「留在同一個調把和弦練熟」，因此進行以 AB 循環反覆。
+ *
+ * 兩種強制切換：點五度圈外圈 → 換調（寫回設定，會持久化）；
+ * 點時間軸的和弦 → 用 useBarCursor 的位移跳到那一小節（不動時鐘）。
  */
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { chordPositions, mapToFretboard, realizeProgression } from '@/core/theory'
+import { chordPositions, mapToFretboard, realizeProgression, type NoteName } from '@/core/theory'
 import CircleOfFifths from '@/components/CircleOfFifths/CircleOfFifths.vue'
 import ChordTimeline, { type TimelineEntry } from '@/components/ChordTimeline/ChordTimeline.vue'
 import ChordDemoControl from '@/components/ui/ChordDemoControl.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
+import { useBarCursor } from '@/composables/useBarCursor'
 import { useChordDemo } from '@/composables/useChordDemo'
 import { useModuleSettings } from '@/composables/useModuleSettings'
 import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
-import { useTransportTick } from '@/composables/useTransportTick'
-import { DESCENDING_FIFTHS } from '@/components/CircleOfFifths/geometry'
+import { PRACTICE_KEYS, isPracticeKey, toPracticeKey } from '../keys'
 import { PRACTICE_LEVELS, findLevel } from '../presets'
+import { buildChordStrip, loopIndex } from '../timeline'
 import { KEY_PRACTICE_DEFAULTS, type KeyPracticeSettings } from '../settings'
 
 const MODULE_ID = 'chords.key-practice'
-const TIMELINE_WINDOW = 4
 
 const { t } = useI18n()
 const settings = useModuleSettings<KeyPracticeSettings>(MODULE_ID, KEY_PRACTICE_DEFAULTS)
 
-if (!DESCENDING_FIFTHS.includes(settings.key)) settings.key = KEY_PRACTICE_DEFAULTS.key
+if (!isPracticeKey(settings.key)) settings.key = KEY_PRACTICE_DEFAULTS.key
 if (!findLevel(settings.levelId)) settings.levelId = KEY_PRACTICE_DEFAULTS.levelId
 
 const level = computed(() => findLevel(settings.levelId) ?? PRACTICE_LEVELS[0]!)
@@ -49,7 +52,6 @@ usePracticeSession({
   params: () => ({ key: settings.key, levelId: settings.levelId, presetId: settings.presetId }),
 })
 
-const { position, playing } = useTransportTick()
 /** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
 usePresetNavigation({
   items: () => level.value.progressions.map((p) => p.id),
@@ -62,9 +64,12 @@ const bars = computed(() =>
   realizeProgression(preset.value, { key: settings.key, harmonyLevel: preset.value.harmonyLevel }),
 )
 
-const activeIndex = computed(() =>
-  bars.value.length === 0 ? 0 : ((playing.value ? position.bar : 1) - 1) % bars.value.length,
-)
+/** 小節游標：未播放時停在第 1 小節，加上使用者按下的強制切換 */
+const cursor = useBarCursor()
+/** 換調或換進行 = 換了一份小節表，上一份的跳轉不該留著 */
+watch(() => [settings.key, settings.presetId], () => cursor.reset())
+
+const activeIndex = computed(() => loopIndex(cursor.bar.value, bars.value.length))
 const currentChord = computed(() => bars.value[activeIndex.value]?.chords[0])
 const cells = computed(() => (currentChord.value ? mapToFretboard(currentChord.value.tones) : []))
 
@@ -80,28 +85,28 @@ watch(() => currentChord.value?.root.pc, () => { focusedPositionId.value = null 
 
 
 /** 示範音：直接由 bars 查小節，不經過視覺 position——發聲要提前排程 */
-useChordDemo((bar) =>
-  bars.value.length === 0 ? undefined : bars.value[(bar - 1) % bars.value.length]?.chords[0],
-)
-
-const timeline = computed<TimelineEntry[]>(() => {
-  if (bars.value.length === 0) return []
-  const entries: TimelineEntry[] = []
-  for (let offset = 0; offset < Math.min(TIMELINE_WINDOW, bars.value.length); offset++) {
-    const bar = bars.value[(activeIndex.value + offset) % bars.value.length]
-    const chord = bar?.chords[0]
-    if (!bar || !chord) continue
-    entries.push({
-      key: `${bar.bar}-${offset}`,
-      symbol: bar.chords.map((c) => c.symbol).join(' · '),
-      caption: offset === 0 ? t('chords.now') : offset === 1 ? t('chords.next') : `${t('metronome.bar')} ${bar.bar}`,
-      state: offset === 0 ? 'current' : offset === 1 ? 'next' : 'future',
-    })
-  }
-  return entries
+useChordDemo((bar) => {
+  const list = bars.value
+  return list.length === 0 ? undefined : list[loopIndex(cursor.barFor(bar), list.length)]?.chords[0]
 })
 
-const keyOptions = DESCENDING_FIFTHS.map((key) => ({ value: key, label: key }))
+/** 時間軸＝整個進行（點任何一格就切換過去） */
+const timeline = computed<TimelineEntry[]>(() => {
+  const list = bars.value
+  if (list.length === 0) return []
+  const barAt = (bar: number) => list[loopIndex(bar, list.length)]
+  return buildChordStrip({
+    firstBar: cursor.bar.value - activeIndex.value,
+    count: list.length,
+    activeBar: cursor.bar.value,
+    symbolAt: (bar) => barAt(bar)?.chords.map((c) => c.symbol).join(' · '),
+    captionAt: (bar) => `${t('metronome.bar')} ${barAt(bar)?.bar ?? ''}`,
+    nowLabel: t('chords.now'),
+    nextLabel: t('chords.next'),
+  })
+})
+
+const keyOptions = PRACTICE_KEYS.map((key) => ({ value: key, label: key }))
 const levelOptions = computed(() =>
   PRACTICE_LEVELS.map((item) => ({ value: item.id, label: t(item.titleKey) })),
 )
@@ -109,6 +114,11 @@ const progressionOptions = computed(() =>
   level.value.progressions.map((item) => ({ value: item.id, label: t(item.titleKey) })),
 )
 const knowledgeId = computed(() => preset.value.knowledgeIds?.[0] ?? level.value.knowledgeIds?.[0])
+
+/** 圈上寫 F#、這裡的選單寫 Gb——同一個調，換算過再寫回設定 */
+function selectKey(key: NoteName): void {
+  settings.key = toPracticeKey(key)
+}
 </script>
 
 <template>
@@ -137,10 +147,24 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0] ?? level.value
     <p class="max-w-[65ch] text-sm text-ink-400">{{ t(level.descriptionKey) }}</p>
 
     <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
-      <CircleOfFifths :tonic="settings.key" :current-chord-pc="currentChord?.root.pc" />
+      <div class="flex flex-col gap-2">
+        <CircleOfFifths
+          :tonic="settings.key"
+          :current-chord-pc="currentChord?.root.pc"
+          mode="key"
+          @select-key="selectKey"
+        />
+        <p class="font-mono text-[11px] text-ink-500">{{ t('chords.switchKeyHint') }}</p>
+      </div>
 
       <div class="flex min-w-0 flex-col gap-4">
-        <ChordTimeline :entries="timeline" />
+        <ChordTimeline
+          :entries="timeline"
+          selectable
+          :label="t('chords.jumpChordHint')"
+          @select="cursor.jumpBy"
+        />
+        <p class="font-mono text-[11px] text-ink-500">{{ t('chords.jumpChordHint') }}</p>
       </div>
     </div>
 

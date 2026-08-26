@@ -20,20 +20,20 @@ import CircleOfFifths from '@/components/CircleOfFifths/CircleOfFifths.vue'
 import ChordTimeline, { type TimelineEntry } from '@/components/ChordTimeline/ChordTimeline.vue'
 import ChordDemoControl from '@/components/ui/ChordDemoControl.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
+import { useBarCursor } from '@/composables/useBarCursor'
 import { useChordDemo } from '@/composables/useChordDemo'
 import { useModuleSettings } from '@/composables/useModuleSettings'
 import { usePresetNavigation } from '@/composables/usePresetNavigation'
 import { usePracticeSession } from '@/composables/usePracticeSession'
 import { usePracticeTransport } from '@/composables/usePracticeTransport'
-import { useTransportTick } from '@/composables/useTransportTick'
 import { useTransportStore } from '@/stores/transport'
 import { toPreset, useCustomProgressionsStore, type CustomProgression } from '@/stores/customProgressions'
-import { buildCircleCycle, cycleBarAt } from '../cycle'
+import { buildCircleCycle, cycleBarAt, firstBarOfKey } from '../cycle'
+import { buildChordStrip, loopIndex } from '../timeline'
 import ProgressionEditor from './ProgressionEditor.vue'
 import { CUSTOM_DEFAULTS, type CustomProgressionSettings } from './settings'
 
 const MODULE_ID = 'chords.custom'
-const TIMELINE_WINDOW = 4
 
 const { t } = useI18n()
 const settings = useModuleSettings<CustomProgressionSettings>(MODULE_ID, CUSTOM_DEFAULTS)
@@ -46,7 +46,6 @@ usePracticeSession({
   params: () => ({ progressionId: settings.selectedId }),
 })
 
-const { position, playing } = useTransportTick()
 /** ←→ 換 preset（F5-4）：清單順序與畫面上的選單一致 */
 usePresetNavigation({
   items: () => store.items.map((i) => i.id),
@@ -98,14 +97,19 @@ const singleKeyBars = computed(() =>
 function chordAtBar(bar: number): RealizedChord | undefined {
   if (cycle.value) return cycleBarAt(cycle.value, bar)?.chords[0]
   const bars = singleKeyBars.value
-  return bars.length === 0 ? undefined : bars[(bar - 1) % bars.length]?.chords[0]
+  return bars.length === 0 ? undefined : bars[loopIndex(bar, bars.length)]?.chords[0]
 }
 
 function keyAtBar(bar: number): NoteName | undefined {
   return cycle.value ? cycleBarAt(cycle.value, bar)?.key : selected.value?.key
 }
 
-const activeBar = computed(() => (playing.value ? position.bar : 1))
+/** 小節游標：未播放時停在第 1 小節，加上使用者按下的強制切換 */
+const cursor = useBarCursor()
+/** 換進行或改記法 = 換了一份小節表，上一份的跳轉不該留著 */
+watch(() => [settings.selectedId, selected.value?.tokens, selected.value?.key], () => cursor.reset())
+
+const activeBar = cursor.bar
 const currentChord = computed(() => chordAtBar(activeBar.value))
 const currentKey = computed(() => keyAtBar(activeBar.value))
 
@@ -116,30 +120,37 @@ const positions = computed(() =>
 const focusedPositionId = ref<string | null>(null)
 watch(() => currentChord.value?.root.pc, () => { focusedPositionId.value = null })
 
-useChordDemo(chordAtBar)
+useChordDemo((bar) => chordAtBar(cursor.barFor(bar)))
 
+/**
+ * 時間軸＝一整段進行（點任何一格就切換過去）。
+ * 12 調循環時「一段」是當前這個調的小節，單一調時就是整個進行反覆的那一輪。
+ */
 const timeline = computed<TimelineEntry[]>(() => {
   if (!playable.value) return []
-  const entries: TimelineEntry[] = []
-  for (let offset = 0; offset < TIMELINE_WINDOW; offset++) {
-    const bar = activeBar.value + offset
-    const chord = chordAtBar(bar)
-    if (!chord) continue
-    entries.push({
-      key: `${bar}`,
-      symbol: chord.symbol,
-      caption: offset === 0
-        ? t('chords.now')
-        : offset === 1
-          ? t('chords.next')
-          : selected.value?.cycleKeys
-            ? (keyAtBar(bar) ?? '')
-            : `${t('metronome.bar')} ${bar}`,
-      state: offset === 0 ? 'current' : offset === 1 ? 'next' : 'future',
-    })
-  }
-  return entries
+  const bar = activeBar.value
+  const cycleTable = cycle.value
+  const segment = cycleTable
+    ? { first: bar - ((cycleBarAt(cycleTable, bar)?.barInKey ?? 1) - 1), count: selected.value?.barsPerKey ?? 0 }
+    : { first: bar - loopIndex(bar, singleKeyBars.value.length), count: singleKeyBars.value.length }
+  return buildChordStrip({
+    firstBar: segment.first,
+    count: segment.count,
+    activeBar: bar,
+    symbolAt: (at) => chordAtBar(at)?.symbol,
+    captionAt: (at) => `${t('metronome.bar')} ${cycleTable
+      ? (cycleBarAt(cycleTable, at)?.barInKey ?? '')
+      : loopIndex(at, singleKeyBars.value.length) + 1}`,
+    nowLabel: t('chords.now'),
+    nextLabel: t('chords.next'),
+  })
 })
+
+/** 點五度圈：跳到那個調在 12 調循環裡的第一小節 */
+function jumpToKey(key: NoteName): void {
+  const target = cycle.value ? firstBarOfKey(cycle.value, key) : undefined
+  if (target !== undefined) cursor.jumpTo(target)
+}
 
 /**
  * BPM 跟著進行走：每個進行記住自己的速度。
@@ -264,19 +275,29 @@ watch(selected, () => { confirmingDelete.value = false })
       <template v-else>
         <!-- 單一調時上面編輯器的五度圈已經在 highlight 當前和弦，不再重複畫一個 -->
         <div class="grid gap-6" :class="selected.cycleKeys ? 'lg:grid-cols-[320px_1fr]' : ''">
-          <CircleOfFifths
-            v-if="selected.cycleKeys"
-            :tonic="currentKey"
-            :current-chord-pc="currentChord?.root.pc"
-          />
+          <div v-if="selected.cycleKeys" class="flex flex-col gap-2">
+            <CircleOfFifths
+              :tonic="currentKey"
+              :current-chord-pc="currentChord?.root.pc"
+              mode="key"
+              @select-key="jumpToKey"
+            />
+            <p class="font-mono text-[11px] text-ink-500">{{ t('chords.jumpKeyHint') }}</p>
+          </div>
 
           <div class="flex min-w-0 flex-col gap-4">
             <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2 font-mono text-xs text-ink-400">
               <span>{{ t('chords.key') }} <b class="text-base text-ink-50">{{ currentKey }}</b></span>
               <span>{{ t('metronome.bar') }}
-                <b class="text-base tabular-nums text-ink-50">{{ playing ? position.bar : 1 }}</b></span>
+                <b class="text-base tabular-nums text-ink-50">{{ activeBar }}</b></span>
             </div>
-            <ChordTimeline :entries="timeline" />
+            <ChordTimeline
+              :entries="timeline"
+              selectable
+              :label="t('chords.jumpChordHint')"
+              @select="cursor.jumpBy"
+            />
+            <p class="font-mono text-[11px] text-ink-500">{{ t('chords.jumpChordHint') }}</p>
           </div>
         </div>
 

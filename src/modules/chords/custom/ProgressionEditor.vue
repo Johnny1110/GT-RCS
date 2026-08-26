@@ -17,10 +17,10 @@ import {
 } from '@/core/theory'
 import CircleOfFifths from '@/components/CircleOfFifths/CircleOfFifths.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
-import { DESCENDING_FIFTHS } from '@/components/CircleOfFifths/geometry'
 import {
   BARS_PER_CHORD_OPTIONS, HARMONY_LEVELS, type CustomProgression,
 } from '@/stores/customProgressions'
+import { PRACTICE_KEYS } from '../keys'
 
 const BARS_PER_KEY_OPTIONS = [4, 8, 16] as const
 
@@ -51,7 +51,7 @@ const parsed = computed(() => {
   }
 })
 
-const keyOptions = DESCENDING_FIFTHS.map((key) => ({ value: key, label: key }))
+const keyOptions = PRACTICE_KEYS.map((key) => ({ value: key, label: key }))
 const barsOptions = BARS_PER_CHORD_OPTIONS.map((n) => ({ value: String(n), label: n === 0.5 ? '½' : String(n) }))
 const barsPerKeyOptions = BARS_PER_KEY_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))
 const harmonyOptions = computed(() =>
@@ -80,7 +80,7 @@ function removeLast(): void {
       <CircleOfFifths
         :tonic="item.key"
         :current-chord-pc="currentChordPc"
-        interactive
+        mode="chord"
         @select-key="appendKey"
       />
     </div>
