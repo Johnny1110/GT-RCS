@@ -476,6 +476,32 @@
       }
     ]
   },
+  "chord.seventh-arpeggios": {
+    "title": "Seventh arpeggios: four sounds, one shape",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "An arpeggio is a chord played one note at a time. The chord tells you what the harmony is; the arpeggio tells you **which notes are always safe** — a solo that lands on arpeggio tones never fights the accompaniment."
+      },
+      {
+        "type": "paragraph",
+        "text": "There are really only four practical seventh chords: **maj7** (1 3 5 7), **dominant 7** (1 3 5 b7), **m7** (1 b3 5 b7) and **m7b5** (1 b3 b5 b7). One pass through the diatonic sevenths hits all four — Imaj7 and IVmaj7 are major sevenths, V7 is the dominant, ii iii vi are minor sevenths, vii is half-diminished. The fifth shape, **dim7** (1 b3 b5 bb7), is not in the key at all, but it is the most useful passing chord you have."
+      },
+      {
+        "type": "list",
+        "items": [
+          "**Hear the seventh**: maj7 and dominant 7 differ by exactly one note (7 vs b7), and that note decides whether the chord can rest or has to move on. Listen for it as you play.",
+          "**One position, all 12 keys**: every chord has three anchors on the neck — root on string 6, string 5 or string 4. Take one anchor through all 12 keys before switching; that is faster than learning three shapes at once.",
+          "**Practise descending too**: going up feels fine and coming down stalls, because your fingers have to land on the treble strings first. Descending fluency is what lets a phrase end cleanly.",
+          "**Do not skip m7b5**: it opens the minor ii–V–i (iim7b5 – V7 – im7) and it is the shape everyone knows least. It is an m7 with the fifth flattened by one fret."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Tempo works like scale practice: start at a BPM where you make **no mistakes at all**, one note per grid slot with the click. Once quarter notes are solid, switch the subdivision to eighths — same BPM, twice the notes, same shape under your hand."
+      }
+    ]
+  },
   "rhythm.subdivisionGrid": {
     "title": "The grid: rhythm is really only one thing",
     "blocks": [
