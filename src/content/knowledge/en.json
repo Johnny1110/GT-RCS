@@ -255,6 +255,40 @@
       }
     ]
   },
+  "scale.sequences": {
+    "title": "Sequences: turning a scale into a phrase",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Running a scale up and down is a warm-up. What you actually improvise with is a **sequence** — one small shape moved up the scale one note at a time. Your hand learns the move, your ear learns the sound, and that is what shows up when you solo."
+      },
+      {
+        "type": "paragraph",
+        "text": "Two shape systems, two homes: **three notes per string** (seven-note scales) keeps the picking groups even so speed comes easily — the fusion and modern rock way; the **pentatonic box** puts two notes on each string so the hand never moves, and most blues and rock licks live inside it."
+      },
+      {
+        "type": "list",
+        "items": [
+          "**Groups of 3** (1-2-3, 2-3-4…): the skeleton of triplet phrasing. At three slots per beat, one group is exactly one beat.",
+          "**Groups of 4**: the classic sixteenth-note run — the one that sounds most like \"playing a scale\".",
+          "**3rds and 4ths (skips)**: instantly stops sounding like a scale, because the skipped note widens the interval and gives the line a contour.",
+          "**Broken triads and 7ths**: harmony dug straight out of the scale. This is the shortest path between scale practice and arpeggio practice."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "When the group length does not divide the bar (groups of 3 against quarter notes), each group starts on a different part of the beat. That is a **feature, not a mistake**: half the tension in long jazz and fusion lines comes from exactly this displacement. Keep going and the sequence lines up with the barline again on its own."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Slow enough that **every note is clean**, then speed up. Practising a blur only makes the blur permanent.",
+          "Once ascending is comfortable, practise descending — it is always harder, and most licks start on the way down.",
+          "Do not keep switching shapes: taking one shape through all 12 keys builds instinct faster than taking one key through seven shapes."
+        ]
+      }
+    ]
+  },
   "progression.2516": {
     "title": "2516: the all-purpose jazz turnaround",
     "blocks": [

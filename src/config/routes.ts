@@ -22,6 +22,7 @@ export const APP_ROUTES: readonly string[] = [
   '/chords/arpeggio',
   '/scales/explorer',
   '/scales/practice',
+  '/scales/sequence',
   '/scales/recall',
 ]
 

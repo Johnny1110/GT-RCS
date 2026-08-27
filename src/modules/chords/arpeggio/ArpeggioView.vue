@@ -5,7 +5,7 @@
  *
  * 與另外三個和弦模組的差別是**時間解析度**：那三個是「小節線換和弦」，
  * 這一個是「每一格換一個音」——琶音的重點在音符的順序，不在和弦的塊狀聲響。
- * 因此示範音走 useArpeggioDemo（一格一音），指板上的白圈標出「這一格該彈這個音」。
+ * 因此示範音走 useNoteDemo（一格一音），指板上的白圈標出「這一格該彈這個音」。
  * 哪一格彈哪個音是純函式（sequence.ts）算的，畫面不做樂理。
  *
  * 把位聚焦記的是**錨定弦**而不是把位 id：id 綁在根音的格號上，換調就失效，
@@ -28,7 +28,7 @@ import ChordDemoControl from '@/components/ui/ChordDemoControl.vue'
 import Fretboard from '@/components/Fretboard/Fretboard.vue'
 import KnowledgeCard from '@/components/ui/KnowledgeCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
-import { useArpeggioDemo } from '@/composables/useArpeggioDemo'
+import { useNoteDemo } from '@/composables/useNoteDemo'
 import { useBarCursor } from '@/composables/useBarCursor'
 import { useModuleSettings } from '@/composables/useModuleSettings'
 import { usePracticeSession } from '@/composables/usePracticeSession'
@@ -182,7 +182,7 @@ function jumpToKey(key: NoteName): void {
 }
 
 /** 示範音：一格一個音。直接由 cycle 查小節，不經過視覺 position——發聲要提前排程 */
-useArpeggioDemo((e) => {
+useNoteDemo((e) => {
   const chord = cycleBarAt(cycle.value, cursor.barFor(e.bar))?.chords[0]
   if (!chord) return undefined
   const midis = voiceChord(chord.tones)

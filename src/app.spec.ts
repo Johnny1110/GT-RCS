@@ -362,6 +362,94 @@ describe('App 掛載', () => {
     expect(wrapper.text()).toContain(i18n.global.t('arpeggio.fitHint', { notes: 6, slots: 4 }))
   })
 
+  it('音階模進：未播放時就看得見指型與第一組（預設 A 小調五聲第一盒、四個一組）', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/scales/sequence')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    // 一組的音名與度數都由公式表推導（畫面零 hardcode 音名）
+    const dots = wrapper.findAll(`ol[aria-label="${i18n.global.t('sequence.strip')}"] li`)
+    expect(dots.map((li) => li.text().replace(/\s+/g, ''))).toEqual(['A1', 'Cb3', 'D4', 'E5'])
+    // 指板畫的是這個指型本身：五聲盒型每弦兩音、六條弦共 12 個音點
+    expect(wrapper.findAll('svg > g')).toHaveLength(12)
+    expect(wrapper.text()).toContain(i18n.global.t('sequence.shapeInfo', { notes: 2, degree: '1' }))
+  })
+
+  it('音階模進：換模進型就換一組音（三個一組＝三個音，第二組往上搬一個音）', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/scales/sequence')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const threes = wrapper.findAll('button').find((b) => b.text() === i18n.global.t('seqPattern.threes'))
+    expect(threes).toBeDefined()
+    await threes!.trigger('click')
+    await flushPromises()
+
+    const dots = wrapper.findAll(`ol[aria-label="${i18n.global.t('sequence.strip')}"] li`)
+    expect(dots.map((li) => li.text().replace(/\s+/g, ''))).toEqual(['A1', 'Cb3', 'D4'])
+  })
+
+  it('音階模進：把位選單記的是度數，沒有「全部」——沒有指型就沒有順序', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/scales/sequence')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    expect(wrapper.findAll('button').some((b) => b.text() === i18n.global.t('fretboard.allPositions')))
+      .toBe(false)
+
+    // 五個盒型以錨定音的度數標示；換到 b3 的盒型，序列跟著從 b3 起算
+    const box = wrapper.findAll('button').find((b) => b.text() === 'b3')
+    expect(box).toBeDefined()
+    await box!.trigger('click')
+    await flushPromises()
+
+    const dots = wrapper.findAll(`ol[aria-label="${i18n.global.t('sequence.strip')}"] li`)
+    expect(dots.map((li) => li.text().replace(/\s+/g, ''))).toEqual(['Cb3', 'D4', 'E5', 'Gb7'])
+    const parsed = JSON.parse(localStorage.getItem('rcs.settings')!) as {
+      data: { moduleSettings: Record<string, { shapeDegree: string }> }
+    }
+    expect(parsed.data.moduleSettings['scales.sequence']?.shapeDegree).toBe('b3')
+  })
+
+  it('音階模進：七音音階換成一弦三音（六條弦共 18 個音）', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/scales/sequence')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const ionian = wrapper.findAll('button').find((b) => b.text() === i18n.global.t('scale.ionian'))
+    expect(ionian).toBeDefined()
+    await ionian!.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.findAll('svg > g')).toHaveLength(18)
+    expect(wrapper.text()).toContain(i18n.global.t('sequence.shapeInfo', { notes: 3, degree: '1' }))
+  })
+
+  it('音階模進：藍調走五聲骨架，畫面說出 b5 不在這條路徑上（限制要說出來）', async () => {
+    const { pinia, i18n, router } = createTestApp()
+    router.push('/scales/sequence')
+    await router.isReady()
+    const wrapper = mount(App, { global: { plugins: [pinia, i18n, router] } })
+    await flushPromises()
+
+    const blues = wrapper.findAll('button').find((b) => b.text() === i18n.global.t('scale.blues'))
+    expect(blues).toBeDefined()
+    await blues!.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.text()).toContain(i18n.global.t('sequence.passingHint', { degrees: 'b5' }))
+    // 骨架是五聲：指型仍是每弦兩音
+    expect(wrapper.findAll('svg > g')).toHaveLength(12)
+  })
+
   it('指板回想（找位置）：一開始全空，點對才亮、點錯說得出你點的是什麼', async () => {
     const { pinia, i18n, router } = createTestApp()
     router.push('/scales/recall')
