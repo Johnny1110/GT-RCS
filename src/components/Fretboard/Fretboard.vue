@@ -193,9 +193,10 @@ function focusPosition(position: FretboardPosition): void {
         :aria-label="t('fretboard.aria', { count: cells.length })"
       >
         <!-- 指位記號在最底層，弦與音點壓在其上。
-             亮度取 ink-600（與弦同級）：它要能一眼數到第 12 格，但不能跟音點搶眼睛 -->
+             亮金色是設計系統裡唯一不屬於音高的顏色（design-system.md §5 的明列例外）：
+             它是琴本身的鑲嵌，不是資料；灰階版在面板上只有 1.86:1，等於要瞇著眼睛數第 12 格 -->
         <circle v-for="(dot, i) in layout.inlays" :key="`inlay-${i}`"
-                :cx="dot.cx" :cy="dot.cy" :r="layout.inlayR" fill="var(--color-ink-600)" />
+                :cx="dot.cx" :cy="dot.cy" :r="layout.inlayR" fill="var(--color-inlay)" />
 
         <line v-for="fret in layout.fretLines" :key="`fret-${fret.fret}`"
               :x1="fret.x" :x2="fret.x"

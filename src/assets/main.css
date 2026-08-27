@@ -34,6 +34,9 @@
   --color-degree-6: #F48FB1;
   --color-degree-b7: #C08B5C;
   --color-degree-7: #FFD54F;
+
+  /* 指位記號（指板 inlay）——設計系統裡唯一不屬於音高的顏色，理由見 design-system.md §5 */
+  --color-inlay: #E3B341;
 }
 
 html {
