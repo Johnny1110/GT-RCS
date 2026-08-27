@@ -52,11 +52,11 @@ const emit = defineEmits<{ (e: 'select', barOffset: number): void }>()
         @click="selectable && emit('select', entry.barOffset)"
       >
         <span
-          class="font-mono text-[10px] uppercase tracking-[0.16em]"
+          class="rcs-micro"
           :class="entry.state === 'current' ? 'text-ink-600' : 'text-ink-400'"
         >{{ entry.caption }}</span>
         <span
-          class="font-mono text-lg font-bold tabular-nums"
+          class="rcs-data text-lg"
           :class="entry.state === 'current' ? 'text-ink-950' : 'text-ink-300'"
         >{{ entry.symbol }}</span>
       </component>

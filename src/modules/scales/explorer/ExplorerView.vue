@@ -78,10 +78,10 @@ const noteDots = computed(() =>
 <template>
   <div class="mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-6 p-6">
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.scales.explorer.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('modules.scales.explorer.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.scales.explorer.description') }}</p>
       <RouterLink
-        class="ml-auto rounded bg-ink-50 px-4 py-1.5 text-sm font-semibold text-ink-950 hover:bg-white"
+        class="ml-auto rcs-btn-primary px-4 py-1.5 text-sm"
         :to="{ path: '/scales/practice', query: { root: settings.root, scale: settings.scale } }"
       >
         {{ t('explorer.startPractice') }}
@@ -90,15 +90,15 @@ const noteDots = computed(() =>
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.key') }}</span>
+        <span class="rcs-micro">{{ t('explorer.key') }}</span>
         <SegmentedControl v-model="settings.root" :options="keyOptions" :aria-label="t('explorer.key')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.scale') }}</span>
+        <span class="rcs-micro">{{ t('explorer.scale') }}</span>
         <SegmentedControl v-model="settings.scale" :options="scaleOptions" :aria-label="t('explorer.scale')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.labelMode') }}</span>
+        <span class="rcs-micro">{{ t('explorer.labelMode') }}</span>
         <SegmentedControl v-model="settings.labelMode" :options="labelOptions" :aria-label="t('explorer.labelMode')" />
       </div>
     </div>

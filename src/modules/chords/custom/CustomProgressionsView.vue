@@ -190,7 +190,7 @@ watch(selected, () => { confirmingDelete.value = false })
 <template>
   <div class="mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-6 p-6">
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.chords.custom.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('modules.chords.custom.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.chords.custom.description') }}</p>
     </header>
 
@@ -212,7 +212,7 @@ watch(selected, () => { confirmingDelete.value = false })
 
       <button
         type="button"
-        class="rounded border border-ink-700 bg-ink-800 px-3 py-1 text-sm text-ink-100 hover:bg-ink-700"
+        class="rcs-btn px-3 py-1 text-sm"
         @click="addNew"
       >
         {{ t('custom.new') }}
@@ -239,7 +239,7 @@ watch(selected, () => { confirmingDelete.value = false })
           <span class="text-xs text-ink-300">{{ t('custom.deleteConfirm', { name: selected.name }) }}</span>
           <button
             type="button"
-            class="rounded border border-ink-50 bg-ink-50 px-3 py-1 font-mono text-xs font-bold text-ink-950"
+            class="rcs-btn-primary px-3 py-1 font-mono text-xs"
             @click="deleteCurrent"
           >
             {{ t('stats.clearYes') }}
@@ -255,12 +255,12 @@ watch(selected, () => { confirmingDelete.value = false })
       </template>
     </div>
 
-    <p v-if="!selected" class="rounded-lg border border-ink-700 bg-ink-900 p-6 text-sm text-ink-400">
+    <p v-if="!selected" class="rcs-panel p-6 text-sm text-ink-400">
       {{ t('custom.empty') }}
     </p>
 
     <template v-else>
-      <section class="rounded-lg border border-ink-700 bg-ink-900 p-5">
+      <section class="rcs-panel p-5">
         <ProgressionEditor
           :item="selected"
           :current-chord-pc="currentChord?.root.pc"
@@ -303,7 +303,7 @@ watch(selected, () => { confirmingDelete.value = false })
 
         <section class="flex flex-col gap-2">
           <p class="font-mono text-[11px] text-ink-400">
-            <span class="uppercase tracking-[0.18em]">{{ t('chords.chordTones') }}</span>
+            <span class="rcs-micro">{{ t('chords.chordTones') }}</span>
             <span class="ml-2 text-sm text-ink-300">{{ currentChord?.symbol }}</span>
           </p>
           <Fretboard

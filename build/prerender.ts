@@ -95,39 +95,48 @@ function renderKnowledgeEntry(
         )}</a></li>`,
     )
     .join('')
-  const back = `<nav class="font-mono text-[11px] uppercase tracking-[0.18em]"><a href="${localizedHref(
+  const back = `<nav class="rcs-micro"><a href="${localizedHref(
     KNOWLEDGE_BASE_PATH,
     locale,
   )}" class="text-ink-400">← ${escapeHtml(lookup(messages, 'knowledgeIndex.title'))}</a></nav>`
   const relatedBlock =
     related === ''
       ? ''
-      : `<section class="flex flex-col gap-3 border-t border-ink-800 pt-6"><h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">${escapeHtml(
+      : `<section class="flex flex-col gap-3 border-t border-ink-800 pt-6"><h2 class="rcs-micro">${escapeHtml(
           lookup(messages, 'knowledgeIndex.related'),
         )}</h2><ul class="flex flex-wrap gap-2">${related}</ul></section>`
-  return `<div class="mx-auto flex w-full max-w-3xl flex-col gap-8 p-6 pt-10">${back}<article class="flex flex-col gap-5"><h1 class="text-2xl font-semibold text-ink-50">${escapeHtml(
+  return `<div class="mx-auto flex w-full max-w-3xl flex-col gap-8 p-6 pt-10">${back}<article class="flex flex-col gap-5"><h1 class="rcs-h1">${escapeHtml(
     entry.title,
   )}</h1>${renderBlocks(entry.blocks)}</article>${relatedBlock}</div>`
 }
 
+/**
+ * 首頁的靜態骨架。**必須與 `src/views/HomeView.vue` 的 masthead 與介紹段落一致**：
+ * 這段 HTML 是爬蟲與 Vue 掛載前的第一次繪製看到的東西，兩邊不一致就會閃版。
+ *
+ * 「繼續練習」那一塊不在這裡：它讀 localStorage，建置期沒有那份資料，
+ * 而且對爬蟲來說也不是內容。它掛載後才出現，出現在介紹段落之前。
+ */
 function renderHome(messages: Messages): string {
   const parts = [
-    `<h1 class="font-mono text-3xl font-bold tracking-[0.04em] text-ink-50">RCS</h1>`,
-    `<p class="max-w-xl text-ink-300">${escapeHtml(lookup(messages, 'app.tagline'))}</p>`,
-    `<p class="text-sm leading-7 text-ink-300">${escapeHtml(lookup(messages, 'home.intro.what'))}</p>`,
-    `<p class="text-sm leading-7 text-ink-300">${escapeHtml(lookup(messages, 'home.intro.why'))}</p>`,
+    `<header class="flex flex-col gap-3"><div class="flex flex-col gap-1.5">` +
+      `<h1 class="rcs-display font-mono tracking-[0.12em]">RCS</h1>` +
+      `<p class="rcs-micro">${escapeHtml(lookup(messages, 'app.wordmark'))}</p></div>` +
+      `<p class="rcs-body max-w-xl text-ink-300">${escapeHtml(lookup(messages, 'app.tagline'))}</p></header>`,
+    `<p class="rcs-body text-ink-300">${escapeHtml(lookup(messages, 'home.intro.what'))}</p>`,
+    `<p class="rcs-body text-ink-300">${escapeHtml(lookup(messages, 'home.intro.why'))}</p>`,
   ]
   const items = (['rhythm', 'chords', 'scales'] as const)
     .map(
       (key) =>
-        `<li class="border-l border-ink-700 pl-3 text-sm leading-7 text-ink-300"><strong class="font-semibold text-ink-50">${escapeHtml(
+        `<li class="rcs-body border-l border-ink-700 pl-3 text-ink-300"><strong class="font-semibold text-ink-50">${escapeHtml(
           lookup(messages, `category.${key}`),
         )}</strong> — ${escapeHtml(lookup(messages, `home.highlight.${key}`))}</li>`,
     )
     .join('')
   parts.push(`<ul class="flex flex-col gap-2">${items}</ul>`)
-  parts.push(`<p class="text-sm leading-7 text-ink-300">${escapeHtml(lookup(messages, 'home.intro.privacy'))}</p>`)
-  return `<div class="mx-auto flex max-w-4xl flex-col gap-6 p-6 pt-12">${parts.join('')}</div>`
+  parts.push(`<p class="rcs-body text-ink-300">${escapeHtml(lookup(messages, 'home.intro.privacy'))}</p>`)
+  return `<div class="mx-auto flex w-full max-w-4xl flex-col gap-12 p-6 pt-12">${parts.join('')}</div>`
 }
 
 function renderKnowledgeIndex(
@@ -139,9 +148,9 @@ function renderKnowledgeIndex(
   const links = Object.entries(knowledge)
     .map(([id, entry]) => {
       const href = `${prefix}${knowledgeEntryPath(entrySlug(id))}`
-      return `<li><a href="${href}" class="flex flex-col gap-1 rounded-lg border border-ink-700 bg-ink-900 p-4"><span class="font-medium text-ink-50">${escapeHtml(
+      return `<li><a href="${href}" class="flex flex-col gap-1 rcs-panel p-4"><span class="font-medium text-ink-50">${escapeHtml(
         entry.title,
-      )}</span><span class="text-sm leading-6 text-ink-400">${escapeHtml(
+      )}</span><span class="rcs-small text-ink-400">${escapeHtml(
         summarize(entry.blocks, SUMMARY_LENGTH),
       )}</span></a></li>`
     })
@@ -149,9 +158,9 @@ function renderKnowledgeIndex(
   const count = interpolate(lookup(messages, 'knowledgeIndex.count'), {
     count: Object.keys(knowledge).length,
   })
-  return `<div class="mx-auto flex w-full max-w-4xl flex-col gap-6 p-6 pt-10"><header class="flex flex-col gap-3"><h1 class="text-2xl font-semibold text-ink-50">${escapeHtml(
+  return `<div class="mx-auto flex w-full max-w-4xl flex-col gap-6 p-6 pt-10"><header class="flex flex-col gap-3"><h1 class="rcs-h1">${escapeHtml(
     lookup(messages, 'knowledgeIndex.title'),
-  )}</h1><p class="max-w-2xl text-sm leading-7 text-ink-300">${escapeHtml(
+  )}</h1><p class="rcs-body max-w-2xl text-ink-300">${escapeHtml(
     lookup(messages, 'knowledgeIndex.description'),
   )}</p><p class="font-mono text-[11px] text-ink-400">${escapeHtml(count)}</p></header><ul class="grid gap-3 sm:grid-cols-2">${links}</ul></div>`
 }

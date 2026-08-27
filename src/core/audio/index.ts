@@ -1,6 +1,7 @@
 export * from './types'
 export * from './pattern'
 export * from './clock'
+export * from './tapTempo'
 export * from './scheduler'
 export * from './transport'
 export * from './voices'

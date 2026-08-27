@@ -24,6 +24,9 @@
 - 樂理資料只有一個真相：`core/theory/formulas.ts` 公式表 + `spell()` 推導。UI 禁止 hardcode 音名。
 - 聲音排程只走 `Transport`（lookahead scheduler）；禁止 `setInterval`/`Date.now()` 參與節拍。
 - 音程顏色只走 `colorForInterval()` / `--degree-*` token（TS 與 CSS 兩份定義需同步）。
+- 排印與按鈕只走 `main.css` 的 `.rcs-*` token（`.rcs-h1`/`.rcs-body`/`.rcs-micro`/`.rcs-data`/
+  `.rcs-panel`/`.rcs-btn`…，規格見 design-system.md §3、§5）。禁止行內重拼字級與按鈕外觀組合。
+  `build/**` 的靜態渲染器要與對應的 .vue 用同一組 class（掛載前後不得閃版）。
 - localStorage 只走 `VersionedStore`；改 schema 必附 migration。
 - 練習模組：新資料夾 + manifest + 在 `src/modules/index.ts` 註冊一行；模組間禁止互相 import。
 - 使用者可見字串走 i18n，`src/locales/zh-TW.json` 與 `en.json` 同步。

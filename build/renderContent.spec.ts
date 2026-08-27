@@ -47,7 +47,7 @@ describe('renderBlocks', () => {
 
   it('段落與清單各自成標籤', () => {
     const html = renderBlocks(blocks)
-    expect(html).toContain('<p class="text-sm leading-7 text-ink-300">第一段</p>')
+    expect(html).toContain('<p class="rcs-body text-ink-300">第一段</p>')
     expect(html.match(/<li /g)).toHaveLength(2)
   })
 
@@ -59,7 +59,7 @@ describe('renderBlocks', () => {
 
 describe('renderArticle', () => {
   it('標題進 h1（爬蟲靠它判斷這頁在講什麼）', () => {
-    expect(renderArticle('Ionian', [])).toContain('<h1 class="text-2xl font-semibold text-ink-50">Ionian</h1>')
+    expect(renderArticle('Ionian', [])).toContain('<h1 class="rcs-h1">Ionian</h1>')
   })
 
   it('標題也會跳脫', () => {

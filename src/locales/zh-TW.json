@@ -2,7 +2,9 @@
   "app": {
     "title": "RCS — Rhythm & Chord & Scales",
     "tagline": "吉他的三件事：節奏、和弦、音階。每一項練習都跟著同一顆節拍器走。",
-    "comingSoon": "即將推出"
+    "comingSoon": "即將推出",
+    "wordmark": "Rhythm · Chord · Scales",
+    "switchLocale": "切換語言"
   },
   "category": {
     "rhythm": "節奏 Rhythm",
@@ -75,7 +77,14 @@
       "ghost": "鬼音"
     },
     "meter": "拍號 · 細分",
-    "fromPattern": "由節奏譜決定"
+    "fromPattern": "由節奏譜決定",
+    "tap": "敲擊",
+    "tapMore": "再敲 {n} 下",
+    "tapHint": "跟著歌曲敲兩下以上，速度就出來了（鍵盤 T）",
+    "bpmDown": "速度減 1",
+    "bpmUp": "速度加 1",
+    "bpmCoarse": "速度粗調",
+    "bpmEditHint": "點一下可直接輸入速度"
   },
   "fretboard": {
     "aria": "吉他指板，顯示 {count} 個音",
@@ -203,7 +212,8 @@
     "help": "開關這個說明",
     "close": "關閉說明",
     "typingHint": "在文字輸入框裡打字時不會觸發快捷鍵。",
-    "dismiss": "關閉"
+    "dismiss": "關閉",
+    "tap": "敲擊測速"
   },
   "custom": {
     "new": "新增",
@@ -451,6 +461,13 @@
       "rhythm": "節拍器、細分練習、Groove 譜面跟練，支援 swing 與重音設計",
       "chords": "級數進行、12 調循環、五度圈導覽，可自訂任意進行",
       "scales": "全指板音名與度數、一弦三音與五聲盒型、跟著拍子走的音階與模進練習"
+    },
+    "resume": {
+      "title": "繼續練習",
+      "today": "今天",
+      "yesterday": "昨天",
+      "daysAgo": "{n} 天前",
+      "longAgo": "一個月前"
     }
   },
   "knowledgeIndex": {

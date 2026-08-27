@@ -24,7 +24,7 @@ function onVolumeInput(event: Event): void {
 
 <template>
   <div class="flex flex-col gap-1.5">
-    <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
+    <span class="rcs-micro">
       {{ t('chordDemo.label') }}
     </span>
     <div class="flex items-center gap-3">

@@ -205,3 +205,39 @@ describe('←→ 換 preset', () => {
     expect(selected).toBe('b')
   })
 })
+
+describe('useKeyboardShortcuts — T 敲擊測速', () => {
+  let mounted: { unmount: () => void } | null = null
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    stubAudioContext()
+    document.body.innerHTML = ''
+  })
+
+  afterEach(() => {
+    mounted?.unmount()
+    vi.unstubAllGlobals()
+  })
+
+  it('T（大小寫皆可）觸發 onTap，並擋掉預設行為', () => {
+    const onTap = vi.fn()
+    mounted = withSetup(() => useKeyboardShortcuts({ onTap }))
+    expect(press('t').defaultPrevented).toBe(true)
+    expect(press('T').defaultPrevented).toBe(true)
+    expect(onTap).toHaveBeenCalledTimes(2)
+  })
+
+  it('沒有註冊 onTap 時不攔 T——把鍵還給瀏覽器，而不是安靜地什麼都不做', () => {
+    mounted = withSetup(() => useKeyboardShortcuts())
+    expect(press('t').defaultPrevented).toBe(false)
+  })
+
+  it('在文字輸入框裡打字時不觸發（進行編輯器要打得出含 t 的和弦名）', () => {
+    const onTap = vi.fn()
+    mounted = withSetup(() => useKeyboardShortcuts({ onTap }))
+    const field = typeInto('input', 'text')
+    press('t', { target: field })
+    expect(onTap).not.toHaveBeenCalled()
+  })
+})

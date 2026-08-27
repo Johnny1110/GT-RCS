@@ -124,21 +124,21 @@ function selectKey(key: NoteName): void {
 <template>
   <div class="mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-6 p-6">
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.chords.keyPractice.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('modules.chords.keyPractice.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.chords.keyPractice.description') }}</p>
     </header>
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.key') }}</span>
+        <span class="rcs-micro">{{ t('chords.key') }}</span>
         <SegmentedControl v-model="settings.key" :options="keyOptions" :aria-label="t('chords.key')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.level') }}</span>
+        <span class="rcs-micro">{{ t('chords.level') }}</span>
         <SegmentedControl v-model="settings.levelId" :options="levelOptions" :aria-label="t('chords.level')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.progression') }}</span>
+        <span class="rcs-micro">{{ t('chords.progression') }}</span>
         <SegmentedControl v-model="settings.presetId" :options="progressionOptions" :aria-label="t('chords.progression')" wrap />
       </div>
       <ChordDemoControl />
@@ -170,7 +170,7 @@ function selectKey(key: NoteName): void {
 
     <section class="flex flex-col gap-2">
       <p class="font-mono text-[11px] text-ink-400">
-        <span class="uppercase tracking-[0.18em]">{{ t('chords.chordTones') }}</span>
+        <span class="rcs-micro">{{ t('chords.chordTones') }}</span>
         <span class="ml-2 text-sm text-ink-300">{{ currentChord?.symbol }}</span>
       </p>
       <Fretboard

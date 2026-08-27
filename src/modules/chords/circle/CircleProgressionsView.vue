@@ -117,17 +117,17 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
 <template>
   <div class="mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-6 p-6">
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.chords.circle.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('modules.chords.circle.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.chords.circle.description') }}</p>
     </header>
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.progression') }}</span>
+        <span class="rcs-micro">{{ t('chords.progression') }}</span>
         <SegmentedControl v-model="settings.presetId" :options="presetOptions" :aria-label="t('chords.progression')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.barsPerKey') }}</span>
+        <span class="rcs-micro">{{ t('chords.barsPerKey') }}</span>
         <SegmentedControl
           :model-value="String(settings.barsPerKey)"
           :options="barsOptions"
@@ -136,7 +136,7 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
         />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('chords.startKey') }}</span>
+        <span class="rcs-micro">{{ t('chords.startKey') }}</span>
         <SegmentedControl v-model="settings.startKey" :options="keyOptions" :aria-label="t('chords.startKey')" wrap />
       </div>
       <ChordDemoControl />
@@ -175,7 +175,7 @@ const knowledgeId = computed(() => preset.value.knowledgeIds?.[0])
 
     <section class="flex flex-col gap-2">
       <p class="font-mono text-[11px] text-ink-400">
-        <span class="uppercase tracking-[0.18em]">{{ t('chords.chordTones') }}</span>
+        <span class="rcs-micro">{{ t('chords.chordTones') }}</span>
         <span class="ml-2 text-sm text-ink-300">{{ currentChord?.symbol }}</span>
       </p>
       <Fretboard

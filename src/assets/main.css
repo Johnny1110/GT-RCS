@@ -1,6 +1,17 @@
 @import "tailwindcss";
 
 /*
+ * 建置期渲染器也要被掃到。
+ *
+ * `build/prerender.ts` 與 `build/renderContent.ts` 會產出靜態 HTML（SEO 與 AdSense
+ * 審核讀的就是它），裡面帶著 Tailwind class。Tailwind v4 預設只掃得到被 app 匯入的
+ * 檔案，這兩支是 Node 情境的產生器，不在那條鏈上——於是它們用到、而 .vue 沒用到的
+ * utility 不會被產生，症狀是「靜態頁在 Vue 掛載前少了樣式」，本機看不出來（掛載太快），
+ * 只有爬蟲與慢速連線看得到。宣告來源把整類問題關掉。
+ */
+@source "../../build";
+
+/*
  * Design token — 規範文件：docs/design-system.md
  * 12 音程色的 TS 定義在 src/core/colors/degreeColors.ts（兩處需同步）。
  */
@@ -37,6 +48,22 @@
 
   /* 指位記號（指板 inlay）——設計系統裡唯一不屬於音高的顏色，理由見 design-system.md §5 */
   --color-inlay: #E3B341;
+}
+
+/*
+ * 動態 token（design-system.md §6）。
+ * 這套介面幾乎不動——會動的東西只有節拍，所以動態必須跟音樂同一個意圖：
+ * 控制元件回饋要快到感覺不到（120ms），面板層級的變化才給到 200ms。
+ * 拍燈是唯一的例外，它有自己的 attack/decay，理由見 §6。
+ */
+:root {
+  --rcs-dur-control: 120ms;
+  --rcs-dur-surface: 200ms;
+  /* 出場曲線：起步快、收尾慢——與撥弦的包絡同一個形狀 */
+  --rcs-ease-out: cubic-bezier(0.2, 0, 0, 1);
+  /* 拍燈亮起要「立刻」，暗下才有餘韻 */
+  --rcs-lamp-attack: 0ms;
+  --rcs-lamp-decay: 220ms;
 }
 
 html {
@@ -117,4 +144,250 @@ body {
 .rcs-circle-hit:hover {
   stroke: var(--color-ink-400);
   stroke-width: 2;
+}
+
+/*
+ * 排印級距（design-system.md §3）——規範文件裡的表格在這裡變成可執行的 token。
+ *
+ * 為什麼要有這一層：級距原本散在 76 處行內 class，於是漂移了八種寫法
+ * （micro 同時存在 11px/.18em 與 10px/.16em 兩種）。字級與字重是這套介面
+ * 「看起來被設計過」的主要載體，它必須只有一份定義。
+ *
+ * 放在 @layer components：Tailwind utility 在 utilities 層、排在後面，
+ * 所以個別覆寫（例如把 micro 提亮成 text-ink-100）照樣有效，不必寫 !important。
+ */
+@layer components {
+  /* display 40/700——稀少，只給 landing 主標。負字距是光學補償：
+     字級越大，預設字距看起來越鬆 */
+  .rcs-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: var(--color-ink-50);
+  }
+
+  /* h1 24/650、h2 18/650——650 不是 Tailwind 的級距，但它是規範值：
+     system-ui 在 SF Pro / Segoe 上是可變字體，650 落在 semibold 與 bold 之間，
+     比 600 更像面板網版印刷的標題，又不到 700 的笨重 */
+  .rcs-h1 {
+    font-size: 1.5rem;
+    font-weight: 650;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--color-ink-50);
+  }
+
+  .rcs-h2 {
+    font-size: 1.125rem;
+    font-weight: 650;
+    line-height: 1.35;
+    color: var(--color-ink-50);
+  }
+
+  /* body 15/1.7——比 text-sm(14) 大一級。這是給人在琴上、離螢幕一公尺讀的 */
+  .rcs-body {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .rcs-small {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  /* micro：控制群標籤（KEY · SCALE · BPM）。大寫 + .18em 字距是面板網版印刷的字，
+     它的工作是標示而不是被閱讀，所以永遠不搶主體的注意力 */
+  .rcs-micro {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-400);
+  }
+
+  /* data：所有會跳動的數字。tabular-nums 讓 99→100 不位移，
+     這是「儀器感」的來源，也是節拍器在跑的時候畫面不抖的唯一辦法 */
+  .rcs-data {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 面板：950 頁面 → 900 面板 → 800 懸浮（design-system.md §1 規則 3）。
+     一律 1px ink-700 邊框、8px 圓角，禁止 box-shadow */
+  .rcs-panel {
+    border-radius: 8px;
+    border: 1px solid var(--color-ink-700);
+    background-color: var(--color-ink-900);
+  }
+
+  /* 控制群之間的雕刻分隔線——實體器材面板用它把旋鈕分區。
+     窄螢幕會換行，垂直線這時沒有意義，所以由呼叫端用 hidden sm:block 控制 */
+  .rcs-divider {
+    width: 1px;
+    align-self: stretch;
+    background-color: var(--color-ink-700);
+  }
+}
+
+/*
+ * 速度讀數（TempoControl）——它同時是儀表與輸入框。
+ *
+ * 靜止時完全沒有邊框，就是一個 28px 的等寬數字；hover／focus 才浮出容器。
+ * 這是刻意的層次：讀數被看的次數遠多於被編輯的次數，所以預設狀態要為「讀」服務，
+ * 「可編輯」由左右兩顆 ± 鈕負責宣告，不必再加一個永遠亮著的框。
+ *
+ * 原生的 number spinner 一律拿掉：它在 28px 字級旁邊只有幾像素高，點不中，
+ * 而且它的視覺重量會破壞讀數的置中。步進交給 ± 兩顆有正常命中區的按鈕。
+ */
+.rcs-tempo {
+  width: 3.5ch;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: transparent;
+  padding: 0 0.125rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-50);
+  appearance: textfield;
+  transition: border-color var(--rcs-dur-control) var(--rcs-ease-out);
+}
+
+.rcs-tempo::-webkit-outer-spin-button,
+.rcs-tempo::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.rcs-tempo:hover {
+  border-color: var(--color-ink-700);
+}
+
+.rcs-tempo:focus {
+  border-color: var(--color-ink-500);
+  outline: none;
+}
+
+/* 步進鈕（± 1 BPM）：正方形命中區，與讀數等高的視覺份量 */
+.rcs-step {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  border: 1px solid var(--color-ink-700);
+  border-radius: 4px;
+  background-color: var(--color-ink-800);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1;
+  color: var(--color-ink-300);
+  transition: background-color var(--rcs-dur-control) var(--rcs-ease-out),
+    color var(--rcs-dur-control) var(--rcs-ease-out);
+}
+
+.rcs-step:hover:not(:disabled) {
+  background-color: var(--color-ink-700);
+  color: var(--color-ink-50);
+}
+
+.rcs-step:disabled {
+  background-color: var(--color-ink-850);
+  color: var(--color-ink-600);
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rcs-tempo,
+  .rcs-step {
+    transition: none;
+  }
+}
+
+/*
+ * 拍燈（BeatLamps）——全站唯一有包絡的動態，理由見組件契約註解。
+ * transition 掛在暗態、亮態把時長歸零：類別加上去的瞬間不過渡（attack 對得上 click），
+ * 拿掉的時候才走衰減（decay 給出餘韻）。
+ */
+.rcs-lamp {
+  border-radius: 9999px;
+  background-color: var(--color-ink-700);
+  transition: background-color var(--rcs-lamp-decay) var(--rcs-ease-out);
+}
+
+/* 第一拍：暗態比較亮，小節的起點才一眼可讀 */
+.rcs-lamp--downbeat {
+  background-color: var(--color-ink-600);
+}
+
+.rcs-lamp--on {
+  background-color: var(--color-ink-50);
+  transition-duration: var(--rcs-lamp-attack);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rcs-lamp {
+    transition: none;
+  }
+}
+
+/*
+ * 按鈕（design-system.md §5）——把「按鈕長什麼樣」收成一份定義。
+ *
+ * 原本 default 按鈕散在八處，字色出現 ink-100 / ink-300 / ink-400 三種、
+ * hover 有的提亮底色有的提亮字色：同一顆按鈕在不同頁面是不同的東西。
+ * token 只管**外觀**（底、框、圓角、hover、disabled），
+ * 尺寸與內距仍由呼叫端用 utility 決定——工具列裡的小鈕與段落下的大鈕本來就不同大小，
+ * 把那個也鎖死只會逼出一堆覆寫。
+ */
+.rcs-btn {
+  border-radius: 4px;
+  border: 1px solid var(--color-ink-700);
+  background-color: var(--color-ink-800);
+  color: var(--color-ink-100);
+  transition: background-color var(--rcs-dur-control) var(--rcs-ease-out),
+    color var(--rcs-dur-control) var(--rcs-ease-out);
+}
+
+.rcs-btn:hover:not(:disabled) {
+  background-color: var(--color-ink-700);
+  color: var(--color-ink-50);
+}
+
+.rcs-btn:disabled {
+  background-color: var(--color-ink-850);
+  color: var(--color-ink-600);
+  cursor: not-allowed;
+}
+
+/*
+ * primary＝反白，**每畫面最多一顆**（§5）。這條規則靠人守，不靠 CSS——
+ * 但至少讓那一顆在每一頁長得一樣。650 字重與標題同級：反白底上的深色字
+ * 視覺上會比同字重的淺色字細，補一級才看起來等重。
+ */
+.rcs-btn-primary {
+  border-radius: 4px;
+  border: 1px solid var(--color-ink-50);
+  background-color: var(--color-ink-50);
+  font-weight: 650;
+  color: var(--color-ink-950);
+  transition: background-color var(--rcs-dur-control) var(--rcs-ease-out);
+}
+
+.rcs-btn-primary:hover:not(:disabled) {
+  background-color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rcs-btn,
+  .rcs-btn-primary {
+    transition: none;
+  }
 }

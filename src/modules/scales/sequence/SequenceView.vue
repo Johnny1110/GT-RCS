@@ -186,21 +186,21 @@ const directionOptions = computed(() =>
 <template>
   <div class="mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-6 p-6">
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.scales.sequence.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('modules.scales.sequence.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.scales.sequence.description') }}</p>
     </header>
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.key') }}</span>
+        <span class="rcs-micro">{{ t('explorer.key') }}</span>
         <SegmentedControl v-model="settings.root" :options="keyOptions" :aria-label="t('explorer.key')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.scale') }}</span>
+        <span class="rcs-micro">{{ t('explorer.scale') }}</span>
         <SegmentedControl v-model="settings.scale" :options="scaleOptions" :aria-label="t('explorer.scale')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('sequence.pattern') }}</span>
+        <span class="rcs-micro">{{ t('sequence.pattern') }}</span>
         <SegmentedControl
           v-model="settings.patternId"
           :options="patternOptions"
@@ -209,7 +209,7 @@ const directionOptions = computed(() =>
         />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('sequence.direction') }}</span>
+        <span class="rcs-micro">{{ t('sequence.direction') }}</span>
         <SegmentedControl
           :model-value="settings.direction"
           :options="directionOptions"
@@ -220,15 +220,15 @@ const directionOptions = computed(() =>
       <ChordDemoControl />
     </div>
 
-    <div class="flex flex-wrap items-center gap-x-8 gap-y-3 rounded-lg border border-ink-700 bg-ink-900 px-5 py-3">
+    <div class="flex flex-wrap items-center gap-x-8 gap-y-3 rcs-panel px-5 py-3">
       <div class="flex flex-col gap-1">
-        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('metronome.bar') }}</span>
-        <span class="font-mono text-2xl font-bold tabular-nums text-ink-50">
+        <span class="rcs-micro">{{ t('metronome.bar') }}</span>
+        <span class="rcs-data text-2xl text-ink-50">
           {{ playing ? position.bar : '—' }}
         </span>
       </div>
       <div class="flex flex-col gap-1">
-        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('transport.beat') }}</span>
+        <span class="rcs-micro">{{ t('transport.beat') }}</span>
         <BeatLamps
           :beats="transport.timeSig.beats"
           :current="position.beat"
@@ -238,13 +238,13 @@ const directionOptions = computed(() =>
         />
       </div>
       <div class="flex flex-col gap-1">
-        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('sequence.shape') }}</span>
+        <span class="rcs-micro">{{ t('sequence.shape') }}</span>
         <span class="font-mono text-xs text-ink-100">
           {{ t('sequence.shapeInfo', { notes: perString, degree: shape?.anchorDegree ?? '—' }) }}
         </span>
       </div>
       <div class="flex flex-col gap-1">
-        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('sequence.group') }}</span>
+        <span class="rcs-micro">{{ t('sequence.group') }}</span>
         <span class="font-mono text-xs tabular-nums text-ink-100">
           {{ t('sequence.groupOf', { index: group + 1, total: groupTotal }) }}
         </span>
@@ -253,7 +253,7 @@ const directionOptions = computed(() =>
 
     <section class="flex flex-col gap-3">
       <p class="font-mono text-[11px] text-ink-400">
-        <span class="uppercase tracking-[0.18em]">{{ t('sequence.strip') }}</span>
+        <span class="rcs-micro">{{ t('sequence.strip') }}</span>
         <span class="ml-2 text-sm text-ink-300">{{ t(pattern.titleKey) }}</span>
       </p>
 

@@ -21,13 +21,13 @@ const knowledgePath = computed(() => pathForLocale(KNOWLEDGE_BASE_PATH, routeLoc
 
 <template>
   <section class="mx-auto flex w-full max-w-xl flex-col gap-4 p-6 pt-16">
-    <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">404</p>
+    <p class="rcs-micro">404</p>
     <h1 class="text-xl font-semibold text-ink-50">{{ t('notFound.title') }}</h1>
     <p class="text-sm leading-7 text-ink-300">{{ t('notFound.body') }}</p>
     <div class="flex flex-wrap gap-2">
       <RouterLink
         :to="homePath"
-        class="rounded border border-ink-700 bg-ink-800 px-3 py-1.5 text-sm text-ink-100 hover:bg-ink-700"
+        class="rcs-btn px-3 py-1.5 text-sm"
       >
         {{ t('error.home') }}
       </RouterLink>

@@ -158,11 +158,11 @@ async function onFilePicked(event: Event): Promise<void> {
 <template>
   <div class="mx-auto flex w-full min-w-0 max-w-5xl flex-col gap-8 p-6">
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('stats.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('stats.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('stats.description') }}</p>
     </header>
 
-    <p v-if="entries.length === 0" class="rounded-lg border border-ink-700 bg-ink-900 p-6 text-sm text-ink-400">
+    <p v-if="entries.length === 0" class="rcs-panel p-6 text-sm text-ink-400">
       {{ t('stats.empty') }}
     </p>
 
@@ -176,12 +176,12 @@ async function onFilePicked(event: Event): Promise<void> {
             { key: 'total', value: totalMinutes, unit: t('stats.minutes') },
           ]"
           :key="card.key"
-          class="flex flex-col gap-1 rounded-lg border border-ink-700 bg-ink-900 px-5 py-4"
+          class="flex flex-col gap-1 rcs-panel px-5 py-4"
         >
-          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
+          <span class="rcs-micro">
             {{ t(`stats.${card.key}`) }}
           </span>
-          <span class="font-mono text-3xl font-bold tabular-nums leading-none text-ink-50">
+          <span class="rcs-data text-3xl leading-none text-ink-50">
             {{ card.value }}<span class="ml-1.5 text-sm font-normal text-ink-400">{{ card.unit }}</span>
           </span>
         </div>
@@ -189,10 +189,10 @@ async function onFilePicked(event: Event): Promise<void> {
 
       <!-- 近 4 週長條圖 -->
       <section class="flex flex-col gap-3">
-        <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
+        <h2 class="rcs-micro">
           {{ t('stats.daily', { days: CHART_DAYS }) }}
         </h2>
-        <div class="rounded-lg border border-ink-700 bg-ink-900 p-5">
+        <div class="rcs-panel p-5">
           <StackedBarChart
             :rows="barRows"
             :series="series"
@@ -204,8 +204,8 @@ async function onFilePicked(event: Event): Promise<void> {
 
       <!-- 模組佔比 -->
       <section class="flex flex-col gap-3">
-        <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('stats.share') }}</h2>
-        <ul class="flex flex-col gap-2 rounded-lg border border-ink-700 bg-ink-900 p-5">
+        <h2 class="rcs-micro">{{ t('stats.share') }}</h2>
+        <ul class="flex flex-col gap-2 rcs-panel p-5">
           <li v-for="share in shares" :key="share.moduleId" class="flex items-center gap-3">
             <span class="w-40 shrink-0 truncate text-sm text-ink-100">{{ share.title }}</span>
             <span class="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-ink-800">
@@ -223,10 +223,10 @@ async function onFilePicked(event: Event): Promise<void> {
 
       <!-- BPM 進步線 -->
       <section v-if="progress.length" class="flex flex-col gap-3">
-        <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('stats.bpmProgress') }}</h2>
+        <h2 class="rcs-micro">{{ t('stats.bpmProgress') }}</h2>
         <p class="max-w-[65ch] text-xs text-ink-400">{{ t('stats.bpmHint') }}</p>
         <div class="grid gap-4 sm:grid-cols-2">
-          <div v-for="item in progress" :key="item.id" class="flex flex-col gap-2 rounded-lg border border-ink-700 bg-ink-900 p-4">
+          <div v-for="item in progress" :key="item.id" class="flex flex-col gap-2 rcs-panel p-4">
             <div class="flex flex-col gap-0.5">
               <span class="text-sm text-ink-100">{{ item.title }}</span>
               <span class="truncate font-mono text-[10px] text-ink-400">{{ item.params }}</span>
@@ -243,15 +243,15 @@ async function onFilePicked(event: Event): Promise<void> {
       <!-- 明細 -->
       <section class="flex flex-col gap-3">
         <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('stats.detail') }}</h2>
+          <h2 class="rcs-micro">{{ t('stats.detail') }}</h2>
           <SegmentedControl v-model="filter" :options="filterOptions" :aria-label="t('stats.detail')" />
           <span class="font-mono text-[11px] tabular-nums text-ink-400">{{ filtered.length }}</span>
         </div>
 
-        <div class="overflow-x-auto rounded-lg border border-ink-700 bg-ink-900">
+        <div class="overflow-x-auto rcs-panel">
           <table class="w-full min-w-[420px] border-collapse text-sm">
             <thead>
-              <tr class="border-b border-ink-800 text-left font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">
+              <tr class="border-b border-ink-800 text-left rcs-micro">
                 <th class="px-4 py-2 font-normal">{{ t('stats.date') }}</th>
                 <th class="px-4 py-2 font-normal">{{ t('stats.module') }}</th>
                 <th class="px-4 py-2 text-right font-normal">{{ t('stats.duration') }}</th>
@@ -282,20 +282,20 @@ async function onFilePicked(event: Event): Promise<void> {
 
     <!-- 資料管理：新使用者也看得到（匯入是他們唯一需要的入口） -->
     <section class="flex flex-col gap-3 border-t border-ink-800 pt-6">
-      <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('stats.data') }}</h2>
+      <h2 class="rcs-micro">{{ t('stats.data') }}</h2>
       <p class="max-w-[65ch] text-xs text-ink-400">{{ t('stats.dataHint') }}</p>
 
       <div class="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          class="rounded border border-ink-700 bg-ink-800 px-3 py-1.5 text-xs text-ink-100 hover:bg-ink-700"
+          class="rcs-btn px-3 py-1.5 text-xs"
           @click="backup.download()"
         >
           {{ t('stats.export') }}
         </button>
         <button
           type="button"
-          class="rounded border border-ink-700 bg-ink-800 px-3 py-1.5 text-xs text-ink-100 hover:bg-ink-700"
+          class="rcs-btn px-3 py-1.5 text-xs"
           @click="fileInput?.click()"
         >
           {{ t('stats.import') }}
@@ -316,7 +316,7 @@ async function onFilePicked(event: Event): Promise<void> {
             <span class="text-xs text-ink-300">{{ t('stats.clearConfirm', { count: entries.length }) }}</span>
             <button
               type="button"
-              class="rounded border border-ink-50 bg-ink-50 px-3 py-1.5 text-xs font-bold text-ink-950"
+              class="rcs-btn-primary px-3 py-1.5 text-xs"
               @click="clearAll"
             >
               {{ t('stats.clearYes') }}

@@ -34,7 +34,7 @@ watch(
   <section class="flex flex-col gap-3">
     <button
       type="button"
-      class="flex w-fit items-center gap-2 rounded px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400 hover:bg-ink-800 hover:text-ink-100"
+      class="flex w-fit items-center gap-2 rounded px-2 py-1 rcs-micro hover:bg-ink-800 hover:text-ink-100"
       :aria-expanded="open"
       @click="open = !open"
     >
@@ -42,7 +42,7 @@ watch(
       <span aria-hidden="true">{{ open ? '−' : '+' }}</span>
     </button>
 
-    <article v-if="open" class="flex flex-col gap-3 rounded-lg border border-ink-700 bg-ink-900 p-5">
+    <article v-if="open" class="flex flex-col gap-3 rcs-panel p-5">
       <template v-if="entry">
         <h3 class="text-base font-semibold text-ink-50">{{ entry.title }}</h3>
         <RichText :blocks="entry.blocks" />
