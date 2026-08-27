@@ -71,7 +71,7 @@
 |---|---|---|
 | `core/theory/formulas.ts` | **Single Source of Truth**（公式表 const） | 和弦/音階資料只有公式；所有音位、音名、指板覆蓋皆推導，杜絕手工資料表的維護災難 |
 | `core/theory/spelling.ts` | 純函式核心 | 拼寫正確性可被窮舉測試鎖定 |
-| `core/theory/positions.ts` | 純函式推導（把位） | 全指板音點看不出指型。和弦以低音弦根音錨定，切出**互不重疊**的把位框；音階以最低弦的每個音階音錨定，走一遍每弦 N 音的指型算出涵蓋範圍，這些框**天生重疊**（UI 一次只畫一個）。框怎麼畫是組件的事，框在哪裡是樂理，所以放 core |
+| `core/theory/positions.ts` | 純函式推導（把位） | 全指板音點看不出指型。和弦以低音弦根音錨定，切出**互不重疊**的把位框；音階以最低弦的每個音階音錨定，走一遍每弦 N 音的指型算出涵蓋範圍，這些框**天生重疊**（UI 一次只畫一個）。框怎麼畫是組件的事，框在哪裡是樂理，所以放 core。「框在哪裡」與「框裡照什麼順序走」（`scaleShapePath`）走同一趟計算——分成兩份遲早出現「框裡畫著這幾格、跑起來卻是別幾格」 |
 | `core/audio/clock.ts` | **依賴反轉**（IClock） | 排程邏輯不碰真時鐘 → ManualClock 讓「不飄拍」成為可測規格 |
 | `core/audio/scheduler.ts` | **Observer** + lookahead | 排程器單一職責：搬運視窗內 tick；不懂 BPM 與 pattern |
 | `core/audio/pattern.ts` | **編譯步驟**（pattern → 時刻表） | swing 讓細分不等距。把「一小節 → 每格的角色與偏移（單位＝拍）」先編譯成純資料，Transport 只吃時刻表 —— 之後新增 feel 不必動排程核心，且時刻可被單元測試逐格鎖定 |
@@ -96,8 +96,9 @@
 | `modules/scales/recall/quiz.ts` | 純函式出題（回想測驗） | 出題是**練習設計**不是樂理：core 回答「A dorian 的 b3 在指板哪幾格」，「該不該考這一題、什麼算對」屬於模組層。亂數由呼叫端注入，洗牌與比對才測得起來 |
 | `modules/chords/timeline.ts` | 純函式組裝（時間軸） | 「當前這一段的每個和弦」是和弦線各模組共用的組裝規則。條目位置固定、游標在上面移動（與節奏譜同一種讀法），使用者才點得到看得見的和弦 |
 | `modules/chords/arpeggio/sequence.ts` | 純函式（音序 + 格位對應） | 琶音把時間解析度從「小節線換和弦」推進到「格線換音」。哪一格該彈哪個音是**練習設計**不是樂理（與 recall/quiz.ts 同一條界線）；而且畫面與示範音必須共用同一份順序——各自排一次，遲早出現「畫面圈著 3 音、耳朵聽到 b7」，那是最難察覺的一種錯 |
-| `composables/useArpeggioDemo` | 訂閱排程 tick（發聲） | 與 useChordDemo 同骨架，差別就是琶音的定義：一格一個音。仍走 subscribeSchedule——用視覺 tick 排程等於每個音遲到半幀，十六分細分下聽得出來 |
+| `composables/useNoteDemo` | 訂閱排程 tick（發聲） | 與 useChordDemo 同骨架，差別就是琶音與模進的定義：一格一個音。仍走 subscribeSchedule——用視覺 tick 排程等於每個音遲到半幀，十六分細分下聽得出來 |
 | `composables/useBarCursor` | 位移游標（不動時鐘） | 「點和弦強制切換過去」不能改 Transport 的小節數——節拍不能因為換和弦而斷。改成記一個位移，視覺與示範音都經同一個 `barFor()`；只改視覺會出現「畫面換了、聲音沒換」 |
+| `modules/scales/sequence/patterns.ts` | 純函式（模進） | 模進＝同一個音型往上搬。用 (size, interval) 兩個正交參數長出八種跑法（三個一組、三度跳音、七和弦分解…），新增一種只要加一行，不必為每一種寫一份產生器。時間模型與琶音**相反**且是這裡最容易寫錯的地方：琶音的格號每個小節重算（小節線換和弦），模進是一條跨小節的跑道（`absoluteSlot`）——重算的症狀是序列永遠停在第一組，而且看起來像速度不對 |
 | `modules/rhythm/presets.ts` | 速記法 DSL（`parseCells`） | `X`／`o`／`g`／`.` 一格一字元，preset 在原始碼裡就看得出節奏形狀；未知字元丟例外，打錯字在測試就爆而不是悄悄變成休止 |
 | `composables/useModuleSettings` | 響應式持久化綁定 | 模組設定以模組 id 為 key 自動存取，杜絕直接碰 localStorage |
 | `composables/usePracticeTransport` | Template Method | 每個練習共通的 click 接線：載入設定 → 回寫調整 → 離開停止播放 |
@@ -164,9 +165,11 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 | 節拍視覺訂閱（回傳形態即契約） | `src/composables/useTransportTick.ts` |
 | 練習模組的 click 接線 | `src/composables/usePracticeTransport.ts` |
 | 拍號表與持久化驗證 | `src/core/audio/types.ts`（TIME_SIGNATURES / resolveTimeSignature） |
+| 指型路徑（每弦 N 音實際要彈的每一個音） | `src/core/theory/positions.ts` 的 `scaleShapePath()` |
+| 指板座標 → 實際音高（發聲用） | `src/core/theory/fretboard.ts` 的 `fretMidi()` / `openStringMidis()` |
 | 指板幾何 | `src/components/Fretboard/geometry.ts` |
 | 指板座標 vs 指板上的音（FretPosition／FretCell） | `src/core/theory/types.ts` |
-| 指板的互動能力（selectable／marks／fretClick） | `src/components/Fretboard/Fretboard.vue` 頂部註解 |
+| 指板的互動能力（selectable／marks／fretClick／requireFocus） | `src/components/Fretboard/Fretboard.vue` 頂部註解 |
 | 回想測驗的出題、洗牌與計分 | `src/modules/scales/recall/quiz.ts` |
 | 五度圈幾何與調性位置 | `src/components/CircleOfFifths/geometry.ts` |
 | 五度圈的三種互動模式（display／key／chord） | `src/components/CircleOfFifths/CircleOfFifths.vue` 頂部註解 |
@@ -175,7 +178,8 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 | 和弦線共用調選項與同音異名正規化 | `src/modules/chords/keys.ts` |
 | 琶音音序與「第幾格彈第幾個音」 | `src/modules/chords/arpeggio/sequence.ts` |
 | 七和弦琶音課表（級數記法） | `src/modules/chords/arpeggio/drills.ts` |
-| 琶音示範音（一格一音） | `src/composables/useArpeggioDemo.ts` |
+| 一格一音的示範音（琶音與模進共用） | `src/composables/useNoteDemo.ts` |
+| 模進型（size × interval）與絕對格號 | `src/modules/scales/sequence/patterns.ts` |
 | 進行記法文法 | `src/core/theory/progressions/parser.ts` 頂部註解 |
 | 進行 preset 與分級課表 | `src/modules/chords/presets.ts` |
 | 知識內容格式與行內標記 | `src/content/blocks.ts`（知識條目與法遵頁共用） |
@@ -324,13 +328,31 @@ canonical／hreflang／lang 三者一致、七個新頁面文字對比全數通�
 （`selectable` 的透明命中層、`marks` 空心圈），`FretCell` 抽出 `FretPosition` 基底型別。
 
 **Phase 7 之後的追加（640 個測試）**：七和弦琶音模組（`chords.arpeggio`）——和弦線的第四個模組，
-也是第一個把時間解析度推進到**音符**的跟練：小節線換和弦，格線換音（`useArpeggioDemo` 一格送一個音高
+也是第一個把時間解析度推進到**音符**的跟練：小節線換和弦，格線換音（`useNoteDemo` 一格送一個音高
 進 ChordVoice，仍走排程訂閱）。八份課表以級數記法定義（順階七和弦、大小調 2-5-1，以及
 maj7／7／m7／m7b5／dim7 各自走 12 調），沿五度圈的展開直接沿用 `buildCircleCycle`，
 12 調的拼寫（含 Gb 調減七的重降記號）全部由公式表推導。音序、格位對應與「序列除不盡小節格數」
 的判斷都是純函式（`arpeggio/sequence.ts`），畫面與示範音共用同一份索引序列。
 指板的把位聚焦改記**錨定弦**而不是把位 id——id 綁在根音的格號上，換調就失效，
 而「根音在第 6 弦的指型」正是這個練習要練的東西；`marks` 從回想測驗的題目標記兼任「這一格該彈的音」。
+
+**再之後的追加（692 個測試）**：音階模進模組（`scales.sequence`）——音階線的第四個模組，
+把音階線也推進到**音符**的解析度（與七和弦琶音同一種「一格一音」，示範音因此共用
+`useNoteDemo`）。三層分工是這個模組的骨架：core 的 `scaleShapePath()` 回答「這個把位的指型
+實際要彈的每一個音」（一弦三音／五聲盒型由公式表推導，不是查表），模組層的 `patterns.ts`
+用 (size, interval) 兩個正交參數長出八種模進，畫面只負責接線。
+
+三個實作決策值得記住：
+- **框與路徑同一趟計算**：`scalePositions()` 與 `scaleShapePath()` 共用 `walkShape()`，
+  框就是路徑的涵蓋範圍。分成兩份的症狀是「框裡畫著這幾格、跑起來卻是別幾格」。
+- **格號是絕對的**：模進的序列（三十幾到四十幾個音）比一個小節長得多，
+  所以 `absoluteSlot()` 從播放起點連續累計；沿用琶音的「每小節重算」會讓序列永遠停在第一組。
+- **指型記度數不記 id**：把位 id 綁在格號上，換調就指到別的東西；
+  「從 1 度起的指型」跨 12 調都是同一件事——與琶音模組記錨定弦是同一種考量。
+  指板因此多一個 `requireFocus`：沒有指型就沒有順序，「全部」不是合法狀態。
+
+另外，指板的指位記號由 `ink-600` 改為亮金色 `--color-inlay`（設計系統唯一的非音高色彩，
+理由與對比數字見 `docs/design-system.md` §5）。
 
 **待人工完成（需要帳號，不是程式碼）**：見 `docs/ops/runbook.md`——
 建立 Firebase 專案與自訂網域、設定 GitHub repository variables、AdSense 送審與版位建立、

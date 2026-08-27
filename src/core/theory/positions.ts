@@ -15,13 +15,19 @@
  * 框 = 手的位置，不是嚴格的指法：框內所有音點都在同一個手型構得到的範圍內，
  * 所以框會比「每弦剛好 N 個音」的指法多含一兩個音——那些音本來就按得到。
  *
+ * 兩個問題，同一趟計算：
+ * - `scalePositions()`：框**在哪裡**（涵蓋的格範圍）。
+ * - `scaleShapePath()`：框裡**照什麼順序走**（每弦 N 音、由最低弦到最高弦的實際格位）。
+ *   框就是這條路徑的涵蓋範圍，所以指型只有一份定義——分成兩份遲早會出現
+ *   「框裡畫著這幾格、跑起來卻是別幾格」。
+ *
  * 純函式：不知道畫布、不知道像素。框怎麼畫是 components/Fretboard/geometry.ts 的事。
  */
 import { SCALE_FORMULAS, type ScaleType } from './formulas'
-import { DEFAULT_FRET_COUNT, STANDARD_TUNING } from './fretboard'
+import { DEFAULT_FRET_COUNT, STANDARD_TUNING, openStringMidis } from './fretboard'
 import { mod12, parseNoteName } from './intervals'
 import { spell } from './spelling'
-import type { DegreeLabel, Note, NoteName, PitchClass, Tuning } from './types'
+import type { DegreeLabel, FretCell, Note, NoteName, PitchClass, Tuning } from './types'
 
 /** 和弦把位涵蓋的格數：4 格是手不移動按得到的範圍，第 5 格留給延伸音的伸展 */
 export const POSITION_SPAN = 5
@@ -136,20 +142,11 @@ function notesPerString(scaleSize: number): number {
 }
 
 /**
- * 各弦空弦音高（相對最低弦，含八度）。
- * 調弦只給音名（pitch class），八度靠「每條弦比下一條高，最少 1 個半音」推回來；
- * 相鄰兩弦同音名（如某些 drop / 12 弦調弦）視為差一個八度。
+ * 這個音階的指型每弦幾個音：七音音階 3（**一弦三音**）、五聲與藍調 2（盒型）。
+ * 由公式表推導而不是查表——新增一個音階不必回來補一列。
  */
-function openStringPitches(tuning: Tuning): number[] {
-  const pcs = tuning.map((name) => parseNoteName(name).pc)
-  const pitches = new Array<number>(tuning.length)
-  const lowIndex = tuning.length - 1
-  pitches[lowIndex] = pcs[lowIndex] ?? 0
-  for (let i = lowIndex - 1; i >= 0; i--) {
-    const step = mod12((pcs[i] ?? 0) - (pcs[i + 1] ?? 0))
-    pitches[i] = (pitches[i + 1] ?? 0) + (step === 0 ? OCTAVE : step)
-  }
-  return pitches
+export function scaleNotesPerString(scale: ScaleType): number {
+  return notesPerString((POSITION_SKELETON[scale] ?? SCALE_FORMULAS[scale]).length)
 }
 
 /** 下一個音階音（嚴格往上找，保證收斂：音階至少有一個音） */
@@ -159,29 +156,54 @@ function nextScalePitch(pitch: number, scalePcs: ReadonlySet<number>): number {
   return next
 }
 
+/** 走一遍指型需要的東西；框與路徑共用，兩者才不會各算一份指型 */
+interface ShapeContext {
+  scalePcs: ReadonlySet<number>
+  /** pitch class → 已拼寫的音（指型骨架的音，藍調取五聲） */
+  byPc: ReadonlyMap<number, Note>
+  perString: number
+  /** 各弦空弦音高（MIDI，index 0 = string 1） */
+  openMidis: readonly number[]
+  /** 最低弦的空弦音高——把位的錨都掛在這條弦上 */
+  lowOpen: number
+}
+
+function shapeContext(root: NoteName, scale: ScaleType, tuning: Tuning): ShapeContext {
+  const notes: Note[] = spell(root, POSITION_SKELETON[scale] ?? SCALE_FORMULAS[scale])
+  const byPc = new Map<number, Note>()
+  for (const note of notes) if (!byPc.has(note.pc)) byPc.set(note.pc, note)
+  const openMidis = openStringMidis(tuning)
+  return {
+    scalePcs: new Set<number>(notes.map((note) => note.pc)),
+    byPc,
+    perString: notesPerString(byPc.size),
+    openMidis,
+    lowOpen: openMidis[tuning.length - 1] ?? 0,
+  }
+}
+
+/** 指型上的一步：走到哪一格、那一格的音高多少（fret 可能為負或超出指板，由呼叫端處理） */
+interface ShapeStep {
+  string: number
+  fret: number
+  pitch: number
+}
+
 /**
- * 從某個起音走完一遍指型（最低弦 → 最高弦，每弦 perString 個音），回傳涵蓋的格範圍。
- * 這就是把位框的定義：手放在這個範圍內，這一趟音階不用移動左手就走得完。
+ * 從某個起音走完一遍指型：最低弦 → 最高弦，每弦 perString 個音。
+ * 這一趟同時定義了兩件事——走過的格就是要彈的順序，走過的範圍就是把位框。
  */
-function walkPosition(
-  startPitch: number,
-  scalePcs: ReadonlySet<number>,
-  openPitches: readonly number[],
-  perString: number,
-): { min: number; max: number } {
+function walkShape(startPitch: number, ctx: ShapeContext): ShapeStep[] {
+  const steps: ShapeStep[] = []
   let pitch = startPitch
-  let min = Infinity
-  let max = -Infinity
-  for (let string = openPitches.length; string >= 1; string--) {
-    const open = openPitches[string - 1] ?? 0
-    for (let i = 0; i < perString; i++) {
-      const fret = pitch - open
-      if (fret < min) min = fret
-      if (fret > max) max = fret
-      pitch = nextScalePitch(pitch, scalePcs)
+  for (let string = ctx.openMidis.length; string >= 1; string--) {
+    const open = ctx.openMidis[string - 1] ?? 0
+    for (let i = 0; i < ctx.perString; i++) {
+      steps.push({ string, fret: pitch - open, pitch })
+      pitch = nextScalePitch(pitch, ctx.scalePcs)
     }
   }
-  return { min, max }
+  return steps
 }
 
 /**
@@ -203,21 +225,16 @@ export function scalePositions(
   const { tuning = STANDARD_TUNING, fretCount = DEFAULT_FRET_COUNT } = options
   if (tuning.length === 0) return []
 
-  const notes: Note[] = spell(root, POSITION_SKELETON[scale] ?? SCALE_FORMULAS[scale])
-  const scalePcs = new Set<number>(notes.map((note) => note.pc))
-  const perString = notesPerString(scalePcs.size)
-  const openPitches = openStringPitches(tuning)
+  const ctx = shapeContext(root, scale, tuning)
   const lowest = tuning.length
-  const lowOpen = openPitches[lowest - 1] ?? 0
-
-  const byPc = new Map<number, Note>()
-  for (const note of notes) if (!byPc.has(note.pc)) byPc.set(note.pc, note)
+  const lowOpen = ctx.lowOpen
 
   const positions: FretboardPosition[] = []
   for (let fret = 0; fret < OCTAVE && fret <= fretCount; fret++) {
-    const anchor = byPc.get(mod12(lowOpen + fret))
+    const anchor = ctx.byPc.get(mod12(lowOpen + fret))
     if (!anchor) continue
-    const walk = walkPosition(lowOpen + fret, scalePcs, openPitches, perString)
+    const frets = walkShape(lowOpen + fret, ctx).map((step) => step.fret)
+    const walk = { min: Math.min(...frets), max: Math.max(...frets) }
     // 有些指型會往琴枕外延伸（高音弦上的音落在第 -1 格）——那個把位在這個八度按不出來，
     // 整組往上移一個八度。音階每 12 半音重複，所以指型不變，只是整個框平移 12 格。
     const octaveShift = walk.min < 0 ? OCTAVE : 0
@@ -236,6 +253,36 @@ export function scalePositions(
     })
   }
   return positions.sort((a, b) => a.fromFret - b.fromFret)
+}
+
+/**
+ * 指型路徑：這個把位「實際要彈的每一個音」，由最低弦到最高弦、每弦 N 音。
+ *
+ * 與 mapToFretboard 的差別是**順序與取捨**：mapToFretboard 給的是框內每一個音階音
+ * （一個 3NPS 框裡會多出一兩個手構得到的音），這裡給的是那條一弦三音／每弦兩音的走法——
+ * 模進要的是「第幾個音」，多一個音整條序列就錯位。
+ *
+ * 三件事寫在契約裡：
+ * - `position` 必須來自 `scalePositions()`（錨定在最低弦），錨定格已含移高八度的修正。
+ * - 落在指板外的格（負格或超過 fretCount）直接不回傳：按不到的音不該進練習序列，
+ *   序列因此可能短於「弦數 × 每弦音數」。
+ * - 藍調走的是五聲骨架（見 POSITION_SKELETON）：b5 是經過音，不佔指型的位置。
+ */
+export function scaleShapePath(
+  root: NoteName,
+  scale: ScaleType,
+  position: FretboardPosition,
+  options: ScalePositionOptions = {},
+): FretCell[] {
+  const { tuning = STANDARD_TUNING, fretCount = DEFAULT_FRET_COUNT } = options
+  if (tuning.length === 0) return []
+
+  const ctx = shapeContext(root, scale, tuning)
+  return walkShape(ctx.lowOpen + position.anchorFret, ctx).flatMap((step) => {
+    const note = ctx.byPc.get(mod12(step.pitch))
+    if (!note || step.fret < 0 || step.fret > fretCount) return []
+    return [{ string: step.string, fret: step.fret, note }]
+  })
 }
 
 /** 某一格是否落在把位內（UI 判斷音點該亮還是該暗） */

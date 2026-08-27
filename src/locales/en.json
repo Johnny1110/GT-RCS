@@ -19,6 +19,10 @@
         "title": "Scale Practice",
         "description": "Run scales against the click; practice time is logged automatically"
       },
+      "sequence": {
+        "title": "Scale Sequences",
+        "description": "Three-notes-per-string and pentatonic boxes, eight sequence patterns — raw material for improvising"
+      },
       "recall": {
         "title": "Fretboard Recall",
         "description": "Answers hidden: find the note, find the degree, name the fret"
@@ -154,6 +158,35 @@
     "markHint": "The white ring is the note due on this slot; click a box on the neck to follow a single shape.",
     "fitHint": "{notes} notes over {slots} slots per bar: they do not divide evenly, so the order is cut at the bar line. Change the subdivision or the direction to line them up.",
     "hint": "One note per grid slot, following the click — turn the demo on (pad or strum) and it plays the arpeggio note by note. Lock onto one position and take it through all 12 keys before moving to the next: an arpeggio drill is one shape found in 12 places."
+  },
+  "sequence": {
+    "pattern": "Pattern",
+    "direction": "Direction",
+    "up": "Ascending",
+    "down": "Descending",
+    "upDown": "Both ways",
+    "shape": "Shape",
+    "shapeInfo": "{notes} notes per string · starts on {degree}",
+    "strip": "Sequence",
+    "group": "This group",
+    "groupOf": "Group {index}/{total}",
+    "aligned": "{notes}-note sequence · {slots} slots per bar: every bar starts a new group",
+    "cycle": "{notes}-note sequence · {slots} slots per bar: groups cross the barline and come back around after {bars} bars",
+    "emptyShape": "This shape is too short for one group. Pick another position, or a pattern with fewer notes per group.",
+    "markHint": "The white ring is the note to play now; the board shows this shape only — {notes} notes per string.",
+    "passingHint": "{degrees} is not on this shape’s path: the sequence follows the skeleton (blues = minor pentatonic), so add passing notes yourself.",
+    "intervalHint": "The step size counts scale degrees, not intervals: the 3rds pattern becomes a 3rd or a 4th on a pentatonic. Same move, different intervals — which is exactly why pentatonic skips sound wider.",
+    "hint": "A sequence moves one shape up the scale: your hand learns the move, your ear learns the sound, and that is what comes back when you improvise. Run the shape straight first, then switch to groups of 3 or skips. When the group length does not divide the bar, the sequence crosses the barline — that is not the beat slipping, keep going and it lines up again."
+  },
+  "seqPattern": {
+    "straight": "Straight",
+    "threes": "In 3s",
+    "fours": "In 4s",
+    "sixes": "In 6s",
+    "thirds": "3rds (skip one)",
+    "fourths": "4ths (skip two)",
+    "triads": "Broken triads",
+    "sevenths": "Broken 7ths"
   },
   "error": {
     "title": "This page ran into a problem",
@@ -417,7 +450,7 @@
     "highlight": {
       "rhythm": "Metronome, subdivision drills, and groove sheets to play along with, including swing and accent design",
       "chords": "Numeral progressions, the 12-key cycle, circle-of-fifths navigation, and any progression you write yourself",
-      "scales": "Full-fretboard note names and degrees, five position frames, and scale practice that follows the click"
+      "scales": "Note names and degrees across the neck, three-notes-per-string and pentatonic shapes, scale and sequence drills on the click"
     }
   },
   "knowledgeIndex": {

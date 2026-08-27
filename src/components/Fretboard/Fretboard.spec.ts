@@ -162,4 +162,14 @@ describe('Fretboard 音階把位（focus 模式）', () => {
     const wrapper = mountFretboard({ ...base })
     expect(wrapper.findAll('button')).toHaveLength(positions.length + 1)
   })
+
+  /** 音階模進：沒有指型就沒有順序，所以「全部」不是一個合法狀態 */
+  it('requireFocus：不提供「全部」，再點一次已選的把位也不取消', async () => {
+    const focus = positions[2]!
+    const wrapper = mountFretboard({ ...base, focusedPositionId: focus.id, requireFocus: true })
+    expect(wrapper.findAll('button')).toHaveLength(positions.length)
+
+    await wrapper.findAll('button')[2]!.trigger('click')
+    expect(wrapper.emitted('update:focusedPositionId')?.[0]).toEqual([focus.id])
+  })
 })

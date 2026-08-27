@@ -19,6 +19,9 @@
  * 互動（回想測驗，PRD F7-4）：`selectable` 時在**每一格**（含沒有音點的格）鋪一層透明命中區，
  * 點下去只 emit 座標——這一格上有沒有音、答對沒答對，一律由模組層判斷。
  * `marks` 畫空心圈，用來標出「要辨認的是這一格」。
+ *
+ * `requireFocus`：有些練習（音階模進）**必須**有一個指型才成立——沒有指型就沒有路徑，
+ * 也就沒有順序。這時「全部」不是一個合法狀態，於是它從選單消失，再點一次也不取消聚焦。
  */
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -46,6 +49,8 @@ export interface FretboardProps {
   selectable?: boolean
   /** 空心圈標記（回想測驗的題目「就是這一格」）；不帶音名也不帶顏色 */
   marks?: readonly FretPosition[]
+  /** 一定要選著一個把位（模進：沒有指型就沒有順序）：不提供「全部」，再點一次也不取消 */
+  requireFocus?: boolean
 }
 
 const props = withDefaults(defineProps<FretboardProps>(), {
@@ -57,6 +62,7 @@ const props = withDefaults(defineProps<FretboardProps>(), {
   positionMode: 'tile',
   selectable: false,
   marks: () => [],
+  requireFocus: false,
 })
 
 const emit = defineEmits<{
@@ -176,8 +182,8 @@ function jumpTo(fret: number): void {
 
 /** 再點一次已聚焦的把位＝取消聚焦；順便把它捲進可視範圍（22 格在窄螢幕看不完） */
 function focusPosition(position: FretboardPosition): void {
-  const next = props.focusedPositionId === position.id ? null : position.id
-  emit('update:focusedPositionId', next)
+  const toggledOff = props.focusedPositionId === position.id
+  emit('update:focusedPositionId', toggledOff && !props.requireFocus ? null : position.id)
   jumpTo(position.fromFret)
 }
 </script>
@@ -261,7 +267,7 @@ function focusPosition(position: FretboardPosition): void {
       <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
         {{ t('fretboard.position') }}
       </span>
-      <button type="button"
+      <button v-if="!requireFocus" type="button"
               class="rounded border px-2 py-0.5 font-mono text-xs"
               :class="focusedPositionId === null
                 ? 'border-ink-50 bg-ink-50 font-bold text-ink-950'

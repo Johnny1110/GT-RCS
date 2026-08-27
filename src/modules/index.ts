@@ -12,6 +12,7 @@ import { rhythmSubdivisionManifest } from './rhythm/subdivision/manifest'
 import { scalesExplorerManifest } from './scales/explorer/manifest'
 import { scalesRecallManifest } from './scales/recall/manifest'
 import { scalesPracticeManifest } from './scales/practice/manifest'
+import { scalesSequenceManifest } from './scales/sequence/manifest'
 
 registerModule(rhythmMetronomeManifest)
 registerModule(rhythmSubdivisionManifest)
@@ -22,4 +23,5 @@ registerModule(chordsCustomManifest)
 registerModule(chordsArpeggioManifest)
 registerModule(scalesExplorerManifest)
 registerModule(scalesPracticeManifest)
+registerModule(scalesSequenceManifest)
 registerModule(scalesRecallManifest)

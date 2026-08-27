@@ -6,7 +6,7 @@ import { describe, it, expect } from 'vitest'
 import { degreeInterval, mod12, parseDegree, parseNoteName } from './intervals'
 import { spell, spellDegree } from './spelling'
 import { CHORD_FORMULAS, SCALE_FORMULAS } from './formulas'
-import { mapToFretboard, STANDARD_TUNING } from './fretboard'
+import { fretMidi, mapToFretboard, openStringMidis, STANDARD_TUNING } from './fretboard'
 import type { NoteName } from './types'
 
 const names = (root: NoteName, formula: Parameters<typeof spell>[1]) =>
@@ -107,5 +107,30 @@ describe('fretboard', () => {
   it('空弦（fret 0）包含在結果中', () => {
     const cells = mapToFretboard(spell('E', CHORD_FORMULAS.maj))
     expect(cells.some((c) => c.fret === 0 && c.string === 1)).toBe(true)
+  })
+})
+
+describe('指板音高（發聲用的絕對音高）', () => {
+  it('標準調弦的空弦：E2 40 → e4 64', () => {
+    expect(openStringMidis()).toEqual([64, 59, 55, 50, 45, 40])
+  })
+
+  it('第 6 弦第 5 格與第 5 弦空弦是同一個音高（吉他調音就是這樣調的）', () => {
+    expect(fretMidi({ string: 6, fret: 5 })).toBe(fretMidi({ string: 5, fret: 0 }))
+    expect(fretMidi({ string: 3, fret: 4 })).toBe(fretMidi({ string: 2, fret: 0 }))
+  })
+
+  it('八度取「離標準第 6 弦最近的那一個」：drop D 落在 D2 不是 D3', () => {
+    expect(openStringMidis(['E', 'B', 'G', 'D', 'A', 'D'])[5]).toBe(38)
+  })
+
+  it('音高與 mapToFretboard 的 pitch class 一致（同一格不會一個 C 一個 D）', () => {
+    for (const cell of mapToFretboard(spell('C', SCALE_FORMULAS.ionian))) {
+      expect(mod12(fretMidi(cell)), `${cell.string}/${cell.fret}`).toBe(cell.note.pc)
+    }
+  })
+
+  it('弦號超出調弦範圍時回退而不丟例外（發聲跑在排程回呼裡）', () => {
+    expect(Number.isFinite(fretMidi({ string: 9, fret: 3 }))).toBe(true)
   })
 })

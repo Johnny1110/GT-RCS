@@ -5,7 +5,10 @@
 import { describe, it, expect } from 'vitest'
 import { CHORD_FORMULAS, SCALE_FORMULAS, type ScaleType } from './formulas'
 import { DEFAULT_FRET_COUNT, STANDARD_TUNING, mapToFretboard } from './fretboard'
-import { chordPositions, findPosition, isInPosition, scalePositions, POSITION_SPAN } from './positions'
+import {
+  chordPositions, findPosition, isInPosition, scaleNotesPerString, scalePositions, scaleShapePath,
+  POSITION_SPAN,
+} from './positions'
 import { spell } from './spelling'
 import { parseNoteName } from './intervals'
 import type { NoteName, PitchClass } from './types'
@@ -213,5 +216,124 @@ describe('scalePositions', () => {
     expect(scalePositions('C', 'ionian', { tuning: STANDARD_TUNING })).toEqual(
       scalePositions('C', 'ionian'),
     )
+  })
+})
+
+describe('scaleNotesPerString', () => {
+  it('七音音階一弦三音、五聲一弦兩音', () => {
+    expect(scaleNotesPerString('ionian')).toBe(3)
+    expect(scaleNotesPerString('harmonicMinor')).toBe(3)
+    expect(scaleNotesPerString('minorPentatonic')).toBe(2)
+    expect(scaleNotesPerString('majorPentatonic')).toBe(2)
+  })
+
+  it('藍調跟著五聲骨架走（b5 是經過音，不佔指型的位置）', () => {
+    expect(scaleNotesPerString('blues')).toBe(scaleNotesPerString('minorPentatonic'))
+  })
+})
+
+describe('scaleShapePath', () => {
+  const ALL_SCALES = Object.keys(SCALE_FORMULAS) as ScaleType[]
+
+  it('A 小調五聲第一盒＝教科書上的盒型（每弦兩音，格位逐格鎖定）', () => {
+    const box = scalePositions('A', 'minorPentatonic').find((p) => p.anchorDegree === '1')!
+    const path = scaleShapePath('A', 'minorPentatonic', box)
+    expect(path.map((c) => `${c.string}/${c.fret}`)).toEqual([
+      '6/5', '6/8', '5/5', '5/7', '4/5', '4/7', '3/5', '3/7', '2/5', '2/8', '1/5', '1/8',
+    ])
+    expect(path.map((c) => c.note.degree)).toEqual([
+      '1', 'b3', '4', '5', 'b7', '1', 'b3', '4', '5', 'b7', '1', 'b3',
+    ])
+  })
+
+  it('C Ionian 根音起＝一弦三音：每條弦剛好三個音，由低音弦走到高音弦', () => {
+    const shape = scalePositions('C', 'ionian').find((p) => p.anchorDegree === '1')!
+    const path = scaleShapePath('C', 'ionian', shape)
+    expect(path).toHaveLength(18)
+    expect(path.map((c) => `${c.string}/${c.fret}`)).toEqual([
+      '6/8', '6/10', '6/12', '5/8', '5/10', '5/12', '4/9', '4/10', '4/12',
+      '3/9', '3/10', '3/12', '2/10', '2/12', '2/13', '1/10', '1/12', '1/13',
+    ])
+    expect(path[0]?.note.name).toBe('C')
+  })
+
+  it('路徑一路往上（模進的「上行」要真的是上行）', () => {
+    for (const key of ALL_KEYS) {
+      for (const scale of ALL_SCALES) {
+        for (const position of scalePositions(key, scale)) {
+          const path = scaleShapePath(key, scale, position)
+          for (let i = 1; i < path.length; i++) {
+            const previous = path[i - 1]!
+            const current = path[i]!
+            const rising = current.string < previous.string
+              || (current.string === previous.string && current.fret > previous.fret)
+            expect(rising, `${key} ${scale} ${position.id} 第 ${i} 個音沒有往上`).toBe(true)
+          }
+        }
+      }
+    }
+  })
+
+  it('每條弦的音數一致，且等於 scaleNotesPerString（指型的定義）', () => {
+    for (const key of ALL_KEYS) {
+      for (const scale of ALL_SCALES) {
+        const perString = scaleNotesPerString(scale)
+        for (const position of scalePositions(key, scale)) {
+          const path = scaleShapePath(key, scale, position)
+          // 走出指板的格會被丟掉，因此只檢查「沒有哪一條弦超過每弦音數」
+          for (let string = 1; string <= 6; string++) {
+            const onString = path.filter((c) => c.string === string).length
+            expect(onString, `${key} ${scale} ${position.id} 第 ${string} 弦`).toBeLessThanOrEqual(perString)
+          }
+          expect(path.length, `${key} ${scale} ${position.id}`).toBeLessThanOrEqual(perString * 6)
+        }
+      }
+    }
+  })
+
+  it('路徑的每一個音都落在把位框內（框就是這條路徑的涵蓋範圍）', () => {
+    for (const key of ALL_KEYS) {
+      for (const scale of ALL_SCALES) {
+        for (const position of scalePositions(key, scale)) {
+          for (const cell of scaleShapePath(key, scale, position)) {
+            expect(isInPosition(position, cell.fret), `${key} ${scale} ${position.id} ${cell.fret} 格落在框外`)
+              .toBe(true)
+          }
+        }
+      }
+    }
+  })
+
+  it('路徑上的音都是音階音（與 mapToFretboard 的音點對得起來）', () => {
+    for (const scale of ALL_SCALES) {
+      const board = mapToFretboard(spell('G', SCALE_FORMULAS[scale]))
+      for (const position of scalePositions('G', scale)) {
+        for (const cell of scaleShapePath('G', scale, position)) {
+          const onBoard = board.find((c) => c.string === cell.string && c.fret === cell.fret)
+          expect(onBoard?.note.pc, `${scale} ${cell.string}/${cell.fret}`).toBe(cell.note.pc)
+        }
+      }
+    }
+  })
+
+  it('藍調的路徑不含 b5（骨架是五聲，b5 自己加）', () => {
+    for (const position of scalePositions('A', 'blues')) {
+      const degrees = scaleShapePath('A', 'blues', position).map((c) => c.note.degree)
+      expect(degrees).not.toContain('b5')
+    }
+  })
+
+  it('按不到的格不進序列：12 格琴頸走不完的指型只回傳指板上的音', () => {
+    const shape = scalePositions('C', 'ionian', { fretCount: 12 }).find((p) => p.anchorDegree === '1')!
+    const path = scaleShapePath('C', 'ionian', shape, { fretCount: 12 })
+    expect(path.length).toBeLessThan(18)
+    expect(path.every((c) => c.fret <= 12)).toBe(true)
+  })
+
+  it('空弦把位含 fret 0，且不會出現負格（走出琴枕外的指型已整組移高八度）', () => {
+    const open = scalePositions('C', 'ionian')[0]!
+    const path = scaleShapePath('C', 'ionian', open)
+    expect(path.some((c) => c.fret === 0)).toBe(true)
+    expect(path.every((c) => c.fret >= 0)).toBe(true)
   })
 })
