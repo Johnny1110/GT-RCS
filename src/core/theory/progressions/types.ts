@@ -62,3 +62,77 @@ export interface RealizeOptions {
   /** 預設 'chordRoot' */
   degreeReference?: DegreeReference
 }
+
+// ─── 曲式（Phase 8 / F8-2）────────────────────────────────────────────────
+// 一段進行（ProgressionPreset）與一首曲子的差別是**段落**：A、A2、B、A3。
+// 反覆記號、1st/2nd ending、D.S. al Coda 一律不做——那些是排版的省字法，
+// 跟練需要的是「第 27 小節該彈什麼」。段落展開成陣列之後，段落循環、
+// 強制切換、chorus 計數全部退化成索引運算（決策見 docs/PRD/phase-08.md §4.2）。
+
+/** 一個段落。bars 是小節線記法，文法見 progressions/chartText.ts */
+export interface ChartSection {
+  /** 段落標記，樂手通用的字母（A / A2 / B / Intro / Coda）；不翻譯 */
+  label: string
+  /** 小節線記法，如 `| I6 vim7 | iim7 V7 |` */
+  bars: string
+  /** 這一段的和聲層級；省略時沿用整份曲譜的設定 */
+  harmonyLevel?: HarmonyLevel
+}
+
+/** 曲式：記譜調 + 段落定義 + 展開順序 */
+export interface ChartForm {
+  /** 記譜調——級數的錨。使用者可移調，這只是「譜上寫的調」 */
+  homeKey: NoteName
+  /** 段落展開順序，如 ['A', 'A2', 'B', 'A3']；即一個 chorus */
+  form: readonly string[]
+  sections: readonly ChartSection[]
+}
+
+/**
+ * 小節內的一個和弦。
+ * offsetBeats 是 RealizedBar 沒有的資訊：一小節兩個和弦時，第二個從第幾拍開始。
+ * comping 示範音要排得準就得知道這件事（RealizedBar 只知道「這小節有這幾個和弦」）。
+ */
+export interface BarChord {
+  chord: RealizedChord
+  /** 距小節起點的偏移，單位＝拍 */
+  offsetBeats: number
+  /** 佔幾拍 */
+  beats: number
+}
+
+/** 展開後的一小節 */
+export interface FormBar {
+  /** 1-based 絕對小節（一個 chorus 內） */
+  bar: number
+  /** 這一小節屬於 form 陣列的第幾項（0-based） */
+  sectionIndex: number
+  /** 該段落的標記（A / B…） */
+  label: string
+  chords: BarChord[]
+}
+
+/** form 陣列的一項在整個 chorus 裡佔哪幾小節（曲式圖與段落循環用） */
+export interface SectionSpan {
+  /** form 陣列裡的索引（0-based）——同一個 label 可能出現多次，索引才是身分 */
+  index: number
+  label: string
+  /** 1-based 起始小節 */
+  firstBar: number
+  bars: number
+}
+
+export interface ExpandFormOptions extends RealizeOptions {
+  /** 一小節幾拍（＝拍號分子）；決定 BarChord 的 offsetBeats */
+  beatsPerBar: number
+}
+
+/** 曲譜文字的解析結果（匯入／編輯用；feel 由模組層驗證，core 不認識 feel id） */
+export interface ChartDraft {
+  title: string
+  homeKey: NoteName
+  feel: string
+  bpm: number | null
+  form: string[]
+  sections: ChartSection[]
+}

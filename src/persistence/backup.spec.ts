@@ -98,7 +98,9 @@ describe('importBackup', () => {
   })
 
   it('BACKUP_KEYS 涵蓋全部 rcs.* 持久化 key（新增 store 要記得加進來）', () => {
-    expect([...BACKUP_KEYS]).toEqual(['rcs.settings', 'rcs.practiceLog', 'rcs.customProgressions'])
+    expect([...BACKUP_KEYS]).toEqual([
+      'rcs.settings', 'rcs.practiceLog', 'rcs.customProgressions', 'rcs.userCharts',
+    ])
   })
 })
 

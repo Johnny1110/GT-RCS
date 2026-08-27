@@ -20,6 +20,7 @@ export const APP_ROUTES: readonly string[] = [
   '/chords/key-practice',
   '/chords/custom',
   '/chords/arpeggio',
+  '/chords/jazz-book',
   '/scales/explorer',
   '/scales/practice',
   '/scales/sequence',

@@ -60,6 +60,10 @@
       "arpeggio": {
         "title": "七和弦琶音",
         "description": "沿五度圈走 12 調，把 maj7、屬七、m7、m7b5 的琶音練成手型"
+      },
+      "jazzBook": {
+        "title": "The Jazz Book",
+        "description": "整首曲子的曲式跟練：段落、遍數、comping 律動，12 個調隨你移"
       }
     }
   },
@@ -481,7 +485,8 @@
       "chord": "和弦",
       "progression": "和弦進行",
       "rhythm": "節奏",
-      "other": "其他"
+      "other": "其他",
+      "form": "曲式"
     }
   },
   "legal": {
@@ -537,5 +542,116 @@
     "missed": "漏掉",
     "accuracy": "正確率",
     "keyboardNote": "「說名字」方向可以完全用鍵盤作答；「找位置」需要點指板，這是目前已知的限制。"
+  },
+  "jazzBook": {
+    "library": "曲庫",
+    "feel": "Feel",
+    "comping": "和弦",
+    "form": "曲式",
+    "chorus": "第 {n} 遍",
+    "loopWhole": "整首循環",
+    "loopSection": "只循環這一段",
+    "publicDomain": "公版曲（和弦依原曲和聲自行編寫）",
+    "parseError": "第 {line} 行、第 {bar} 小節看不懂——檢查一下和弦記法或小節線。",
+    "bpmHint": "{marking} 通常在 {min}–{max} BPM。",
+    "newChart": "新增曲譜",
+    "newChartName": "我的曲譜",
+    "group": {
+      "drill": "形式練習",
+      "standard": "標準曲",
+      "user": "我的曲譜"
+    },
+    "comp": {
+      "chords": "完整 comping",
+      "bass": "只彈根音",
+      "off": "不彈和弦"
+    },
+    "silence": {
+      "label": "示範／靜默",
+      "off": "全程示範"
+    },
+    "rotation": {
+      "label": "每 N 遍換調",
+      "off": "不換調"
+    },
+    "editor": {
+      "title": "自己的曲譜",
+      "privacy": "只存在這台瀏覽器，不會上傳——我們沒有伺服器可以放。",
+      "save": "存檔",
+      "copy": "複製曲譜文字",
+      "remove": "刪除",
+      "text": "曲譜",
+      "import": "貼上匯入",
+      "importHint": "把別處複製來的曲譜文字貼在這裡",
+      "importAction": "匯入",
+      "syntax": "記法說明",
+      "syntaxBody": "key: Bb\nfeel: mediumSwing\nform: A A2 B A3\nA:  | I6 vim7 | iim7 V7 | ... |\n\n| 分隔小節；一小節內以空白分隔的和弦平分該小節（最多 4 個）。\n% = 與前一小節相同。空小節是錯誤，不會當成延續。\n和弦用級數記法：I ii V7 iim7b5 bVII7 V/ii #ivdim7 …",
+      "unknownError": "曲譜解析失敗。",
+      "headerError": "第 {line} 行的標頭有問題（需要 key: 與 form:）。"
+    },
+    "tune": "曲目",
+    "chart": {
+      "jazzBlues": "最通用的一份爵士藍調：第 4 小節的 vm7-I7 與第 6 小節的 #ivdim7 是它與搖滾藍調的分水嶺。",
+      "birdBlues": "Bird 把藍調重配成一連串下行的 2-5——同樣 12 小節，但每兩拍就換一次調中心。",
+      "rhythmA": "Rhythm Changes 的 A 段。把這八小節練熟，幾百首曲子同時解鎖。",
+      "rhythmBridge": "標準橋段：III7–VI7–II7–V7，一路五度下行走回主調。每個和弦兩小節。",
+      "rhythmFull": "完整 32 小節 AABA。A2 最後一小節的 I7 是通往橋段的門。",
+      "aaba": "最典型的 32 小節 AABA 骨架：A 段是 1-6-2-5，橋段從 IV 出發再借一次 bVII7。",
+      "turnarounds": "四種回頭句各四小節：基本型、從 iii 出發、大三度代理、三全音代理。連著跑聽得出差別。",
+      "minor251": "小調 2-5-1：iim7b5 的 b5、V7b9 的 b9，都來自和聲小調。",
+      "minorBlues": "小調藍調：第 9 小節的 bVImaj7 是它最好認的一格。",
+      "majorThirds": "大三度循環：三個相距大三度的調，用屬七串起來。四小節走完一圈回到原點。",
+      "coltraneCadence": "把一個 2-5-1 換成大三度循環——同樣四小節，同樣回到 I，中間繞了三個調。",
+      "tritoneSubs": "同一個終止式的兩種寫法：A 段是 V7，B 段換成三全音代理的 bII7。低音差半音，張力完全不同。",
+      "descending25s": "整音下行的 2-5 串：四組 2-5-1 各降一個全音，是很多橋段的骨架。",
+      "modalVamp": "調式即興：一個 m7 掛八小節，再整個往上半音。和聲不動，全部的話都靠音階與節奏說。",
+      "stLouisBlues": "12 小節藍調 + 同主音小調的探戈段落。1914 年的曲子，藍調進入流行樂的起點。",
+      "sweetGeorgiaBrown": "整首就是一條五度圈：VI7–II7–V7–I，每個和弦四小節。練五度下行的最佳曲目。",
+      "saints": "只有 I、IV、V7 三個和弦的 16 小節。拿來熟悉曲式感與 comping 手感。",
+      "carelessLove": "16 小節的抒情老歌，第 10 小節的 I7 是通往 IV 的副屬。",
+      "frankieAndJohnny": "12 小節的傳統敘事曲，三和弦藍調的原型。"
+    }
+  },
+  "feel": {
+    "ballad": {
+      "title": "Ballad",
+      "description": "慢速抒情。和弦落在 1 與 3，其餘留白給旋律。"
+    },
+    "mediumSwing": {
+      "title": "Medium Swing",
+      "description": "最常見的搖擺速度。comping 走 Freddie Green 的四分音符。"
+    },
+    "mediumUpSwing": {
+      "title": "Medium Up Swing",
+      "description": "偏快的搖擺。comping 換成 Charleston：1 與 2 的反拍。"
+    },
+    "upTempo": {
+      "title": "Up Tempo",
+      "description": "極快。和弦收成一小節兩擊，否則只會糊成一片。"
+    },
+    "jazzWaltz": {
+      "title": "Jazz Waltz",
+      "description": "3/4 的搖擺。重音在 1 與 2 的反拍。"
+    },
+    "bossa": {
+      "title": "Bossa Nova",
+      "description": "直八分。兩小節一循環的 comping 圖形。"
+    },
+    "samba": {
+      "title": "Samba",
+      "description": "十六分的直拍律動，比 bossa 快得多。"
+    },
+    "afroCuban": {
+      "title": "Afro-Cuban",
+      "description": "2-3 son clave：先兩下、再三下，兩小節一循環。"
+    },
+    "shuffleBlues": {
+      "title": "Medium Blues Shuffle",
+      "description": "藍調 shuffle，反拍重音在 2 與 4。"
+    },
+    "evenEighths": {
+      "title": "Even Eighths",
+      "description": "不搖擺的八分音符，現代標準曲常用。"
+    }
   }
 }

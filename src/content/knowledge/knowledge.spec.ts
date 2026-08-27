@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest'
 import { SCALE_FORMULAS } from '@/core/theory'
 import { CIRCLE_PROGRESSIONS, PRACTICE_LEVELS } from '@/modules/chords/presets'
 import { ARPEGGIO_DRILLS } from '@/modules/chords/arpeggio/drills'
+import { BUILT_IN_CHARTS } from '@/modules/chords/jazzBook/charts'
 import { GROOVE_STYLES, SUBDIVISION_STAGES } from '@/modules/rhythm/presets'
 import { parseInline, type KnowledgeBundle } from './types'
 import zhTW from './zh-TW.json'
@@ -37,6 +38,7 @@ describe('知識內容', () => {
         ...(level.knowledgeIds ?? []),
         ...level.progressions.flatMap((p) => p.knowledgeIds ?? []),
       ]),
+      ...BUILT_IN_CHARTS.flatMap((chart) => chart.knowledgeIds ?? []),
       ...SUBDIVISION_STAGES.flatMap((stage) => stage.knowledgeIds ?? []),
       ...GROOVE_STYLES.flatMap((style) => style.knowledgeIds ?? []),
     ]

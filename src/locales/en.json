@@ -60,6 +60,10 @@
       "arpeggio": {
         "title": "Seventh Arpeggios",
         "description": "Take maj7, dominant 7, m7 and m7b5 arpeggios through all 12 keys around the circle"
+      },
+      "jazzBook": {
+        "title": "The Jazz Book",
+        "description": "Practise whole tunes: sections, choruses, comping feels, any of 12 keys"
       }
     }
   },
@@ -481,7 +485,8 @@
       "chord": "Chords",
       "progression": "Progressions",
       "rhythm": "Rhythm",
-      "other": "Other"
+      "other": "Other",
+      "form": "Form"
     }
   },
   "legal": {
@@ -537,5 +542,116 @@
     "missed": "Missed",
     "accuracy": "Accuracy",
     "keyboardNote": "Name it is fully keyboard-operable; Find it needs the fretboard — a known limitation."
+  },
+  "jazzBook": {
+    "library": "Library",
+    "feel": "Feel",
+    "comping": "Chords",
+    "form": "Form",
+    "chorus": "Chorus {n}",
+    "loopWhole": "Loop whole tune",
+    "loopSection": "Loop this section",
+    "publicDomain": "Public domain (changes written from the original harmony)",
+    "parseError": "Line {line}, bar {bar} doesn't parse — check the chord symbols or the bar lines.",
+    "bpmHint": "{marking} usually sits between {min}–{max} BPM.",
+    "newChart": "New chart",
+    "newChartName": "My chart",
+    "group": {
+      "drill": "Form drills",
+      "standard": "Standards",
+      "user": "My charts"
+    },
+    "comp": {
+      "chords": "Full comping",
+      "bass": "Root only",
+      "off": "No chords"
+    },
+    "silence": {
+      "label": "Demo / silence",
+      "off": "Always demo"
+    },
+    "rotation": {
+      "label": "Key change every N",
+      "off": "Stay in key"
+    },
+    "editor": {
+      "title": "Your own charts",
+      "privacy": "Stored in this browser only, never uploaded — we have no server to put it on.",
+      "save": "Save",
+      "copy": "Copy chart text",
+      "remove": "Delete",
+      "text": "Chart",
+      "import": "Paste to import",
+      "importHint": "Paste chart text copied from somewhere else",
+      "importAction": "Import",
+      "syntax": "Notation",
+      "syntaxBody": "key: Bb\nfeel: mediumSwing\nform: A A2 B A3\nA:  | I6 vim7 | iim7 V7 | ... |\n\n| separates bars; chords inside one bar split it evenly (max 4).\n% repeats the previous bar. An empty bar is an error, not a hold.\nChords use roman numerals: I ii V7 iim7b5 bVII7 V/ii #ivdim7 …",
+      "unknownError": "Could not parse the chart.",
+      "headerError": "Line {line}: bad header (key: and form: are required)."
+    },
+    "tune": "Tune",
+    "chart": {
+      "jazzBlues": "The all-purpose jazz blues. The vm7-I7 in bar 4 and the #ivdim7 in bar 6 are what separate it from a rock blues.",
+      "birdBlues": "Bird reharmonised the blues into a chain of descending ii-Vs — same 12 bars, a new key centre every two beats.",
+      "rhythmA": "The A section of Rhythm Changes. Learn these eight bars and hundreds of tunes open up.",
+      "rhythmBridge": "The standard bridge: III7–VI7–II7–V7, cycling in fifths back home. Two bars each.",
+      "rhythmFull": "The full 32-bar AABA. The I7 in the last bar of A2 is the door into the bridge.",
+      "aaba": "The most typical 32-bar AABA skeleton: A is a 1-6-2-5, the bridge starts on IV and borrows a bVII7.",
+      "turnarounds": "Four turnarounds, four bars each: basic, from iii, major-third sub, tritone sub. Run them back to back and you hear it.",
+      "minor251": "The minor ii-V-i: the b5 of iim7b5 and the b9 of V7b9 both come from harmonic minor.",
+      "minorBlues": "Minor blues — the bVImaj7 in bar 9 is its signature bar.",
+      "majorThirds": "The major-thirds cycle: three keys a major third apart, linked by dominants. Four bars and you're home.",
+      "coltraneCadence": "One ii-V-I rewritten as a major-thirds cycle — same four bars, same I, three keys on the way.",
+      "tritoneSubs": "One cadence, two spellings: A uses V7, B uses the tritone sub bII7. A semitone in the bass, a whole different pull.",
+      "descending25s": "A chain of ii-Vs dropping a whole step each time — the skeleton of a great many bridges.",
+      "modalVamp": "Modal playing: one m7 for eight bars, then the whole thing up a semitone. The harmony stops moving; scale and rhythm do the talking.",
+      "stLouisBlues": "A 12-bar blues plus a tango strain in the parallel minor. 1914 — where the blues entered popular song.",
+      "sweetGeorgiaBrown": "The whole tune is one cycle of fifths: VI7–II7–V7–I, four bars each. The best vehicle for practising fifths.",
+      "saints": "Sixteen bars on just I, IV and V7. Use it to get the shape of a form and the feel of comping under your hands.",
+      "carelessLove": "A 16-bar ballad; the I7 in bar 10 is the secondary dominant into IV.",
+      "frankieAndJohnny": "A traditional 12-bar narrative song — the three-chord blues in its earliest form."
+    }
+  },
+  "feel": {
+    "ballad": {
+      "title": "Ballad",
+      "description": "Slow and open. Chords land on 1 and 3, the rest is left for the melody."
+    },
+    "mediumSwing": {
+      "title": "Medium Swing",
+      "description": "The default swing tempo. Comping walks in Freddie Green quarter notes."
+    },
+    "mediumUpSwing": {
+      "title": "Medium Up Swing",
+      "description": "Brighter swing. Comping switches to Charleston: 1 and the and-of-2."
+    },
+    "upTempo": {
+      "title": "Up Tempo",
+      "description": "Fast. Chords drop to two hits per bar or they just smear."
+    },
+    "jazzWaltz": {
+      "title": "Jazz Waltz",
+      "description": "Swing in 3/4, accented on 1 and the and-of-2."
+    },
+    "bossa": {
+      "title": "Bossa Nova",
+      "description": "Straight eighths with a two-bar comping figure."
+    },
+    "samba": {
+      "title": "Samba",
+      "description": "A straight sixteenth-note groove, much faster than bossa."
+    },
+    "afroCuban": {
+      "title": "Afro-Cuban",
+      "description": "2-3 son clave: two hits, then three, over two bars."
+    },
+    "shuffleBlues": {
+      "title": "Medium Blues Shuffle",
+      "description": "Blues shuffle with the backbeat on 2 and 4."
+    },
+    "evenEighths": {
+      "title": "Even Eighths",
+      "description": "Straight eighths — the modern standard feel."
+    }
   }
 }

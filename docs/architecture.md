@@ -98,6 +98,11 @@
 | `modules/chords/arpeggio/sequence.ts` | 純函式（音序 + 格位對應） | 琶音把時間解析度從「小節線換和弦」推進到「格線換音」。哪一格該彈哪個音是**練習設計**不是樂理（與 recall/quiz.ts 同一條界線）；而且畫面與示範音必須共用同一份順序——各自排一次，遲早出現「畫面圈著 3 音、耳朵聽到 b7」，那是最難察覺的一種錯 |
 | `composables/useNoteDemo` | 訂閱排程 tick（發聲） | 與 useChordDemo 同骨架，差別就是琶音與模進的定義：一格一個音。仍走 subscribeSchedule——用視覺 tick 排程等於每個音遲到半幀，十六分細分下聽得出來 |
 | `composables/useBarCursor` | 位移游標（不動時鐘） | 「點和弦強制切換過去」不能改 Transport 的小節數——節拍不能因為換和弦而斷。改成記一個位移，視覺與示範音都經同一個 `barFor()`；只改視覺會出現「畫面換了、聲音沒換」 |
+| `theory/progressions/chartText.ts` | 白名單 parser（小節線記法） | 一首曲子有 32–64 小節，`tokens` + `barsPerChord` 兩個平行陣列人工維護必錯，而且錯了只表現成「第 17 小節之後整首歪掉」。小節線把小節數寫在字面上，一眼數得出來。**和弦錯字也在這一層擋掉**——否則要等展開曲式甚至播放才爆，且指不出是哪一小節 |
+| `theory/progressions/form.ts` | 純函式展開器（曲式） | 段落 → 一個 chorus 的小節表。刻意**不**沿用 realizeProgression 的「累加位置再 floor」：平分小節會出現 1/3，累加三次是 0.999…，floor 之後整首往前錯一小節。本層以小節為單位逐格展開，浮點只出現在單一小節內的 offsetBeats |
+| `modules/chords/jazzBook/feels.ts` | 對照表（標記 → 設定） | 書上印的是 feel 標記不是 BPM，這張表就是那個翻譯。**click 與 comp 是兩張格子**：comp 圖形（Charleston 只敲 1 與 2 的反拍）拿來當節拍器會讓人整個失去拍子，所以計時歸計時、律動歸律動，兩者共用同一個網格對齊 |
+| `modules/chords/jazzBook/comping.ts` | 純函式（敲點與時值） | 「這一格該不該敲、敲多久」是 comping 的定義，屬練習設計（與 recall/quiz.ts、arpeggio/sequence.ts 同一條界線）。畫面與示範音共用同一份，各自算一次遲早會差半拍 |
+| `composables/useCompDemo` | 訂閱排程 tick（和弦） | 與 useChordDemo 的差別就是標準曲的定義：小節內換和弦、和弦跟著 comp 圖形敲。**不過濾 role === 'rest'**——comp 與 click 是兩張格子，拿 click 的休止當閘門會把 comping 最重要的反拍全部吃掉。**和弦沒換就不重配聲位**：每一擊都跑 voiceChord()，同一個 Dm7 連敲四下會跳四個轉位，音都是對的所以極難查 |
 | `modules/scales/sequence/patterns.ts` | 純函式（模進） | 模進＝同一個音型往上搬。用 (size, interval) 兩個正交參數長出八種跑法（三個一組、三度跳音、七和弦分解…），新增一種只要加一行，不必為每一種寫一份產生器。時間模型與琶音**相反**且是這裡最容易寫錯的地方：琶音的格號每個小節重算（小節線換和弦），模進是一條跨小節的跑道（`absoluteSlot`）——重算的症狀是序列永遠停在第一組，而且看起來像速度不對 |
 | `modules/rhythm/presets.ts` | 速記法 DSL（`parseCells`） | `X`／`o`／`g`／`.` 一格一字元，preset 在原始碼裡就看得出節奏形狀；未知字元丟例外，打錯字在測試就爆而不是悄悄變成休止 |
 | `composables/useModuleSettings` | 響應式持久化綁定 | 模組設定以模組 id 為 key 自動存取，杜絕直接碰 localStorage |
@@ -181,6 +186,10 @@ Transport.next()（生成 tick，audioTime 在未來 ~100ms）
 | 一格一音的示範音（琶音與模進共用） | `src/composables/useNoteDemo.ts` |
 | 模進型（size × interval）與絕對格號 | `src/modules/scales/sequence/patterns.ts` |
 | 進行記法文法 | `src/core/theory/progressions/parser.ts` 頂部註解 |
+| 曲譜文字記法（小節線、`%`、平分小節） | `src/core/theory/progressions/chartText.ts` 頂部註解 |
+| 曲式展開與小節內偏移（BarChord.offsetBeats） | `src/core/theory/progressions/form.ts` |
+| feel 標記 → 速度區間／拍號／swing／comp 圖形 | `src/modules/chords/jazzBook/feels.ts` |
+| 曲庫與公版收錄門檻 | `src/modules/chords/jazzBook/charts.ts`（門檻由 `charts.spec.ts` 鎖定） |
 | 進行 preset 與分級課表 | `src/modules/chords/presets.ts` |
 | 知識內容格式與行內標記 | `src/content/blocks.ts`（知識條目與法遵頁共用） |
 | 知識條目 id ↔ 網址 slug | `src/content/knowledge/slug.ts` |
@@ -357,3 +366,22 @@ maj7／7／m7／m7b5／dim7 各自走 12 調），沿五度圈的展開直接沿
 **待人工完成（需要帳號，不是程式碼）**：見 `docs/ops/runbook.md`——
 建立 Firebase 專案與自訂網域、設定 GitHub repository variables、AdSense 送審與版位建立、
 CMP 訊息設定、GCP 預算警示、Search Console 驗證。程式端已就緒，缺的只是這些設定值。
+
+**再之後的追加（784 個測試）**：The Jazz Book 模組（`chords.jazz-book`）——和弦線的第五個模組，
+把和弦線從「四小節的進行」推進到**一首曲子的曲式**。核心多一層曲式
+（`chartText.ts` 的小節線記法 + `form.ts` 的展開器），模組層多一張 feel 表與 19 份曲譜。
+
+四個實作決策值得記住：
+- **曲式展開成段落陣列，不做反覆記號**：`1st/2nd ending`、`D.S. al Coda` 是排版的省字法，
+  跟練需要的是「第 27 小節該彈什麼」。展開之後段落循環、強制切換、chorus 計數
+  全部退化成索引運算，而 A 與 A2 只差最後兩小節這件事，讓兩段各寫一次就解決了。
+- **不沿用 realizeProgression 的浮點累加**：平分小節會出現 1/3，累加三次是 0.999…，
+  floor 之後整首往前錯一小節。曲式以小節為單位逐格展開。
+- **click 與 comp 是兩張格子**：節奏線的模組只有一張（畫面畫什麼就響什麼），
+  這裡不行——Charleston 拿來當節拍器會讓人失去拍子。
+- **曲庫只收形式練習與公版曲**，其餘由使用者自行輸入且只存 localStorage。
+  公版界線（出版年）寫成 `charts.spec.ts` 的測試，與 `ads.spec.ts` 同一種做法：
+  要放寬就得先改測試，那一刻就會有人問「為什麼」。
+
+命名：模組對外名稱是 **The Jazz Book**，不是 The Real Book——後者是 Hal Leonard 的註冊商標，
+本站是公開且有廣告收入的營利性質站台。理由與三層曲庫的設計見 `docs/PRD/phase-08.md` §0。
