@@ -86,7 +86,7 @@ onBeforeUnmount(cleanup)
     class="flex w-full flex-col gap-1"
     :aria-label="t('ads.label')"
   >
-    <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
+    <span class="rcs-micro">
       {{ t('ads.label') }}
     </span>
     <div

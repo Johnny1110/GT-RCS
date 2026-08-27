@@ -18,6 +18,7 @@ const rows = computed(() => [
   { keys: ['↑', '↓'], label: t('shortcuts.bpm') },
   { keys: ['Shift', '↑', '↓'], label: t('shortcuts.bpmLarge') },
   { keys: ['←', '→'], label: t('shortcuts.preset') },
+  { keys: ['T'], label: t('shortcuts.tap') },
   { keys: ['?'], label: t('shortcuts.help') },
   { keys: ['Esc'], label: t('shortcuts.close') },
 ])
@@ -36,13 +37,13 @@ watch(() => shortcuts.helpOpen, async (open) => {
     @click.self="shortcuts.closeHelp()"
   >
     <div
-      class="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-ink-700 bg-ink-900 p-6"
+      class="flex w-full max-w-sm flex-col gap-4 rcs-panel p-6"
       role="dialog"
       aria-modal="true"
       :aria-label="t('shortcuts.title')"
     >
       <div class="flex items-baseline gap-3">
-        <h2 class="text-lg font-semibold text-ink-50">{{ t('shortcuts.title') }}</h2>
+        <h2 class="rcs-h2">{{ t('shortcuts.title') }}</h2>
         <button
           ref="closeButton"
           type="button"
@@ -59,7 +60,7 @@ watch(() => shortcuts.helpOpen, async (open) => {
             <kbd
               v-for="key in row.keys"
               :key="key"
-              class="rounded border border-ink-700 bg-ink-800 px-1.5 py-0.5 font-mono text-[11px] text-ink-100"
+              class="rcs-btn px-1.5 py-0.5 font-mono text-[11px]"
             >{{ key }}</kbd>
           </dt>
           <dd class="text-sm text-ink-400">{{ row.label }}</dd>

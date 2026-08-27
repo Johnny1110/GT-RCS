@@ -190,7 +190,7 @@ function focusPosition(position: FretboardPosition): void {
 
 <template>
   <div class="flex min-w-0 flex-col gap-2">
-    <div ref="scroller" class="min-w-0 overflow-x-auto rounded-lg border border-ink-700 bg-ink-900 py-2">
+    <div ref="scroller" class="min-w-0 overflow-x-auto rcs-panel py-2">
       <svg
         :viewBox="`0 0 ${layout.width} ${layout.height}`"
         :style="{ minWidth: `${layout.width}px` }"
@@ -264,7 +264,7 @@ function focusPosition(position: FretboardPosition): void {
 
     <!-- 有把位框時，把位本身就是最好的跳轉目標，不再另外列固定格號 -->
     <div v-if="positions.length" class="flex flex-wrap items-center gap-2 self-end">
-      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
+      <span class="rcs-micro">
         {{ t('fretboard.position') }}
       </span>
       <button v-if="!requireFocus" type="button"
@@ -289,7 +289,7 @@ function focusPosition(position: FretboardPosition): void {
     </div>
 
     <div v-else class="flex items-center gap-2 self-end">
-      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
+      <span class="rcs-micro">
         {{ t('fretboard.jumpTo') }}
       </span>
       <button v-for="fret in POSITION_MARKS" :key="fret" type="button"

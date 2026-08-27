@@ -2,7 +2,9 @@
   "app": {
     "title": "RCS — Rhythm & Chord & Scales",
     "tagline": "Three things make a guitarist: rhythm, chord, scale. Every drill runs on the same click.",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "wordmark": "Rhythm · Chord · Scales",
+    "switchLocale": "Switch language"
   },
   "category": {
     "rhythm": "Rhythm",
@@ -75,7 +77,14 @@
       "ghost": "Ghost"
     },
     "meter": "Meter · Subdivision",
-    "fromPattern": "set by the sheet"
+    "fromPattern": "set by the sheet",
+    "tap": "TAP",
+    "tapMore": "{n} more",
+    "tapHint": "Tap along twice or more to set the tempo (keyboard: T)",
+    "bpmDown": "Decrease tempo by 1",
+    "bpmUp": "Increase tempo by 1",
+    "bpmCoarse": "Tempo coarse adjust",
+    "bpmEditHint": "Click to type an exact tempo"
   },
   "fretboard": {
     "aria": "Guitar fretboard showing {count} notes",
@@ -203,7 +212,8 @@
     "help": "Toggle this panel",
     "close": "Close this panel",
     "typingHint": "Shortcuts stay out of the way while you're typing in a text field.",
-    "dismiss": "Close"
+    "dismiss": "Close",
+    "tap": "Tap tempo"
   },
   "custom": {
     "new": "New",
@@ -451,6 +461,13 @@
       "rhythm": "Metronome, subdivision drills, and groove sheets to play along with, including swing and accent design",
       "chords": "Numeral progressions, the 12-key cycle, circle-of-fifths navigation, and any progression you write yourself",
       "scales": "Note names and degrees across the neck, three-notes-per-string and pentatonic shapes, scale and sequence drills on the click"
+    },
+    "resume": {
+      "title": "Resume practice",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{n} days ago",
+      "longAgo": "Over a month ago"
     }
   },
   "knowledgeIndex": {

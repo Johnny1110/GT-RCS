@@ -71,6 +71,12 @@ useSeoApplier(() => defaultPageMeta(route.path, route.meta, t))
 const knowledgePath = computed(() => pathForLocale(KNOWLEDGE_BASE_PATH, routeLocaleOf(route.meta)))
 const statsPath = computed(() => pathForLocale('/stats', routeLocaleOf(route.meta)))
 
+/** 頁首導覽：清單化才不會每加一項就複製一次 class 字串（那正是排印漂移的來源） */
+const navItems = computed(() => [
+  { path: knowledgePath.value, label: t('knowledgeIndex.title') },
+  { path: statsPath.value, label: t('stats.title') },
+])
+
 /** 只翻設定；換網址交給上面的同步 watcher，換頁邏輯只留一份 */
 function toggleLocale(): void {
   settings.state.locale = settings.state.locale === 'zh-TW' ? 'en' : 'zh-TW'
@@ -90,25 +96,38 @@ watch(() => route.fullPath, () => { crash.value = null })
 
 <template>
   <div class="flex min-h-screen flex-col bg-ink-950 text-ink-100">
-    <header class="flex items-center gap-5 border-b border-ink-800 px-6 py-3">
-      <RouterLink to="/" class="font-mono text-base font-bold tracking-[0.06em] text-ink-50">RCS</RouterLink>
+    <!--
+      頁首分三段：品牌 → 導覽 → 語言。
+      品牌與導覽之間隔一條 1px 直線，因為它們是兩種東西——「RCS」是回首頁，
+      後面兩個是去某一頁；原本四個項目等距排開，看起來像四個同級的分頁。
+      作用中的導覽項用下緣白線標示（保留 2px 透明邊避免切換時位移），
+      而不是整顆反白：反白在這套系統裡是「選取」，頁首的當前頁是位置不是選擇。
+    -->
+    <header class="flex items-center gap-4 border-b border-ink-800 px-6 py-3">
       <RouterLink
-        :to="knowledgePath"
-        class="rounded px-2 py-1 font-mono text-xs text-ink-400 hover:bg-ink-800 hover:text-ink-100"
-        active-class="text-ink-100"
-      >
-        {{ t('knowledgeIndex.title') }}
-      </RouterLink>
-      <RouterLink
-        :to="statsPath"
-        class="rounded px-2 py-1 font-mono text-xs text-ink-400 hover:bg-ink-800 hover:text-ink-100"
-        active-class="text-ink-100"
-      >
-        {{ t('stats.title') }}
-      </RouterLink>
+        to="/"
+        class="font-mono text-base font-bold tracking-[0.12em] text-ink-50"
+        :aria-label="t('app.title')"
+      >RCS</RouterLink>
+
+      <span class="h-4 w-px bg-ink-700" aria-hidden="true" />
+
+      <nav class="flex items-center gap-1">
+        <RouterLink
+          v-for="item in navItems"
+          :key="item.path"
+          :to="item.path"
+          class="rcs-micro border-b-2 border-transparent px-2 py-1 transition-colors hover:text-ink-100 motion-reduce:transition-none"
+          active-class="border-ink-50 text-ink-50"
+        >
+          {{ item.label }}
+        </RouterLink>
+      </nav>
+
       <button
         type="button"
-        class="ml-auto rounded px-2 py-1 font-mono text-xs text-ink-400 hover:bg-ink-800 hover:text-ink-100"
+        class="rcs-micro ml-auto rounded border border-ink-700 px-2.5 py-1.5 transition-colors hover:bg-ink-800 hover:text-ink-100 motion-reduce:transition-none"
+        :aria-label="t('app.switchLocale')"
         @click="toggleLocale"
       >
         {{ settings.state.locale === 'zh-TW' ? 'EN' : '中文' }}
@@ -123,7 +142,7 @@ watch(() => route.fullPath, () => { crash.value = null })
         <div class="flex flex-wrap gap-2">
           <RouterLink
             to="/"
-            class="rounded border border-ink-700 bg-ink-800 px-3 py-1.5 text-sm text-ink-100 hover:bg-ink-700"
+            class="rcs-btn px-3 py-1.5 text-sm"
           >
             {{ t('error.home') }}
           </RouterLink>

@@ -85,14 +85,14 @@ useSeoOverride((): PageMeta | null => {
 
 <template>
   <div class="mx-auto flex w-full max-w-3xl flex-col gap-8 p-6 pt-10">
-    <nav class="font-mono text-[11px] uppercase tracking-[0.18em]">
+    <nav class="rcs-micro">
       <RouterLink :to="indexPath" class="text-ink-400 hover:text-ink-100">
         ← {{ t('knowledgeIndex.title') }}
       </RouterLink>
     </nav>
 
     <article v-if="entry" class="flex flex-col gap-5">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ entry.title }}</h1>
+      <h1 class="rcs-h1">{{ entry.title }}</h1>
       <RichText :blocks="entry.blocks" />
     </article>
 
@@ -100,7 +100,7 @@ useSeoOverride((): PageMeta | null => {
     <p v-else class="text-sm text-ink-400">{{ t('knowledge.loading') }}</p>
 
     <section v-if="related.length > 0" class="flex flex-col gap-3 border-t border-ink-800 pt-6">
-      <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
+      <h2 class="rcs-micro">
         {{ t('knowledgeIndex.related') }}
       </h2>
       <ul class="flex flex-wrap gap-2">

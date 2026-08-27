@@ -29,7 +29,16 @@ function isTextEntry(target: EventTarget | null): boolean {
   return type !== 'range' && type !== 'checkbox' && type !== 'radio' && type !== 'button'
 }
 
-export function useKeyboardShortcuts(): void {
+export interface KeyboardShortcutOptions {
+  /**
+   * `T` 敲擊測速。由呼叫端傳進來而不是在這裡 useTapTempo()：
+   * 敲擊測量是有狀態的，鍵盤與畫面上的 TAP 鈕必須共用同一次測量，
+   * 各自持有一份的話，交替使用兩者會得到兩串互不相干的間隔。
+   */
+  onTap?: () => void
+}
+
+export function useKeyboardShortcuts(options: KeyboardShortcutOptions = {}): void {
   const transport = useTransportStore()
   const shortcuts = useShortcutsStore()
 
@@ -66,6 +75,11 @@ export function useKeyboardShortcuts(): void {
         break
       case 'ArrowRight':
         if (!shortcuts.movePreset(1)) return
+        break
+      case 't':
+      case 'T':
+        if (!options.onTap) return
+        options.onTap()
         break
       case '?':
         shortcuts.toggleHelp()

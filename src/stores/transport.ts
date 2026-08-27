@@ -16,6 +16,7 @@
 import { defineStore } from 'pinia'
 import { computed, reactive, readonly, ref, shallowRef, watch } from 'vue'
 import {
+  BPM_MAX, BPM_MIN,
   LookaheadScheduler, SOUNDING_ROLES, SWING_STRAIGHT, SynthChordVoice, SynthClickVoice, TickBus,
   Transport, WebAudioClock, clampSwing, isTicksPerBeat,
   type CellRole, type ChordDemoMode, type ChordVoice, type ClickVoice, type DemoSilenceMode,
@@ -160,9 +161,13 @@ export const useTransportStore = defineStore('transport', () => {
 
   function setBpm(value: number): void {
     if (!Number.isFinite(value)) return
-    bpm.value = Math.round(value)
-    transport?.setBpm(value)
-    // core 會夾在 30–300，回讀確保 UI 與實際排程一致
+    // 先自己夾一次再寫進 UI：core Transport 是 lazy 建立的（第一次 play 才有），
+    // 還沒建立時沒有人會把界外值夾回來。滑桿有 min/max 所以看不出來，
+    // 但數字輸入與敲擊測速可以送進任何值——那時畫面會顯示一個排程器不認得的 BPM。
+    const clamped = Math.min(BPM_MAX, Math.max(BPM_MIN, Math.round(value)))
+    bpm.value = clamped
+    transport?.setBpm(clamped)
+    // core 也會夾一次，回讀確保 UI 與實際排程一致
     const state = transport?.getState()
     if (state) bpm.value = state.bpm
   }

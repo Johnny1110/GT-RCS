@@ -75,7 +75,7 @@ const total = computed(() => groups.value.reduce((sum, g) => sum + g.items.lengt
 <template>
   <div class="mx-auto flex w-full max-w-4xl flex-col gap-10 p-6 pt-10">
     <header class="flex flex-col gap-3">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('knowledgeIndex.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('knowledgeIndex.title') }}</h1>
       <p class="max-w-2xl text-sm leading-7 text-ink-300">{{ t('knowledgeIndex.description') }}</p>
       <p class="font-mono text-[11px] tabular-nums text-ink-400">
         {{ t('knowledgeIndex.count', { count: total }) }}
@@ -83,14 +83,14 @@ const total = computed(() => groups.value.reduce((sum, g) => sum + g.items.lengt
     </header>
 
     <section v-for="group in groups" :key="group.key" class="flex flex-col gap-3">
-      <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
+      <h2 class="rcs-micro">
         {{ t(`knowledgeIndex.group.${group.key}`) }}
       </h2>
       <ul class="grid gap-3 sm:grid-cols-2">
         <li v-for="item in group.items" :key="item.id">
           <RouterLink
             :to="item.path"
-            class="flex h-full flex-col gap-1 rounded-lg border border-ink-700 bg-ink-900 p-4 transition-colors hover:border-ink-500 hover:bg-ink-800 motion-reduce:transition-none"
+            class="flex h-full flex-col gap-1 rcs-panel p-4 transition-colors hover:border-ink-500 hover:bg-ink-800 motion-reduce:transition-none"
           >
             <span class="font-medium text-ink-50">{{ item.title }}</span>
             <span class="text-sm leading-6 text-ink-400">{{ item.summary }}</span>

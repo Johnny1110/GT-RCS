@@ -56,7 +56,7 @@ const updatedLabel = computed(() =>
 <template>
   <article class="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6 pt-10">
     <header class="flex flex-col gap-2">
-      <h1 class="text-2xl font-semibold text-ink-50">
+      <h1 class="rcs-h1">
         {{ content?.title ?? t(`legal.${doc}.title`) }}
       </h1>
       <p v-if="updatedLabel" class="font-mono text-[11px] tabular-nums text-ink-400">

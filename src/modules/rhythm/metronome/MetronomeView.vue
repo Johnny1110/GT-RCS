@@ -29,7 +29,7 @@ const beatLabel = computed(() => (playing.value ? String(position.beat) : EMPTY)
 <template>
   <div class="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-10 p-6">
     <header class="flex flex-col items-center gap-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.rhythm.metronome.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('modules.rhythm.metronome.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.rhythm.metronome.description') }}</p>
     </header>
 
@@ -37,12 +37,12 @@ const beatLabel = computed(() => (playing.value ? String(position.beat) : EMPTY)
 
     <div class="flex items-end gap-10">
       <div class="flex flex-col items-center gap-1">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('metronome.bar') }}</span>
-        <span class="font-mono text-4xl font-bold tabular-nums text-ink-50">{{ barLabel }}</span>
+        <span class="rcs-micro">{{ t('metronome.bar') }}</span>
+        <span class="rcs-data text-4xl text-ink-50">{{ barLabel }}</span>
       </div>
       <div class="flex flex-col items-center gap-1">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('metronome.beatOf') }}</span>
-        <span class="font-mono text-4xl font-bold tabular-nums text-ink-50">
+        <span class="rcs-micro">{{ t('metronome.beatOf') }}</span>
+        <span class="rcs-data text-4xl text-ink-50">
           {{ beatLabel }}<span class="text-xl text-ink-400">/{{ beats }}</span>
         </span>
       </div>

@@ -123,30 +123,30 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
 <template>
   <div class="mx-auto flex w-full min-w-0 max-w-5xl flex-col gap-6 p-6">
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.rhythm.groove.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('modules.rhythm.groove.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.rhythm.groove.description') }}</p>
     </header>
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.style') }}</span>
+        <span class="rcs-micro">{{ t('rhythm.style') }}</span>
         <SegmentedControl v-model="settings.styleId" :options="styleOptions" :aria-label="t('rhythm.style')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.pattern') }}</span>
+        <span class="rcs-micro">{{ t('rhythm.pattern') }}</span>
         <SegmentedControl v-model="settings.patternId" :options="patternOptions" :aria-label="t('rhythm.pattern')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.chordHint') }}</span>
+        <span class="rcs-micro">{{ t('rhythm.chordHint') }}</span>
         <p class="font-mono text-lg font-bold leading-[26px] text-ink-50">{{ chordSymbol }}</p>
       </div>
     </div>
 
     <p class="max-w-[65ch] text-sm text-ink-400">{{ t(style.descriptionKey) }}</p>
 
-    <section class="flex min-w-0 flex-col gap-4 rounded-lg border border-ink-700 bg-ink-900 p-5">
+    <section class="flex min-w-0 flex-col gap-4 rcs-panel p-5">
       <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-        <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
+        <p class="rcs-micro">
           {{ t(pattern.titleKey) }}
           <span v-if="customized" class="ml-2 text-ink-300">· {{ t('rhythm.customized') }}</span>
         </p>
@@ -165,7 +165,7 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
           <button
             v-if="customized"
             type="button"
-            class="rounded border border-ink-700 bg-ink-800 px-3 py-1 font-mono text-xs text-ink-300 hover:text-ink-50"
+            class="rcs-btn px-3 py-1 font-mono text-xs"
             @click="resetPattern"
           >
             {{ t('rhythm.reset') }}
@@ -190,11 +190,11 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div v-if="swingApplies" class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.swing') }}</span>
+        <span class="rcs-micro">{{ t('rhythm.swing') }}</span>
         <!-- flex-wrap 是必要的：英文的 swing preset 標籤（Full shuffle）比中文寬，
              375px 手機上不換行就會把整頁撐出橫捲 -->
         <div class="flex flex-wrap items-center gap-3">
-          <span class="w-10 font-mono text-sm font-bold tabular-nums text-ink-50">{{ Math.round(transport.swing) }}%</span>
+          <span class="w-10 rcs-data text-sm text-ink-50">{{ Math.round(transport.swing) }}%</span>
           <input
             class="rcs-range w-32"
             type="range"
@@ -209,7 +209,7 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
               v-for="item in SWING_PRESETS"
               :key="item.key"
               type="button"
-              class="rounded border border-ink-700 bg-ink-800 px-2 py-1 font-mono text-[11px] text-ink-400 hover:text-ink-50"
+              class="rcs-btn px-2 py-1 font-mono text-[11px]"
               @click="transport.setSwing(item.value)"
             >
               {{ t(`rhythm.swingPreset.${item.key}`) }}
@@ -219,7 +219,7 @@ const chordSymbol = computed(() => chordHintSymbol(style.value.chordHint))
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.counting') }}</span>
+        <span class="rcs-micro">{{ t('rhythm.counting') }}</span>
         <SegmentedControl v-model="settings.countStyle" :options="countOptions" :aria-label="t('rhythm.counting')" />
       </div>
     </div>

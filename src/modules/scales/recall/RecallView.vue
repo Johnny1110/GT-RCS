@@ -258,13 +258,13 @@ const barsOptions = computed(() =>
 <template>
   <div class="mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-6 p-6">
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.scales.recall.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('modules.scales.recall.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.scales.recall.description') }}</p>
     </header>
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('recall.direction') }}</span>
+        <span class="rcs-micro">{{ t('recall.direction') }}</span>
         <SegmentedControl
           :model-value="settings.direction"
           :options="directionOptions"
@@ -273,7 +273,7 @@ const barsOptions = computed(() =>
         />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('recall.language') }}</span>
+        <span class="rcs-micro">{{ t('recall.language') }}</span>
         <SegmentedControl
           :model-value="settings.language"
           :options="languageOptions"
@@ -283,16 +283,16 @@ const barsOptions = computed(() =>
       </div>
       <template v-if="settings.language === 'degree'">
         <div class="flex flex-col gap-1.5">
-          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.key') }}</span>
+          <span class="rcs-micro">{{ t('explorer.key') }}</span>
           <SegmentedControl v-model="settings.root" :options="keyOptions" :aria-label="t('explorer.key')" wrap />
         </div>
         <div class="flex flex-col gap-1.5">
-          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('explorer.scale') }}</span>
+          <span class="rcs-micro">{{ t('explorer.scale') }}</span>
           <SegmentedControl v-model="settings.scale" :options="scaleOptions" :aria-label="t('explorer.scale')" wrap />
         </div>
       </template>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('recall.barsPerQuestion') }}</span>
+        <span class="rcs-micro">{{ t('recall.barsPerQuestion') }}</span>
         <SegmentedControl
           :model-value="String(settings.barsPerQuestion)"
           :options="barsOptions"
@@ -303,7 +303,7 @@ const barsOptions = computed(() =>
     </div>
 
     <!-- 題目：畫面上唯一的重點，所以它是這一頁字最大的東西 -->
-    <section class="flex flex-col gap-4 rounded-lg border border-ink-700 bg-ink-900 p-5">
+    <section class="flex flex-col gap-4 rcs-panel p-5">
       <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
         <p class="text-xl font-semibold text-ink-50">{{ promptText }}</p>
         <p v-if="settings.direction === 'find'" class="font-mono text-sm tabular-nums text-ink-300">
@@ -345,7 +345,7 @@ const barsOptions = computed(() =>
         </button>
 
         <div v-else class="ml-auto flex items-center gap-3">
-          <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">{{ t('transport.beat') }}</span>
+          <span class="rcs-micro">{{ t('transport.beat') }}</span>
           <BeatLamps
             :beats="transport.timeSig.beats"
             :current="position.beat"
@@ -370,7 +370,7 @@ const barsOptions = computed(() =>
     />
 
     <section class="flex flex-wrap items-baseline gap-x-8 gap-y-2 font-mono text-xs text-ink-400">
-      <span class="uppercase tracking-[0.18em]">{{ t('recall.stats') }}</span>
+      <span class="rcs-micro">{{ t('recall.stats') }}</span>
       <span>{{ t('recall.questions') }} <b class="text-base tabular-nums text-ink-50">{{ score.questions }}</b></span>
       <span>{{ t('recall.hits') }} <b class="text-base tabular-nums text-ink-50">{{ score.hits }}</b></span>
       <span>{{ t('recall.misses') }} <b class="text-base tabular-nums text-ink-100">{{ score.misses }}</b></span>

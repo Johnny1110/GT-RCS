@@ -35,12 +35,12 @@ export function renderBlocks(blocks: readonly ContentBlock[]): string {
   const out: string[] = []
   for (const block of blocks) {
     if (block.type === 'paragraph') {
-      out.push(`<p class="text-sm leading-7 text-ink-300">${renderInline(block.text)}</p>`)
+      out.push(`<p class="rcs-body text-ink-300">${renderInline(block.text)}</p>`)
     } else {
       const items = block.items
         .map(
           (item) =>
-            `<li class="border-l border-ink-700 pl-3 text-sm leading-7 text-ink-300">${renderInline(item)}</li>`,
+            `<li class="rcs-body border-l border-ink-700 pl-3 text-ink-300">${renderInline(item)}</li>`,
         )
         .join('')
       out.push(`<ul class="flex flex-col gap-2">${items}</ul>`)
@@ -50,7 +50,7 @@ export function renderBlocks(blocks: readonly ContentBlock[]): string {
 }
 
 export function renderArticle(title: string, blocks: readonly ContentBlock[], note?: string): string {
-  const heading = `<h1 class="text-2xl font-semibold text-ink-50">${escapeHtml(title)}</h1>`
+  const heading = `<h1 class="rcs-h1">${escapeHtml(title)}</h1>`
   const meta = note ? `<p class="font-mono text-[11px] text-ink-400">${escapeHtml(note)}</p>` : ''
   return `<div class="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6 pt-10"><header class="flex flex-col gap-2">${heading}${meta}</header>${renderBlocks(blocks)}</div>`
 }

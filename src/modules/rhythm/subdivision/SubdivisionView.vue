@@ -91,31 +91,31 @@ const knowledgeId = computed(() => stage.value.knowledgeIds?.[0])
 <template>
   <div class="mx-auto flex w-full min-w-0 max-w-5xl flex-col gap-6 p-6">
     <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <h1 class="text-2xl font-semibold text-ink-50">{{ t('modules.rhythm.subdivision.title') }}</h1>
+      <h1 class="rcs-h1">{{ t('modules.rhythm.subdivision.title') }}</h1>
       <p class="text-sm text-ink-400">{{ t('modules.rhythm.subdivision.description') }}</p>
     </header>
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.stage') }}</span>
+        <span class="rcs-micro">{{ t('rhythm.stage') }}</span>
         <SegmentedControl v-model="settings.stageId" :options="stageOptions" :aria-label="t('rhythm.stage')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.pattern') }}</span>
+        <span class="rcs-micro">{{ t('rhythm.pattern') }}</span>
         <SegmentedControl v-model="settings.patternId" :options="patternOptions" :aria-label="t('rhythm.pattern')" wrap />
       </div>
     </div>
 
     <p class="max-w-[65ch] text-sm text-ink-400">{{ t(stage.descriptionKey) }}</p>
 
-    <section class="flex min-w-0 flex-col gap-4 rounded-lg border border-ink-700 bg-ink-900 p-5">
+    <section class="flex min-w-0 flex-col gap-4 rcs-panel p-5">
       <div class="flex flex-wrap items-center justify-between gap-4">
-        <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">
+        <p class="rcs-micro">
           {{ t(pattern.titleKey) }}
         </p>
         <p
           v-if="playing"
-          class="rounded px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.16em]"
+          class="rounded px-2 py-0.5 rcs-micro"
           :class="silent ? 'bg-ink-50 text-ink-950' : 'text-ink-400'"
         >
           {{ silent ? t('rhythm.statusSilent') : t('rhythm.statusDemo') }}
@@ -135,11 +135,11 @@ const knowledgeId = computed(() => stage.value.knowledgeIds?.[0])
 
     <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.demoSilence') }}</span>
+        <span class="rcs-micro">{{ t('rhythm.demoSilence') }}</span>
         <SegmentedControl v-model="settings.demoSilence" :options="demoOptions" :aria-label="t('rhythm.demoSilence')" wrap />
       </div>
       <div class="flex flex-col gap-1.5">
-        <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400">{{ t('rhythm.counting') }}</span>
+        <span class="rcs-micro">{{ t('rhythm.counting') }}</span>
         <SegmentedControl v-model="settings.countStyle" :options="countOptions" :aria-label="t('rhythm.counting')" />
       </div>
     </div>
