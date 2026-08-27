@@ -49,6 +49,17 @@ describe('Fretboard', () => {
     expect(asRoot).not.toEqual(asFifth)
   })
 
+  /** design-system.md §5：金色只給指位記號圓點，其餘一律灰階 */
+  it('指位記號用金色 token，格數與把位標籤維持灰階', () => {
+    const wrapper = mountFretboard({ cells, rootPc: 0 })
+    const inlays = wrapper.findAll('svg > circle')
+    expect(inlays.length).toBeGreaterThan(0)
+    for (const inlay of inlays) expect(inlay.attributes('fill')).toBe('var(--color-inlay)')
+    for (const label of wrapper.findAll('svg > text')) {
+      expect(label.attributes('fill')).toMatch(/var\(--color-ink-\d+\)/)
+    }
+  })
+
   it('空 cells 不炸，仍渲染指板骨架', () => {
     const wrapper = mountFretboard({ cells: [], rootPc: 0 })
     expect(wrapper.findAll('svg > g')).toHaveLength(0)
