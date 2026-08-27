@@ -22,6 +22,14 @@ import type { FeelId } from './feels'
 export type ChartOrigin =
   | { kind: 'drill' }
   | { kind: 'public-domain'; composer: string; firstPublished: number }
+  /**
+   * **仍在著作權保護期內**，內測版本暫時收錄，公開上線前必須逐首決定去留。
+   * 與 public-domain 分開是為了讓「之後要拿掉哪些」變成一個 filter
+   * （`IN_COPYRIGHT_CHARTS`），而不是回頭考古哪一首有問題。
+   * 新增這一類會讓 `charts.spec.ts` 的清單測試失敗——那是刻意的，
+   * 每加一首都應該是一次有意識的決定。
+   */
+  | { kind: 'in-copyright'; composer: string; firstPublished: number }
   /** 使用者自己輸入的譜；資料不在本檔，只在 stores/userCharts.ts 的 localStorage */
   | { kind: 'user' }
 
@@ -272,6 +280,21 @@ export const STANDARD_CHARTS: readonly Chart[] = [
     }],
   },
   {
+    id: 'strasbourg-st-denis',
+    title: 'Strasbourg / St. Denis',
+    descriptionKey: 'jazzBook.chart.strasbourgStDenis',
+    homeKey: 'Ab', feel: 'evenEighths', harmonyLevel: 'seventh', bpm: 136,
+    origin: { kind: 'in-copyright', composer: 'Roy Hargrove', firstPublished: 2008 },
+    form: ['A'],
+    sections: [{
+      // 八小節 vamp：ii–iii–IV 一路往上，最後一格的 VI7b9 是回到 ii 的副屬，
+      // 整首的推進力就在那一格。V7sus4 與 VI7b9 都用到 Phase 8 新補的公式。
+      label: 'A',
+      bars: '| iim7 iiim7 | IVmaj7 | iim7 iiim7 | IVmaj7 '
+        + '| iim7 iiim7 | IVmaj7 V7sus4 | Imaj7 | VI7b9 |',
+    }],
+  },
+  {
     id: 'frankie-and-johnny',
     title: 'Frankie and Johnny',
     descriptionKey: 'jazzBook.chart.frankieAndJohnny',
@@ -295,6 +318,16 @@ export const CHART_GROUPS: readonly ChartGroup[] = [
 ]
 
 export const BUILT_IN_CHARTS: readonly Chart[] = [...DRILL_CHARTS, ...STANDARD_CHARTS]
+
+/**
+ * **公開上線前必須處理的曲目**：仍在著作權保護期內，內測版本暫時收錄。
+ *
+ * 要全部移除就是刪掉 `STANDARD_CHARTS` 裡 `origin.kind === 'in-copyright'` 的那幾筆；
+ * 這個匯出的存在就是為了讓那件事一眼找得到，而不是上線前一首一首查出版年。
+ * 清單內容由 `charts.spec.ts` 鎖定——新增一首會讓測試失敗，逼出一次有意識的決定。
+ */
+export const IN_COPYRIGHT_CHARTS: readonly Chart[] =
+  BUILT_IN_CHARTS.filter((c) => c.origin.kind === 'in-copyright')
 
 export function findChart(id: string | undefined): Chart | undefined {
   return BUILT_IN_CHARTS.find((c) => c.id === id)

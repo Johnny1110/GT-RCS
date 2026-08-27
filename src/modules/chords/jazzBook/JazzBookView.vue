@@ -356,7 +356,19 @@ function removeChart(): void {
 
 const chorusLabel = computed(() => chorusAt(cursor.bar.value) + 1)
 const knowledgeId = computed(() => chart.value?.knowledgeIds?.[0])
-const origin = computed(() => chart.value?.origin)
+/**
+ * 作者標示：公版與保護期內的曲目都要顯示作者與年份。
+ * 前者是尊重，後者是「這一首之後要處理」的提醒——內測期間看得見，才不會忘記。
+ */
+const originLine = computed(() => {
+  const value = chart.value?.origin
+  if (!value || (value.kind !== 'public-domain' && value.kind !== 'in-copyright')) return null
+  return {
+    composer: value.composer,
+    year: value.firstPublished,
+    noteKey: value.kind === 'public-domain' ? 'jazzBook.publicDomain' : 'jazzBook.inCopyright',
+  }
+})
 const bpmHint = computed(() => {
   const range = feel.value.bpm
   return transport.bpm < range.min || transport.bpm > range.max
@@ -495,8 +507,8 @@ const bpmHint = computed(() => {
       </section>
 
       <p v-if="chart.descriptionKey" class="max-w-[65ch] text-sm text-ink-400">{{ t(chart.descriptionKey) }}</p>
-      <p v-if="origin?.kind === 'public-domain'" class="rcs-micro text-ink-500">
-        {{ origin.composer }} · {{ origin.firstPublished }} · {{ t('jazzBook.publicDomain') }}
+      <p v-if="originLine" class="rcs-micro text-ink-500">
+        {{ originLine.composer }} · {{ originLine.year }} · {{ t(originLine.noteKey) }}
       </p>
     </template>
 

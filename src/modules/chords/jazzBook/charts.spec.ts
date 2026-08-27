@@ -9,7 +9,9 @@
 import { describe, expect, it } from 'vitest'
 import { expandForm, formBarCount, sectionSpans } from '@/core/theory'
 import { DESCENDING_FIFTHS } from '@/components/CircleOfFifths/geometry'
-import { BUILT_IN_CHARTS, CHART_GROUPS, DRILL_CHARTS, STANDARD_CHARTS, findChart } from './charts'
+import {
+  BUILT_IN_CHARTS, CHART_GROUPS, DRILL_CHARTS, IN_COPYRIGHT_CHARTS, STANDARD_CHARTS, findChart,
+} from './charts'
 import { findFeel, resolveFeel } from './feels'
 
 /**
@@ -62,11 +64,27 @@ describe('曲庫', () => {
 
   it('公版曲一律標作者與出版年，且出版年不晚於公版界線', () => {
     for (const chart of STANDARD_CHARTS) {
-      expect(chart.origin.kind, chart.id).toBe('public-domain')
       if (chart.origin.kind !== 'public-domain') continue
       expect(chart.origin.composer.trim(), chart.id).not.toBe('')
       expect(chart.origin.firstPublished, `${chart.id} 出版年超過公版界線`)
         .toBeLessThanOrEqual(PUBLIC_DOMAIN_CUTOFF)
+    }
+  })
+
+  /**
+   * 內測版本暫時收錄、仍在保護期內的曲目**清單**由這個測試鎖定。
+   *
+   * 不是「禁止收錄」——那是產品決定不是測試該管的事；而是「不准安靜地多一首」。
+   * 每加一首都會讓這裡失敗，逼出一次有意識的決定，並讓上線前的待辦清單
+   * 永遠與程式碼一致（處理步驟見 docs/ops/runbook.md §13）。
+   */
+  it('保護期內的曲目：清單與內建曲庫一致（新增一首就要在這裡登記）', () => {
+    expect(IN_COPYRIGHT_CHARTS.map((c) => c.id)).toEqual(['strasbourg-st-denis'])
+    for (const chart of IN_COPYRIGHT_CHARTS) {
+      if (chart.origin.kind !== 'in-copyright') continue
+      // 作者與年份是「之後要查什麼」的線索，不能省
+      expect(chart.origin.composer.trim(), chart.id).not.toBe('')
+      expect(chart.origin.firstPublished, chart.id).toBeGreaterThan(PUBLIC_DOMAIN_CUTOFF)
     }
   })
 
@@ -109,6 +127,15 @@ describe('曲庫', () => {
     const chart = findChart('major-thirds')!
     expect(expandForm(chart, optionsFor(chart, 'C')).map((b) => b.chords.map((c) => c.chord.symbol).join(' ')))
       .toEqual(['Cmaj7 Eb7', 'Abmaj7 B7', 'Emaj7 G7', 'Cmaj7'])
+  })
+
+  it('抽樣：Strasbourg / St. Denis 的八小節 vamp（Ab 調）', () => {
+    const chart = findChart('strasbourg-st-denis')!
+    expect(expandForm(chart, optionsFor(chart, 'Ab')).map((b) => b.chords.map((c) => c.chord.symbol).join(' ')))
+      .toEqual([
+        'Bbm7 Cm7', 'Dbmaj7', 'Bbm7 Cm7', 'Dbmaj7',
+        'Bbm7 Cm7', 'Dbmaj7 Eb7sus4', 'Abmaj7', 'F7b9',
+      ])
   })
 
   it('抽樣：小調 2-5-1 用到新補的 7b9 與 mMaj7', () => {
