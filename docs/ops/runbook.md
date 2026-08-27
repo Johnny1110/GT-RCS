@@ -216,6 +216,29 @@ HTML 是 `no-cache`、`/assets/**` 是 immutable（檔名帶 hash），正常情
 
 ---
 
+## 13. 曲庫的著作權處理（公開上線前必辦）
+
+The Jazz Book 的內建曲庫分三層（設計理由見 `docs/PRD/phase-08.md` §0）：
+形式練習與公版曲可以公開發佈，**保護期內的曲目只在內測版本收錄**。
+
+上線前要做的事：
+
+1. `npx vitest run src/modules/chords/jazzBook/charts.spec.ts` ——
+   「保護期內的曲目」那個測試會把當前清單印出來，那就是待辦清單。
+   程式端也可以直接讀 `IN_COPYRIGHT_CHARTS`。
+2. 逐首決定：**取得授權**、**移除**，或**降級成使用者自行輸入**
+   （把和弦文字放進說明頁，讓使用者自己貼進編輯器——資料就不在我們的發佈物裡了）。
+3. 決定移除時：刪掉 `src/modules/chords/jazzBook/charts.ts` 裡
+   `origin.kind === 'in-copyright'` 的那幾筆，並更新 `charts.spec.ts` 的清單斷言。
+   設定裡指到已刪曲目的使用者會自動落回預設曲目（`resolved` 有回退），不會壞掉。
+4. 公版曲（`public-domain`）另有一件事要辦：**逐首查證出版年與屬地**。
+   目前以美國 1930 年界線為準，歐盟採作者歿後 70 年，未必同步。
+   有疑義的一律降級成使用者自行輸入。
+
+> 現況（內測）：`strasbourg-st-denis`（Roy Hargrove, 2008）一首。
+
+---
+
 ## 12. 每月營運筆記
 
 每月一頁，用 `docs/ops/monthly-template.md`，存成 `docs/ops/YYYY-MM.md`。
