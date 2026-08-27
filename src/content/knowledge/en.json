@@ -724,5 +724,83 @@
         ]
       }
     ]
+  },
+  "form.aaba": {
+    "title": "AABA: the 32-bar standard",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Almost everything from the American songbook era (1920–1950) is **four eight-bar sections**: A, A, B, A. The two A sections are nearly identical, differing only in the last bar or two; the B section (the bridge, or middle eight) takes the harmony somewhere else and hands you back to A."
+      },
+      {
+        "type": "paragraph",
+        "text": "Why the structure is worth memorising: you are not remembering 32 chords, you are remembering **one A, one B, and two small differences**. That drops the load from 32 to about 10 — and on the stand you always know what comes next."
+      },
+      {
+        "type": "list",
+        "items": [
+          "A usually starts on I and ends with a turnaround in bars 7–8",
+          "The last bar of the second A is often a I7 — the door into the bridge",
+          "The two most common bridges: a cycle of fifths (III7–VI7–II7–V7), or starting on IV",
+          "Other common forms: ABAC (32 bars, no repeat of the A ending) and the 12-bar blues"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "When practising, loop the bridge on its own first. That is where nearly everyone falls apart, because you play the A section a thousand times a year and the bridge only a quarter as often."
+      }
+    ]
+  },
+  "form.rhythmChanges": {
+    "title": "Rhythm Changes: the second set of changes to learn",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "A 32-bar AABA from the 1930 song \"I Got Rhythm\". It sits just behind the 12-bar blues in importance: **hundreds of bebop tunes borrow these exact changes** and simply write a new melody over them."
+      },
+      {
+        "type": "paragraph",
+        "text": "The A section is a looping 1-6-2-5: I6–vim7–iim7–V7, with a trip to IV and ivm6 in bars 5–6 (that ivm6 is borrowed from the parallel minor — it is the moment the light dims), then back to 1-6-2-5."
+      },
+      {
+        "type": "list",
+        "items": [
+          "The bridge is a pure cycle of fifths: III7–VI7–II7–V7, two bars each",
+          "All four bridge chords are dominant sevenths — each one is the secondary dominant of the next",
+          "Common variants: replace vim7 with bIII7 (major-third sub), or run tritone subs through the A section",
+          "Tempo is the real difficulty: it is traditionally played up. Learn it at Medium Swing first"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Practice order: loop the A section, loop the bridge, then the whole form. Each of those four bridge dominants is worth taking out on its own."
+      }
+    ]
+  },
+  "chord.turnaround": {
+    "title": "Turnarounds: the two bars that send you back",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "A tune does not sit on I for the last two bars — that makes the repeat feel like hitting a wall. A **turnaround** is a short group of chords that re-tightens the harmony and pushes you back to the top. The basic one is I–vi–ii–V."
+      },
+      {
+        "type": "list",
+        "items": [
+          "**I–vi–ii–V**: the original. The bass walks 1–6–2–5, all inside the key",
+          "**iii–VI7–ii–V**: starts on iii and makes vi a secondary dominant — more pull",
+          "**I–bIII7–bVImaj7–V7**: the major-third substitution, a Coltrane-style detour",
+          "**I–VI7–ii–bII7**: the final V7 becomes its tritone sub, turning the bass into a semitone step into I"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "All four are the same length and do the same job. The only difference is **which notes you pass through** — so being able to switch between them means having four different routes through the same two bars."
+      },
+      {
+        "type": "paragraph",
+        "text": "Why the tritone sub works: bII7 and V7 share the same tritone (the 3rd and b7 swap places), so the resolution is just as strong, but the bass now falls a semitone into I."
+      }
+    ]
   }
 }

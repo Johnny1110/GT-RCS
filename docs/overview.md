@@ -233,6 +233,15 @@ interface PracticeModule {
   單一品質（maj7／7／m7／m7b5／dim7）走 12 調練指型；方向可選上行／下行／上下行。
   指板的把位聚焦記的是「根音在第幾弦」，換調時指型跟著走。
 
+- **The Jazz Book（Phase 8）**：把和弦線推進到**一首曲子的曲式**——段落（AABA）、遍數（chorus）、
+  段落循環、任意調移調。書上印的不是 BPM 而是 feel 標記（Medium Swing、Bossa Nova、Ballad…），
+  所以模組核心是一張「標記 → 速度區間 + 拍號 + swing + comping 圖形」的對照表；
+  和弦跟著 comping 圖形敲，不是一小節一下。
+  曲庫三層：**形式練習**（爵士藍調、Rhythm Changes、大三度循環、turnaround… 通用和聲模板）、
+  **公版曲**（出版年已過保護期，和弦依原曲和聲自行編寫）、**使用者自己輸入的譜**
+  （只存在他的瀏覽器，不上傳）。`每 N 遍換一個調` 是這個模組的核心用法——
+  「只會在 F 調彈這首」是最常見的死角。
+
 ### 節奏線（Phase 4）
 - **切分專項**：4/8/16 分正反拍、切分 pattern，節奏譜 + 示範 click（重音/ghost 雙音色）跟練。
 - **律動風格**：FUNK、SOUL 等風格 preset；6/8、shuffle（三連音 feel）專項。
@@ -253,6 +262,7 @@ interface PracticeModule {
 | 7 | 回想閉環 | 指板回想模組（四種練法）、Fretboard 互動能力、限時出題 | [phase-07](PRD/phase-07.md) |
 | — | 追加 | 七和弦琶音模組（12 調 × 五種實用七和弦，一格一音的示範與指板標記） | — |
 | — | 追加 | 音階模進模組（一弦三音／五聲盒型 × 八種模進，即興素材） | — |
+| 8 | 曲式 | The Jazz Book：曲式引擎、feel 對照表、19 份曲譜、comping 示範音、使用者曲譜匯入 | [phase-08](PRD/phase-08.md) |
 
 每個 Phase 結束皆為**可部署可用**的狀態（Phase 1 結束時至少有可玩的指板 + 節拍器 demo 頁）。
 

@@ -5,6 +5,7 @@ import { registerModule } from './registry'
 import { chordsArpeggioManifest } from './chords/arpeggio/manifest'
 import { chordsCircleManifest } from './chords/circle/manifest'
 import { chordsCustomManifest } from './chords/custom/manifest'
+import { chordsJazzBookManifest } from './chords/jazzBook/manifest'
 import { chordsKeyPracticeManifest } from './chords/key/manifest'
 import { rhythmGrooveManifest } from './rhythm/groove/manifest'
 import { rhythmMetronomeManifest } from './rhythm/metronome/manifest'
@@ -21,6 +22,7 @@ registerModule(chordsCircleManifest)
 registerModule(chordsKeyPracticeManifest)
 registerModule(chordsCustomManifest)
 registerModule(chordsArpeggioManifest)
+registerModule(chordsJazzBookManifest)
 registerModule(scalesExplorerManifest)
 registerModule(scalesPracticeManifest)
 registerModule(scalesSequenceManifest)

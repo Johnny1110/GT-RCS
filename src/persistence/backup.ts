@@ -18,6 +18,7 @@ export const BACKUP_KEYS = [
   'rcs.settings',
   'rcs.practiceLog',
   'rcs.customProgressions',
+  'rcs.userCharts',
 ] as const
 
 export interface BackupFile {
